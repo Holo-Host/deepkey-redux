@@ -1,0 +1,14 @@
+{
+  "name": "DeepKey",
+  "description": "A Holochain app",
+  "authors": [
+    {
+      "identifier": "Zo-El <joel.ulahanna@holo.host>",
+      "public_key_source": "",
+      "signature": "@zo-el"
+    }
+  ],
+  "version": "0.1.0",
+  "dht": {},
+  "properties": null
+}
