@@ -1,0 +1,23 @@
+build/
+build-HApps/
+ui/
+dna/
+.dist/
+.cache/
+npm-debug.log
+bundle.json
+
+node_modules
+target
+tmp-storage
+
+
+# OS generated files #
+######################
+.tags*
+.DS_Store
+._*
+.Spotlight-V100
+.tags*
+.Trashes
+ehthumbs.db
