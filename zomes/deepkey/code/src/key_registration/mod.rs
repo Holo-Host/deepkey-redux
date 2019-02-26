@@ -32,10 +32,28 @@ pub fn definitions() -> ValidatingEntryType{
 
         validation: |_kr: KeyRegistration, _validation_data: hdk::ValidationData| {
             {
+                /// **Initialize**
+                // Check the Auhorizor linked to the AgentID if its has a valid authorization_sig
+                // Rev Sig is Empty
+                /// **Update Entry**
+                // Validate Rev Sig
                 Ok(())
             }
         },
 
-        links: []
+        links: [
+            from!(
+                "%agent_id",
+                tag: "key_registration_link_tag",
+
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: |_base: Address, _target: Address, _validation_data: hdk::ValidationData| {
+                    Ok(())
+                }
+            )
+        ]
     )
 }

@@ -35,6 +35,20 @@ pub fn definitions() -> ValidatingEntryType{
             }
         },
 
-        links: []
+        links: [
+
+            from!(
+                "%agent_id",
+                tag: "authorizor_link_tag",
+
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: |_base: Address, _target: Address, _validation_data: hdk::ValidationData| {
+                    Ok(())
+                }
+            )
+        ]
     )
 }

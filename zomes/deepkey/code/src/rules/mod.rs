@@ -32,6 +32,13 @@ pub fn definitions() -> ValidatingEntryType{
 
         validation: |_r: Rules, _validation_data: hdk::ValidationData| {
             {
+                // **Initial Validation**
+                // Check that the origin is from a valid device
+                // i.e. the agent is linked from RootHash
+
+                // **On Update**
+                // Check if signed by Prior Revocation Key on Update
+                // (field not required on Create)
                 Ok(())
             }
         },
