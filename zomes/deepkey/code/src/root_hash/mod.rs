@@ -10,7 +10,7 @@ use hdk::holochain_core_types::{
     signature::Signature
 };
 
-// pub mod handlers;
+pub mod root_hash;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]

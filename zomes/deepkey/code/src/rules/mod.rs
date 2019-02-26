@@ -10,7 +10,7 @@ use hdk::holochain_core_types::{
     signature::Signature
 };
 
-// pub mod handlers;
+pub mod rules;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
@@ -22,7 +22,7 @@ pub struct Rules {
 
 pub fn definitions() -> ValidatingEntryType{
     entry!(
-        name: "root_hash",
+        name: "rules",
         description: "This is the rules that the agent sets for his DeepKey acc",
         sharing: Sharing::Public,
         native_type: Rules,
