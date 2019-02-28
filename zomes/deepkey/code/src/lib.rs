@@ -11,9 +11,13 @@ extern crate holochain_core_types_derive;
 use hdk::{
     error::ZomeApiResult,
 };
-// use hdk::holochain_core_types::{
-//     cas::content::Address, entry::Entry, dna::entry_types::Sharing, error::HolochainError, json::JsonString,
-// };
+use hdk::holochain_core_types::{
+    cas::content::Address,
+    entry::Entry,
+    dna::entry_types::Sharing,
+    error::HolochainError,
+    json::JsonString,
+};
 
 pub mod authorizor;
 // pub mod device_authorization;
@@ -32,11 +36,31 @@ define_zome! {
         rules::definitions()
     ]
 
-    genesis: || { Ok(()) }
+    genesis: || {
+        // match keyset_root::keyset_root::handle_create_keyset_root(){
+        //     Ok(_) => Ok(()),
+        //     Err(e) => Err(e.to_string())
+        // }
+        Ok(())
+    }
 
-    functions: []
+    functions: [
+        create_keyset_root: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: keyset_root::keyset_root::handle_create_keyset_root
+        }
+        get_keyset_root: {
+            inputs: | address: Address |,
+            outputs: |result: ZomeApiResult<Option<Entry>>|,
+            handler: keyset_root::keyset_root::handle_get_keyset_root
+        }
+    ]
 
     traits: {
-        hc_public []
+        hc_public [
+        create_keyset_root,
+        get_keyset_root
+        ]
     }
 }
