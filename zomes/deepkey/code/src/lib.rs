@@ -37,18 +37,14 @@ define_zome! {
     ]
 
     genesis: || {
-        // match keyset_root::keyset_root::handle_create_keyset_root(){
-        //     Ok(_) => Ok(()),
-        //     Err(e) => Err(e.to_string())
-        // }
         Ok(())
     }
 
     functions: [
-        create_keyset_root: {
+        set_keyset_root: {
             inputs: | |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: keyset_root::keyset_root::handle_create_keyset_root
+            handler: keyset_root::keyset_root::handle_set_keyset_root
         }
         get_keyset_root: {
             inputs: | address: Address |,
@@ -59,7 +55,7 @@ define_zome! {
 
     traits: {
         hc_public [
-        create_keyset_root,
+        set_keyset_root,
         get_keyset_root
         ]
     }

@@ -14,7 +14,7 @@ use crate::keyset_root::KeysetRoot;
 
 
 
-pub fn handle_create_keyset_root() -> ZomeApiResult<Address>   {
+pub fn handle_set_keyset_root() -> ZomeApiResult<Address>   {
 
     let root : KeysetRoot = KeysetRoot {
         first_deepkey_agent: HashString::from(AGENT_ADDRESS.to_string()),

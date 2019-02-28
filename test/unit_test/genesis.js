@@ -1,6 +1,6 @@
 
 function genesis (liza){
-  return liza.call("deepkey", "create_keyset_root", {})
+  return liza.call("deepkey", "set_keyset_root", {})
 }
 
 module.exports = (scenario) => {
