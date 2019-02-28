@@ -48,7 +48,7 @@ define_zome! {
         }
         get_keyset_root: {
             inputs: | address: Address |,
-            outputs: |result: ZomeApiResult<Option<Entry>>|,
+            outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<keyset_root::KeysetRoot>>|,
             handler: keyset_root::keyset_root::handle_get_keyset_root
         }
     ]
