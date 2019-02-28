@@ -3,6 +3,7 @@ use hdk::{
     entry_definition::ValidatingEntryType,
 };
 use hdk::holochain_core_types::{
+    cas::content::Address,
     dna::entry_types::Sharing,
     error::HolochainError,
     json::JsonString,
@@ -16,7 +17,8 @@ pub mod authorizor;
 #[serde(rename_all = "camelCase")]
 pub struct Authorizor {
     pub authorization_key: HashString,
-    pub revocation_sig: Signature, // (empty on Create, required on Update)
+    pub revocation_authority: HashString,
+    pub revocation_sig: Signature,
 }
 
 pub fn definitions() -> ValidatingEntryType{
@@ -36,7 +38,6 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         links: [
-
             from!(
                 "%agent_id",
                 tag: "authorizor_link_tag",

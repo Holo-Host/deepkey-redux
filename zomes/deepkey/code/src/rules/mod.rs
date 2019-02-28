@@ -15,9 +15,9 @@ pub mod rules;
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
 pub struct Rules {
-    pub root_hash: HashString,
+    pub keyset_root: HashString,
     pub revocation_key: HashString,
-    pub prior_revocation_self_sig: Signature, //(empty on Create required on Update)
+    pub prior_revocation_self_sig: Signature, //(Signed by RootKey on Create by RevKey on Updates)
 }
 
 pub fn definitions() -> ValidatingEntryType{

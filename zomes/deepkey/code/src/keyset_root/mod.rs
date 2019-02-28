@@ -10,11 +10,11 @@ use hdk::holochain_core_types::{
     signature::Signature
 };
 
-pub mod root_hash;
+pub mod keyset_root;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
-pub struct RootHash {
+pub struct KeysetRoot {
     pub first_deepkey_agent: HashString,
     pub root_pubkey: HashString,
     pub fda_signed_by_rootkey: Signature,
@@ -22,15 +22,15 @@ pub struct RootHash {
 
 pub fn definitions() -> ValidatingEntryType{
     entry!(
-        name: "root_hash",
+        name: "keyset_root",
         description: "Root hash that would be used as an anchor",
         sharing: Sharing::Public,
-        native_type: RootHash,
+        native_type: KeysetRoot,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_rh: RootHash, _validation_data: hdk::ValidationData| {
+        validation: |_rh: KeysetRoot, _validation_data: hdk::ValidationData| {
             {
                 Ok(())
             }

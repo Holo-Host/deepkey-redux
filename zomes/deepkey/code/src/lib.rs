@@ -16,17 +16,19 @@ use hdk::{
 // };
 
 pub mod authorizor;
-pub mod device_authorization;
+// pub mod device_authorization;
+pub mod key_anchor;
 pub mod key_registration;
-pub mod root_hash;
+pub mod keyset_root;
 pub mod rules;
 
 define_zome! {
     entries: [
         authorizor::definitions(),
-        device_authorization::definitions(),
+        // device_authorization::definitions(),
+        key_anchor::definitions(),
         key_registration::definitions(),
-        root_hash::definitions(),
+        keyset_root::definitions(),
         rules::definitions()
     ]
 
