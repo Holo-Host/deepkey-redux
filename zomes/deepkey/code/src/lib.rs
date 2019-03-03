@@ -17,6 +17,7 @@ use hdk::holochain_core_types::{
     dna::entry_types::Sharing,
     error::HolochainError,
     json::JsonString,
+    hash::HashString,
 };
 
 pub mod authorizor;
@@ -44,19 +45,31 @@ define_zome! {
         set_keyset_root: {
             inputs: | |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: keyset_root::keyset_root::handle_set_keyset_root
+            handler: keyset_root::handlers::handle_set_keyset_root
         }
         get_keyset_root: {
-            inputs: | address: Address |,
+            inputs: | |,
             outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<keyset_root::KeysetRoot>>|,
-            handler: keyset_root::keyset_root::handle_get_keyset_root
+            handler: keyset_root::handlers::handle_get_keyset_root
+        }
+        create_rules: {
+            inputs: | revocation_key: HashString |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: rules::handlers::handle_create_rules
+        }
+        get_rules: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<Vec<Entry>> |,
+            handler: rules::handlers::handle_get_rules
         }
     ]
 
     traits: {
         hc_public [
         set_keyset_root,
-        get_keyset_root
+        get_keyset_root,
+        create_rules,
+        get_rules
         ]
     }
 }
