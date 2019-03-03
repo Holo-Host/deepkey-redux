@@ -52,7 +52,7 @@ define_zome! {
             outputs: |result: ZomeApiResult<HashString>|,
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
-        create_rules: {
+        set_rules: {
             inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: rules::handlers::handle_create_rules
@@ -62,14 +62,20 @@ define_zome! {
             outputs: |result: ZomeApiResult<Vec<Entry>> |,
             handler: rules::handlers::handle_get_rules
         }
+        set_authorizor: {
+            inputs: | authorization_key: HashString |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: authorizor::handlers::handle_create_authorizor
+        }
     ]
 
     traits: {
         hc_public [
         set_keyset_root,
         get_my_keyset_root,
-        create_rules,
-        get_rules
+        set_rules,
+        get_rules,
+        set_authorizor
         ]
     }
 }

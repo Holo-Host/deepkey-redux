@@ -11,7 +11,7 @@ use hdk::holochain_core_types::{
     signature::Signature
 };
 
-pub mod authorizor;
+pub mod handlers;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
