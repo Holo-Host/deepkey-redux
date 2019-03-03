@@ -12,6 +12,7 @@ use hdk::holochain_core_types::{
 };
 
 pub mod handlers;
+use crate::keyset_root;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
@@ -21,11 +22,17 @@ pub struct Rules {
     pub prior_revocation_self_sig: Signature, //(Signed by RootKey on Create by RevKey on Updates)
 }
 
-// fn validationSource(source:HashString)->bool{
-//     let keyset_root = keyset_root::handlers::handle_get_keyset_root()?;
-//     if keyset_root.length === 0 return false
-//     else return true
-// }
+fn validationSource(source:&HashString,keyset_root_address:HashString)->Result<bool,HolochainError>{
+    let keyset_roots = keyset_root::handlers::get_all_keyset_root()?;
+    for k in keyset_roots{
+        if k.0.entry_address() == &keyset_root_address{
+            if &k.0.provenances()[0].0 == source {
+                return Ok(true)
+            }
+        }
+    }
+    return Ok(false)
+}
 pub fn definitions() -> ValidatingEntryType{
     entry!(
         name: "rules",
@@ -41,18 +48,18 @@ pub fn definitions() -> ValidatingEntryType{
                 // **Initial Validation**
                 // Check that the origin is from a valid device
                 // i.e. the agent is linked from RootHash
-                // let source = &_validation_data.package.chain_header.provenances()[0].0;
-                // if validationSource(source) {
-                //     hdk::debug("Succesfully Validated that Source == first_deepkey_agent");
-                //     Ok(())
-                // }
-                // else{
-                //     Err("Could not Validate KeysetRoot: Source is not equal to the first_deepkey_agent".to_string())
-                // }
+                let source = &_validation_data.package.chain_header.provenances()[0].0;
+                match validationSource(source,_r.keyset_root){
+                    Ok(v)=>{
+                        if v {return Ok(())}
+                        else {return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())}
+                    }
+                    _=> Err("Could not Validate Rules: Source is not equal to the provenances".to_string())
+                }
                 // **On Update**
                 // Check if signed by Prior Revocation Key on Update
                 // (field not required on Create)
-                Ok(())
+                // Ok(())
             }
         },
 
