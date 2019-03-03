@@ -46,7 +46,7 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         links: [
-            from!(
+            to!(
                 "%agent_id",
                 tag: "deepkey_agent_link_tag",
 

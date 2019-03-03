@@ -47,10 +47,10 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: keyset_root::handlers::handle_set_keyset_root
         }
-        get_keyset_root: {
+        get_my_keyset_root: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<keyset_root::KeysetRoot>>|,
-            handler: keyset_root::handlers::handle_get_keyset_root
+            outputs: |result: ZomeApiResult<HashString>|,
+            handler: keyset_root::handlers::handle_get_my_keyset_root
         }
         create_rules: {
             inputs: | revocation_key: HashString |,
@@ -67,7 +67,7 @@ define_zome! {
     traits: {
         hc_public [
         set_keyset_root,
-        get_keyset_root,
+        get_my_keyset_root,
         create_rules,
         get_rules
         ]
