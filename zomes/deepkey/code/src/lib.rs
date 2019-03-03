@@ -67,6 +67,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: authorizor::handlers::handle_create_authorizor
         }
+        set_key: {
+            inputs: | new_agent_key: HashString |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: key_registration::handlers::handle_create_key_registration
+        }
     ]
 
     traits: {
@@ -75,7 +80,8 @@ define_zome! {
         get_my_keyset_root,
         set_rules,
         get_rules,
-        set_authorizor
+        set_authorizor,
+        set_key
         ]
     }
 }

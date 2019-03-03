@@ -28,5 +28,10 @@ module.exports = (scenario) => {
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
     t.deepEqual(authorizor_commit.Ok,"QmQPQfosMrbK8yBAzahaMhsEyC58z4PELZWnfRuE2zsVDo" )
 
+// Lets create an agent key
+    const key_commit = liza.call("deepkey", "set_key", {new_agent_key:"Agent------------Key"})
+    t.deepEqual(key_commit.Ok,"QmYrHMukCiYy25zM6CjpaAoK3mDgfsZjMD6ZvpiQnUBzoR" )
+
+
   })
 }

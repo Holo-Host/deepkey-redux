@@ -11,7 +11,7 @@ use hdk::holochain_core_types::{
     signature::Signature
 };
 
-pub mod key_registration;
+pub mod handlers;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
@@ -43,19 +43,6 @@ pub fn definitions() -> ValidatingEntryType{
             }
         },
 
-        links: [
-            from!(
-                "%agent_id",
-                tag: "key_registration_link_tag",
-
-                validation_package: || {
-                    hdk::ValidationPackageDefinition::Entry
-                },
-
-                validation: |_base: Address, _target: Address, _validation_data: hdk::ValidationData| {
-                    Ok(())
-                }
-            )
-        ]
+        links: [ ]
     )
 }
