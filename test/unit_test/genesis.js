@@ -24,6 +24,7 @@ module.exports = (scenario) => {
     console.log("My Rules: ",my_rules.Ok[0].App);
     t.deepEqual(my_rules.Ok[0].App[0],"rules" )
 
+// Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
     t.deepEqual(authorizor_commit.Ok,"QmQPQfosMrbK8yBAzahaMhsEyC58z4PELZWnfRuE2zsVDo" )
 

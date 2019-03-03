@@ -9,6 +9,8 @@ use hdk::holochain_core_types::{
     hash::HashString
 };
 
+pub mod handlers;
+
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
 pub struct KeyAnchor {
