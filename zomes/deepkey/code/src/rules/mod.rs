@@ -4,15 +4,17 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
+    entry::Entry,
     dna::entry_types::Sharing,
     error::HolochainError,
     json::JsonString,
     hash::HashString,
     signature::Signature
 };
+use std::convert::TryFrom;
 
 pub mod handlers;
-use crate::keyset_root;
+use crate::keyset_root::KeysetRoot;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
@@ -23,15 +25,16 @@ pub struct Rules {
 }
 
 fn validation_source(source:&HashString,keyset_root_address:HashString)->Result<bool,HolochainError>{
-    let keyset_roots = keyset_root::handlers::get_all_keyset_root()?;
-    for k in keyset_roots{
-        if k.0.entry_address() == &keyset_root_address{
-            if &k.0.provenances()[0].0 == source {
-                return Ok(true)
-            }
+    let keyset_roots_entry = hdk::get_entry(&keyset_root_address)?;
+    if let Some(Entry::App(_, json_string)) = keyset_roots_entry {
+        let root = KeysetRoot::try_from(json_string)?;
+        if &root.first_deepkey_agent == source {
+            return Ok(true)
         }
+        Ok(false)
+    } else {
+        Ok(false)
     }
-    return Ok(false)
 }
 pub fn definitions() -> ValidatingEntryType{
     entry!(

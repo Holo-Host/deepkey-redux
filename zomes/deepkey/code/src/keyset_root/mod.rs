@@ -21,6 +21,15 @@ pub struct KeysetRoot {
     pub fda_signed_by_rootkey: Signature,
 }
 
+impl KeysetRoot {
+    pub fn new(first_deepkey_agent: &HashString, root_pubkey: &HashString, fda_signed_by_rootkey:&Signature ) -> KeysetRoot {
+        KeysetRoot {
+            first_deepkey_agent: first_deepkey_agent.to_owned(),
+            root_pubkey: root_pubkey.to_owned(),
+            fda_signed_by_rootkey: fda_signed_by_rootkey.to_owned(),
+        }
+    }
+}
 pub fn definitions() -> ValidatingEntryType{
     entry!(
         name: "keyset_root",
