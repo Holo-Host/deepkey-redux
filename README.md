@@ -6,24 +6,18 @@
 This is a core hApp. The DeepKey is used for Key Management for hApps in Holochain.
 
 ## Tests:
-
-'hc test'
+`hc test`
 
 ## Documentation
-
-- ### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA?both)
-
+- #### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA?both)
 
 ## Built With
-
 * [Holochain](https://github.com/holochain/holochain-rust)
 
 ## Authors
-
 * **Joel Ulahanna** - [Zo-El](https://github.com/zo-el)
 
 ## License
-
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 Copyright (C) 2017, The MetaCurrency Project (Eric Harris-Braun, Arthur Brock, et. al.)
