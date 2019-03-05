@@ -22,7 +22,7 @@ pub struct Rules {
     pub prior_revocation_self_sig: Signature, //(Signed by RootKey on Create by RevKey on Updates)
 }
 
-fn validationSource(source:&HashString,keyset_root_address:HashString)->Result<bool,HolochainError>{
+fn validation_source(source:&HashString,keyset_root_address:HashString)->Result<bool,HolochainError>{
     let keyset_roots = keyset_root::handlers::get_all_keyset_root()?;
     for k in keyset_roots{
         if k.0.entry_address() == &keyset_root_address{
@@ -49,7 +49,7 @@ pub fn definitions() -> ValidatingEntryType{
                 // Check that the origin is from a valid device
                 // i.e. the agent is linked from RootHash
                 let source = &_validation_data.package.chain_header.provenances()[0].0;
-                match validationSource(source,_r.keyset_root){
+                match validation_source(source,_r.keyset_root){
                     Ok(v)=>{
                         if v {return Ok(())}
                         else {return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())}

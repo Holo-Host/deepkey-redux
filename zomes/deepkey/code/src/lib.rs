@@ -14,9 +14,8 @@ use hdk::{
 use hdk::holochain_core_types::{
     cas::content::Address,
     entry::Entry,
-    dna::entry_types::Sharing,
     error::HolochainError,
-    json::JsonString,
+    json::{JsonString,RawString},
     hash::HashString,
 };
 
@@ -72,6 +71,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_create_key_registration
         }
+        key_status: {
+            inputs: | key: HashString |,
+            outputs: |result: ZomeApiResult<RawString>|,
+            handler: key_anchor::handlers::handle_key_status
+        }
     ]
 
     traits: {
@@ -81,7 +85,8 @@ define_zome! {
         set_rules,
         get_rules,
         set_authorizor,
-        set_key
+        set_key,
+        key_status
         ]
     }
 }

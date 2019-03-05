@@ -27,7 +27,7 @@ pub fn handle_create_authorizor(authorization_key: HashString) -> ZomeApiResult<
 
     // Hopfully we bundle this two commits once we have that feature
     let address = hdk::commit_entry(&authorizor_entry)?;
-    let key_anchor_address = hdk::commit_entry(&key_anchor)?;
+    hdk::commit_entry(&key_anchor)?;
 
     Ok(address)
 }

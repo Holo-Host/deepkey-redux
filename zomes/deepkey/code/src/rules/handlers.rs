@@ -23,7 +23,6 @@ use crate::keyset_root;
 
 pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
-    hdk::debug(&keyset_root);
     let rule = rules::Rules{
         keyset_root:keyset_root.clone(),
         revocation_key,
