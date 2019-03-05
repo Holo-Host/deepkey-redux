@@ -1,5 +1,5 @@
 use hdk::{
-    error::ZomeApiResult,
+    error::{ZomeApiResult,ZomeApiError},
     AGENT_ADDRESS,
 };
 use hdk::holochain_core_types::{
@@ -20,16 +20,21 @@ use hdk::{
 use crate::keyset_root::KeysetRoot;
 
 pub fn handle_set_keyset_root() -> ZomeApiResult<Address>   {
-
-    let root : KeysetRoot = KeysetRoot {
-        first_deepkey_agent: HashString::from(AGENT_ADDRESS.to_string()),
-        root_pubkey: HashString::from(AGENT_ADDRESS.to_string()), // How to get the OTKey?
-        fda_signed_by_rootkey: Signature::from("TODO"), // Need Sign Functions to sign the fda wit the rootkey
-    };
-    let entry = Entry::App("keyset_root".into(), root.into());
-    let entry_addr = hdk::commit_entry(&entry)?;
-    hdk::link_entries(&entry_addr,&AGENT_ADDRESS, "deepkey_agent_link_tag")?;
-    Ok(entry_addr)
+    // Check if the keyset_root Exists
+    match handle_get_my_keyset_root(){
+        Ok(address) => Ok(address),
+        Err(_)=>{
+            let root : KeysetRoot = KeysetRoot {
+                first_deepkey_agent: HashString::from(AGENT_ADDRESS.to_string()),
+                root_pubkey: HashString::from(AGENT_ADDRESS.to_string()), // How to get the OTKey?
+                fda_signed_by_rootkey: Signature::from("TODO"), // Need Sign Functions to sign the fda wit the rootkey
+            };
+            let entry = Entry::App("keyset_root".into(), root.into());
+            let entry_addr = hdk::commit_entry(&entry)?;
+            hdk::link_entries(&entry_addr,&AGENT_ADDRESS, "deepkey_agent_link_tag")?;
+            Ok(entry_addr)
+        }
+    }
 }
 
 // pub fn handle_get_keyset_root_entry(address:Address) -> ZomeApiResult<utils::GetLinksLoadResult<KeysetRoot>> {
@@ -37,14 +42,25 @@ pub fn handle_set_keyset_root() -> ZomeApiResult<Address>   {
 // }
 
 pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
-    let keyset_root_list = get_all_keyset_root()?;
-    let mut address:Vec<HashString>=Vec::new();
-    for k in keyset_root_list {
-        if &AGENT_ADDRESS.to_string() == &k.0.provenances()[0].0.to_string(){
-            address.push(k.0.entry_address().to_owned());
+    match get_all_keyset_root(){
+        Ok(keyset_root_list) => {
+            let mut address:Vec<HashString>=Vec::new();
+            for k in keyset_root_list {
+                if &AGENT_ADDRESS.to_string() == &k.0.provenances()[0].0.to_string(){
+                    address.push(k.0.entry_address().to_owned());
+                }
+            }
+            if !address.is_empty() {
+                Ok(address[0].to_owned())
+            }
+            else{
+                Err(ZomeApiError::from("handle_get_my_keyset_root: No KeysetRoot Exists".to_string()))
+            }
+        }
+        Err(e) =>{
+         Err(ZomeApiError::from(e))
         }
     }
-    Ok(address[0].to_owned())
 }
 
 // Example o/p

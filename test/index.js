@@ -7,4 +7,5 @@ const dna = Config.dna(dnaPath)
 const instanceLiza = Config.instance(agentLiza, dna)
 const scenario = new Scenario([instanceLiza], { debugLog: true })
 
-require('./unit_test/genesis')(scenario);
+// require('./unit_test/genesis')(scenario);
+require('./unit_test/update_entries')(scenario);
