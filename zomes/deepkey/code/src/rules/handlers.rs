@@ -2,6 +2,7 @@ use hdk::{
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
 };
+
 use hdk::holochain_core_types::{
     cas::content::Address,
     chain_header::ChainHeader,
@@ -17,39 +18,64 @@ use hdk::{
             },
     }
 };
+use core::convert::TryFrom;
 
 use crate::rules;
 use crate::keyset_root;
 
 pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
+    // Checking if keyset_root Exists
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
+    // Checking if rules exists if they do then update the values
+    match handle_get_rules(){
+        Ok(rules_entry)=>{
+            match rules_entry{
+                Some(rules_entry)=>{
+                    match rules_entry{
+                        Entry::App(_,value) =>{
+                            let r = rules::Rules::try_from(value.to_owned())?;
+                            update_rules(&keyset_root,&revocation_key,r.revocation_key)
+                        },
+                        _=>Err(ZomeApiError::from("handle_create_rules: Rules entry not found while updating".to_string()))
+                    }
+                },
+                _=>Err(ZomeApiError::from("handle_create_rules: Rules entry not found while updating".to_string()))
+            }
+        },
+        Err(_)=>{
+            create_new_rules(&keyset_root,&revocation_key)
+        }
+    }
+}
+
+fn create_new_rules(keyset_root:&HashString,revocation_key:&HashString) -> ZomeApiResult<Address>{
     let rule = rules::Rules{
         keyset_root:keyset_root.clone(),
-        revocation_key,
+        revocation_key:revocation_key.to_owned(),
         prior_revocation_self_sig:Signature::from("TODO")
     };
     let entry = Entry::App("rules".into(), rule.into());
     utils::commit_and_link(&entry, &keyset_root, "rules_link_tag")
 }
 
-// // TODO: Better return type
-pub fn handle_get_rules() -> ZomeApiResult<Vec<Entry>> {
-    let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
-    let r = hdk::get_links_and_load(&keyset_root,"rules_link_tag")?;
-    Ok(r.iter()
-        .map(|maybe_entry|{
-        match maybe_entry {
-            Ok(entry)=>{
-                Ok(entry.to_owned())
-            }
-            _=>Err(ZomeApiError::Internal(
-				"get_links did not return an app entry".to_string())
-            )
-        }
-        })
-        .filter_map(Result::ok)
-        .collect()
-    )
+fn update_rules(keyset_root:&HashString,revocation_key:&HashString,_old_revocation:HashString) -> ZomeApiResult<Address> {
+    let rule = rules::Rules{
+        keyset_root:keyset_root.clone(),
+        revocation_key:revocation_key.to_owned(),
+        prior_revocation_self_sig:Signature::from("TODO Updated")
+    };
+    let entry = Entry::App("rules".into(), rule.into());
+    let old_rule_address = handle_get_my_rules()?;
+    let address = hdk::update_entry(entry, &old_rule_address)?;
+    hdk::link_entries(&keyset_root,&address,"rules_link_tag")?;
+    Ok(address)
+}
+
+// TODO: Better return type
+pub fn handle_get_rules() -> ZomeApiResult<Option<Entry>> {
+    let rules_address = handle_get_my_rules()?;
+    hdk::get_entry(&rules_address)
+    // utils::get_as_type(rules_address)
 }
 
 // TODO: not passign the uitls check
@@ -66,7 +92,12 @@ pub fn handle_get_my_rules()->ZomeApiResult<HashString>{
             address.push(k.0.entry_address().to_owned());
         }
     }
-    Ok(address[0].to_owned())
+    if !address.is_empty() {
+        Ok(address[0].to_owned())
+    }
+    else{
+        Err(ZomeApiError::from("handle_get_my_rules: No Rules Exists".to_string()))
+    }
 }
 
 // Example o/p

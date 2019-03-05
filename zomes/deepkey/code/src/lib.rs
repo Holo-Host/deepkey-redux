@@ -58,7 +58,7 @@ define_zome! {
         }
         get_rules: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<Vec<Entry>> |,
+            outputs: |result: ZomeApiResult<Option<Entry>> |,
             handler: rules::handlers::handle_get_rules
         }
         set_authorizor: {
