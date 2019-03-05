@@ -32,9 +32,7 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         validation: |_kr: Authorizor, _validation_data: hdk::ValidationData| {
-            {
-                Ok(())
-            }
+            Ok(())
         },
 
         links: [

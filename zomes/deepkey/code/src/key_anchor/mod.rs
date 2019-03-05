@@ -28,9 +28,7 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         validation: |_r: KeyAnchor, _validation_data: hdk::ValidationData| {
-            {
-                Ok(())
-            }
+            Ok(())
         },
 
         links: []

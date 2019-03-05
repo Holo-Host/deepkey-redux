@@ -47,23 +47,21 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         validation: |_r: Rules, _validation_data: hdk::ValidationData| {
-            {
-                // **Initial Validation**
-                // Check that the origin is from a valid device
-                // i.e. the agent is linked from RootHash
-                let source = &_validation_data.package.chain_header.provenances()[0].0;
-                match validation_source(source,_r.keyset_root){
-                    Ok(v)=>{
-                        if v {return Ok(())}
-                        else {return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())}
-                    }
-                    _=> Err("Could not Validate Rules: Source is not equal to the provenances".to_string())
+            // **Initial Validation**
+            // Check that the origin is from a valid device
+            // i.e. the agent is linked from RootHash
+            let source = &_validation_data.package.chain_header.provenances()[0].0;
+            match validation_source(source,_r.keyset_root){
+                Ok(v)=>{
+                    if v {return Ok(())}
+                    else {return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())}
                 }
-                // **On Update**
-                // Check if signed by Prior Revocation Key on Update
-                // (field not required on Create)
-                // Ok(())
+                _=> Err("Could not Validate Rules: Source is not equal to the provenances".to_string())
             }
+            // **On Update**
+            // Check if signed by Prior Revocation Key on Update
+            // (field not required on Create)
+            // Ok(())
         },
 
         links: [

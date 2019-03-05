@@ -40,9 +40,7 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         validation: |_da: DeviceAuthorization, _validation_data: hdk::ValidationData| {
-            {
-                Ok(())
-            }
+            Ok(())
         },
 
         links: []

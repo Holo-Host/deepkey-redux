@@ -41,7 +41,6 @@ pub fn definitions() -> ValidatingEntryType{
         },
 
         validation: |_kh: KeysetRoot, _validation_data: hdk::ValidationData| {
-            {
                 // Validating if the source of the keyset_root is the same as the first_deepkey_agent
                 let source = &_validation_data.package.chain_header.provenances()[0].0;
                 if &_kh.first_deepkey_agent == source {
@@ -51,7 +50,6 @@ pub fn definitions() -> ValidatingEntryType{
                 else{
                     Err("Could not Validate KeysetRoot: Source is not equal to the first_deepkey_agent".to_string())
                 }
-            }
         },
 
         links: [
