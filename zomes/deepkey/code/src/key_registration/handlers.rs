@@ -24,10 +24,13 @@ pub fn handle_create_key_registration(new_agent_key: HashString) -> ZomeApiResul
     }.into());
 
     // Hopfully we bundle this two commits once we have that feature
-    let address = hdk::commit_entry(&key_registration_entry)?;
-    hdk::commit_entry(&key_anchor)?;
-
-    Ok(address)
+    match hdk::commit_entry(&key_registration_entry){
+        Ok(address) => {
+            hdk::commit_entry(&key_anchor)?;
+            Ok(address)
+        },
+        Err(e) => Err(e)
+    }
 }
 
 // pub fn handle_get_key_registration(address: Address) -> ZomeApiResult<Option<Entry>> {
