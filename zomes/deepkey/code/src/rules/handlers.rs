@@ -1,8 +1,12 @@
 use hdk::{
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
+    holochain_wasm_utils::api_serialization::{
+        query::{
+            QueryArgsOptions, QueryResult,
+        },
+    }
 };
-
 use hdk::holochain_core_types::{
     cas::content::Address,
     chain_header::ChainHeader,
@@ -10,13 +14,6 @@ use hdk::holochain_core_types::{
     error::HolochainError,
     hash::HashString,
     signature::Signature,
-};
-use hdk::{
-    holochain_wasm_utils::api_serialization::{
-            query::{
-                QueryArgsOptions, QueryResult,
-            },
-    }
 };
 use core::convert::TryFrom;
 

@@ -21,3 +21,5 @@ tmp-storage
 .tags*
 .Trashes
 ehthumbs.db
+
+dist

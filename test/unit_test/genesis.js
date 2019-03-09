@@ -5,7 +5,7 @@ function genesis (liza){
 }
 
 module.exports = (scenario) => {
-  scenario.runTape("testing out how genesis/init calls should be set up", (t, { liza }) => {
+  scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
 // On genesis we have to make this call
     let address = genesis(liza)
     sleep.sleep(5);
@@ -16,17 +16,17 @@ module.exports = (scenario) => {
 
 // Its now time to commit your rules
     const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})
-    t.deepEqual(rule_commit.Ok,"QmauGn7nkmpnDcY1wz5W7Fi2pT1tupeGz16Ss8m1AKQUu4" )
+    t.deepEqual(rule_commit.Ok,"QmQ2jjN1j48MsLhVVuUiqaFuYCFZr26FzncuwKVd8ja8mg" )
 
     sleep.sleep(5);
 // Check if your getting the right hash
     const my_rules = liza.call("deepkey", "get_rules", {})
-    console.log("My Rules: ",my_rules.Ok[0].App);
-    t.deepEqual(my_rules.Ok[0].App[0],"rules" )
+    console.log("My Rules: ",my_rules.Ok.App);
+    t.deepEqual(my_rules.Ok.App[0],"rules" )
 
 // Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
-    t.deepEqual(authorizor_commit.Ok,"QmQPQfosMrbK8yBAzahaMhsEyC58z4PELZWnfRuE2zsVDo" )
+    t.deepEqual(authorizor_commit.Ok,"QmdXXa4dv2skEfmVrgBzF8brb4grFm5geLRzEtKFAyoxwo" )
 
 // Check if the key exist for the authorizor
     const checking_authorizor_key = liza.call("deepkey", "key_status", {key:"Authorizor------------Key"})
