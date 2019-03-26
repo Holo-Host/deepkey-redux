@@ -3,12 +3,12 @@ use hdk::{
     entry_definition::ValidatingEntryType,
 };
 use hdk::holochain_core_types::{
-    cas::content::Address,
     dna::entry_types::Sharing,
     error::HolochainError,
     json::JsonString,
     hash::HashString,
-    signature::Signature
+    signature::Signature,
+    validation::{EntryValidationData},
 };
 
 pub mod handlers;
@@ -26,15 +26,29 @@ pub fn definitions() -> ValidatingEntryType{
         name: "authorizor",
         description: "Used to set the authorizing keys for each device",
         sharing: Sharing::Public,
-        native_type: Authorizor,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_kr: Authorizor, _validation_data: hdk::ValidationData| {
-            Ok(())
-        },
+        validation: |validation_data: hdk::EntryValidationData<Authorizor>| {
+            match validation_data
+            {
+                EntryValidationData::Create{entry:_domain_name,validation_data:_} =>
+                {
+                    Ok(())
+                },
+                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                },
+                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                }
 
+            }
+
+        },
         links: [
             from!(
                 "%agent_id",
@@ -44,7 +58,7 @@ pub fn definitions() -> ValidatingEntryType{
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _validation_data: hdk::ValidationData| {
+                validation: | _validation_data: hdk::LinkValidationData | {
                     Ok(())
                 }
             )

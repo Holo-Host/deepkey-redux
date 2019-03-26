@@ -7,7 +7,8 @@ use hdk::holochain_core_types::{
     error::HolochainError,
     json::JsonString,
     hash::HashString,
-    signature::Signature
+    signature::Signature,
+    validation::{EntryValidationData},
 };
 
 pub mod handlers;
@@ -26,20 +27,33 @@ pub fn definitions() -> ValidatingEntryType{
         name: "key_registration",
         description: "Entry to register a any keys on DeepKey",
         sharing: Sharing::Public,
-        native_type: KeyRegistration,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
+        validation: |validation_data: hdk::EntryValidationData<KeyRegistration>| {
+            match validation_data
+            {
+                EntryValidationData::Create{entry:_domain_name,validation_data:_} =>
+                {
+                    // **Initialize**
+                    // Check the Auhorizor linked to the AgentID if its has a valid authorization_sig
+                    // Rev Sig is Empty
+                    // **Update Entry**
+                    // Validate Rev Sig
+                    Ok(())
+                },
+                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                },
+                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                }
 
-        validation: |_kr: KeyRegistration, _validation_data: hdk::ValidationData| {
-            // **Initialize**
-            // Check the Auhorizor linked to the AgentID if its has a valid authorization_sig
-            // Rev Sig is Empty
-            // **Update Entry**
-            // Validate Rev Sig
-            Ok(())
+            }
+
         },
-
         links: [ ]
     )
 }

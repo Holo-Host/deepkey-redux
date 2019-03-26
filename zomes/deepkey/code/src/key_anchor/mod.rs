@@ -6,7 +6,8 @@ use hdk::holochain_core_types::{
     dna::entry_types::Sharing,
     error::HolochainError,
     json::JsonString,
-    hash::HashString
+    hash::HashString,
+    validation::{EntryValidationData},
 };
 
 pub mod handlers;
@@ -22,15 +23,29 @@ pub fn definitions() -> ValidatingEntryType{
         name: "key_anchor",
         description: "",
         sharing: Sharing::Public,
-        native_type: KeyAnchor,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_r: KeyAnchor, _validation_data: hdk::ValidationData| {
-            Ok(())
-        },
+        validation: |validation_data: hdk::EntryValidationData<KeyAnchor>| {
+            match validation_data
+            {
+                EntryValidationData::Create{entry:_domain_name,validation_data:_} =>
+                {
+                    Ok(())
+                },
+                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                },
+                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                }
 
+            }
+
+        },
         links: []
     )
 }

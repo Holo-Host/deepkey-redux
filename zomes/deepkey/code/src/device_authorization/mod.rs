@@ -16,6 +16,7 @@ use hdk::holochain_core_types::{
     json::JsonString,
     hash::HashString,
     signature::Signature,
+    validation::{EntryValidationData},
 };
 
 pub mod device_authorization;
@@ -34,15 +35,29 @@ pub fn definitions() -> ValidatingEntryType{
         name: "device_authorization",
         description: "Struct that proves a sucessfull handshake between two devices",
         sharing: Sharing::Public,
-        native_type: DeviceAuthorization,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_da: DeviceAuthorization, _validation_data: hdk::ValidationData| {
-            Ok(())
-        },
+        validation: |validation_data: hdk::EntryValidationData<DeviceAuthorization>| {
+            match validation_data
+            {
+                EntryValidationData::Create{entry:_domain_name,validation_data:_} =>
+                {
+                    Ok(())
+                },
+                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                },
+                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                }
 
+            }
+
+        },
         links: []
     )
 }
