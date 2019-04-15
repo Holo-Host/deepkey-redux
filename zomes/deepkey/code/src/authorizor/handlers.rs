@@ -13,11 +13,10 @@ use hdk::holochain_core_types::{
     entry::Entry,
     error::HolochainError,
     hash::HashString,
-    signature::Signature,
 };
 
 use crate::authorizor::Authorizor;
-use crate::rules;
+use crate::rules::{self,Rules};
 use crate::key_anchor::KeyAnchor;
 
 pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<Address> {
@@ -28,18 +27,18 @@ pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<A
             update_authorizor(&authorization_key,&revocation_authority[0].address,authorizor_entry)
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,&revocation_authority[0].address)
+            create_new_authorizor(&authorization_key,&revocation_authority[0].address,&revocation_authority[0].entry)
         }
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString, revocation_authority: &HashString) -> ZomeApiResult<Address> {
-    // Delete the old entry
-    // add new entry
+fn create_new_authorizor(authorization_key: &HashString, revocation_address: &HashString, _revocation_entry:&Rules) -> ZomeApiResult<Address> {
+    // TODO : add the src_id of the revocation_key
+    let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
-        revocation_authority:revocation_authority.to_owned(),
-        revocation_sig: Signature::from("TODO"),
+        revocation_authority:revocation_address.to_owned(),
+        revocation_sig: revocation_sig,
     };
     let authorizor_entry = Entry::App("authorizor".into(), authorizor.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
@@ -61,10 +60,12 @@ fn create_new_authorizor(authorization_key: &HashString, revocation_authority: &
 
 
 fn update_authorizor(authorization_key:&HashString,revocation_authority:&HashString,old_auth:Authorizor) -> ZomeApiResult<Address> {
+    // TODO : add the src_id of the revocation_key
+    let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
         revocation_authority:revocation_authority.to_owned(),
-        revocation_sig: Signature::from("TODO"),
+        revocation_sig: revocation_sig,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
     let old_authorizor_address = handle_get_my_authorizor()?;

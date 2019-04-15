@@ -8,6 +8,7 @@ use hdk::{
     	hash::HashString,
     	entry::{AppEntryValue, Entry},
     	cas::content::{Address, AddressableContent},
+        signature::Signature,
     },
     error::{ZomeApiResult, ZomeApiError}
 };
@@ -98,4 +99,13 @@ pub fn commit_and_link<S: Into<String>>(entry: &Entry, base: &Address, tag: S) -
 	let entry_addr = hdk::commit_entry(entry)?;
 	hdk::link_entries(base,&entry_addr, tag)?;
 	Ok(entry_addr)
+}
+
+
+pub fn sign(key_id: String, message: String) -> ZomeApiResult<Signature> {
+    if key_id == "" {
+        hdk::sign(message).map(Signature::from)
+    } else {
+        hdk::keystore_sign(key_id, message).map(Signature::from)
+    }
 }
