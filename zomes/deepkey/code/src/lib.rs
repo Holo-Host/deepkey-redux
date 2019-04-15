@@ -25,6 +25,7 @@ pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
+pub mod dpki;
 
 define_zome! {
     entries: [
@@ -37,14 +38,20 @@ define_zome! {
     ]
 
     genesis: || {
+        // {
+        //     hdk::keystore_new_random("AUTHORIZATION_KEY", 32)
+        //         .map_err(|err|
+        //                  format!("new AUTHORIZATION_KEY seed generation failed: {}",err)
+        //     )
+        // }
         Ok(())
     }
 
     functions: [
-        set_keyset_root: {
+        init: {
             inputs: | |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: keyset_root::handlers::handle_set_keyset_root
+            handler: dpki::init
         }
         get_my_keyset_root: {
             inputs: | |,
@@ -80,7 +87,7 @@ define_zome! {
 
     traits: {
         hc_public [
-        set_keyset_root,
+        init,
         get_my_keyset_root,
         set_rules,
         get_rules,

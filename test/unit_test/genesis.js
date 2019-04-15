@@ -1,7 +1,7 @@
 const sleep = require('sleep');
 
 function genesis (liza){
-  return liza.call("deepkey", "set_keyset_root", {})
+  return liza.call("deepkey", "init", {})
 }
 
 module.exports = (scenario) => {
@@ -11,12 +11,11 @@ module.exports = (scenario) => {
     sleep.sleep(5);
 // This is to just test out if we get the right keyset_root address
     const keyset_root_address = liza.call("deepkey", "get_my_keyset_root", {})
-    console.log("My KeysetRoot Address: ",address.Ok);
-    t.deepEqual(keyset_root_address.Ok, address.Ok )
+    t.ok(keyset_root_address.Ok)
 
 // Its now time to commit your rules
     const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})
-    t.deepEqual(rule_commit.Ok,"QmQ2jjN1j48MsLhVVuUiqaFuYCFZr26FzncuwKVd8ja8mg" )
+    t.ok(rule_commit.Ok)
 
     sleep.sleep(5);
 // Check if your getting the right hash
@@ -26,7 +25,7 @@ module.exports = (scenario) => {
 
 // Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
-    t.deepEqual(authorizor_commit.Ok,"QmdXXa4dv2skEfmVrgBzF8brb4grFm5geLRzEtKFAyoxwo" )
+    t.ok(authorizor_commit.Ok)
 
 // Check if the key exist for the authorizor
     const checking_authorizor_key = liza.call("deepkey", "key_status", {key:"Authorizor------------Key"})
@@ -39,7 +38,7 @@ module.exports = (scenario) => {
 
 // Lets create an agent key
     const key_commit = liza.call("deepkey", "set_key", {new_agent_key:"Agent------------Key"})
-    t.deepEqual(key_commit.Ok,"QmYrHMukCiYy25zM6CjpaAoK3mDgfsZjMD6ZvpiQnUBzoR" )
+    t.ok(key_commit.Ok)
 
 // Check if the key exist for the key
 // Now it should exist
