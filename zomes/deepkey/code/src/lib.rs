@@ -13,7 +13,6 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
-    entry::Entry,
     error::HolochainError,
     json::{JsonString,RawString},
     hash::HashString,
@@ -65,8 +64,8 @@ define_zome! {
         }
         get_rules: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<Option<Entry>> |,
-            handler: rules::handlers::handle_get_rules
+            outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<rules::Rules>> |,
+            handler: rules::handlers::handle_get_my_rule_details
         }
         set_authorizor: {
             inputs: | authorization_key: HashString |,

@@ -29,8 +29,8 @@ module.exports = (scenario) => {
     genesis(liza)
 
     const check_rules = liza.call("deepkey", "get_rules", {})
-    console.log("Error: ",check_rules.Err.Internal);
-    t.deepEqual(check_rules.Err.Internal,'handle_get_my_rules: No Rules Exists' )
+    console.log("Error: ",check_rules);
+    t.deepEqual(check_rules.Ok.length,0 )
 
 // Its now time to commit your rules
     const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})
@@ -40,8 +40,8 @@ module.exports = (scenario) => {
     sleep.sleep(5);
 // Check if your getting the right hash
     const my_rules = liza.call("deepkey", "get_rules", {})
-    console.log("My Rules: ",my_rules.Ok.App[1]);
-    t.deepEqual(my_rules.Ok.App[0],"rules" )
+    console.log("My Rules: ",my_rules.Ok[0]);
+    t.ok(my_rules.Ok[0].entry.revocationKey,"Revocation--------------Key")
 
 
     const updated_rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Updated_Revocation--------------Key"})
@@ -50,9 +50,8 @@ module.exports = (scenario) => {
     sleep.sleep(5);
 // Check if your getting the right hash
     const my_updated_rules = liza.call("deepkey", "get_rules", {})
-    console.log("My Updated Rules: ",my_updated_rules.Ok.App[1]);
-    t.deepEqual(my_updated_rules.Ok.App[0],"rules" )
-
+    console.log("My Updated Rules: ",my_updated_rules.Ok[0]);
+    t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,"Updated_Revocation--------------Key" )
 
 // Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})

@@ -22,7 +22,7 @@ use crate::rules;
 use crate::key_anchor::KeyAnchor;
 
 pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<Address> {
-    let revocation_authority = rules::handlers::handle_get_my_rules()?;
+    let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
 
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
@@ -31,7 +31,7 @@ pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<A
                     match authorizor_entry{
                         Entry::App(_,value) =>{
                             let old_auth = Authorizor::try_from(value.to_owned())?;
-                            update_authorizor(&authorization_key,&revocation_authority,old_auth)
+                            update_authorizor(&authorization_key,&revocation_authority[0].address,old_auth)
                         },
                         _=>Err(ZomeApiError::from("handle_create_authorizor: Rules entry not found while updating".to_string()))
                     }
@@ -40,7 +40,7 @@ pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<A
             }
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,&revocation_authority)
+            create_new_authorizor(&authorization_key,&revocation_authority[0].address)
         }
     }
 }

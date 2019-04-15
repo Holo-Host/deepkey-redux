@@ -1,8 +1,4 @@
-use crate::keyset_root::{
-    handlers::{
-        handle_set_keyset_root,
-    }
-};
+use crate::keyset_root::handlers::handle_set_keyset_root;
 use hdk::{
     error::ZomeApiResult,
     AGENT_ADDRESS,
@@ -18,7 +14,6 @@ pub fn init () -> ZomeApiResult<Address>{
     // We have to do the following steps
     // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key
     // - set the KeysetRoot
-    // - set the Rules
     let sotr:SignOneTimeResult = hdk::sign_one_time(vec![AGENT_ADDRESS.to_string()])?;
     let keyset_root = handle_set_keyset_root(HashString::from(sotr.pub_key),sotr.signatures[0].to_owned())?;
 
