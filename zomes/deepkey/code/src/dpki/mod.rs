@@ -19,11 +19,11 @@ pub fn init () -> ZomeApiResult<Address>{
     // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key
     // - set the KeysetRoot
     // - set the Rules
-    {
-        let sotr:SignOneTimeResult = hdk::sign_one_time(vec![AGENT_ADDRESS.to_string()])?;
-        handle_set_keyset_root(HashString::from(sotr.pub_key),sotr.signatures[0].to_owned())
-    }
+    let sotr:SignOneTimeResult = hdk::sign_one_time(vec![AGENT_ADDRESS.to_string()])?;
+    let keyset_root = handle_set_keyset_root(HashString::from(sotr.pub_key),sotr.signatures[0].to_owned())?;
 
     // if this is not the First DeepKey Agent
     // ???
+
+    Ok(keyset_root)
 }

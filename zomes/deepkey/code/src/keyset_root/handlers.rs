@@ -54,7 +54,7 @@ pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
                 Ok(address[0].to_owned())
             }
             else{
-                Err(ZomeApiError::from("handle_get_my_keyset_root: No KeysetRoot Exists".to_string()))
+                Err(ZomeApiError::from("fn handle_get_my_keyset_root(): No KeysetRoot Exists".to_string()))
             }
         }
         Err(e) =>{

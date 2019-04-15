@@ -10,8 +10,8 @@ module.exports = (scenario) => {
     let address = genesis(liza)
     sleep.sleep(5);
 // This is to just test out if we get the right keyset_root address
-    const keyset_root_address = liza.call("deepkey", "get_my_keyset_root", {})
-    t.ok(keyset_root_address.Ok)
+    const keyset_root_address = liza.call("deepkey", "get_initialization_data", {})
+    t.equal(keyset_root_address.Ok,address.Ok)
 
 // Its now time to commit your rules
     const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})

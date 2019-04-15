@@ -5,23 +5,23 @@ function genesis (liza){
 }
 
 module.exports = (scenario) => {
-//   scenario.runTape("testing checks if entries have been pushed", async(t, { liza }) => {
-// // On genesis we have to make this call
-//     let address = genesis(liza)
-//     // sleep.sleep(5);
-//
-//     let address_recheck = genesis(liza)
-//     t.deepEqual(address.Ok, address_recheck.Ok )
-//   })
-//
-//   scenario.runTape("create rules befor the keyset_root should throw an error", async(t, { liza }) => {
-//
-//   // This is to just test out if we get the right keyset_root address
-//     const keyset_root_address = liza.call("deepkey", "get_my_keyset_root", {})
-//     console.log("My KeysetRoot Address: ",keyset_root_address);
-//     t.deepEqual(keyset_root_address.Err.Internal,  'handle_get_my_keyset_root: No KeysetRoot Exists' )
-//
-//   })
+  scenario.runTape("testing checks if entries have been pushed", async(t, { liza }) => {
+// On genesis we have to make this call
+    let address = genesis(liza)
+    // sleep.sleep(5);
+
+    let address_recheck = genesis(liza)
+    t.deepEqual(address.Ok, address_recheck.Ok )
+  })
+
+  scenario.runTape("create rules befor the keyset_root should throw an error", async(t, { liza }) => {
+
+  // This is to just test out if we get the right keyset_root address
+    const keyset_root_address = liza.call("deepkey", "get_initialization_data", {})
+    console.log("My KeysetRoot Address: ",keyset_root_address);
+    t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
+
+  })
 
 
   scenario.runTape("create", async(t, { liza }) => {

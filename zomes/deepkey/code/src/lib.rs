@@ -53,7 +53,7 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: dpki::init
         }
-        get_my_keyset_root: {
+        get_initialization_data: {
             inputs: | |,
             outputs: |result: ZomeApiResult<HashString>|,
             handler: keyset_root::handlers::handle_get_my_keyset_root
@@ -88,7 +88,7 @@ define_zome! {
     traits: {
         hc_public [
         init,
-        get_my_keyset_root,
+        get_initialization_data,
         set_rules,
         get_rules,
         set_authorizor,
