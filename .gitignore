@@ -27,3 +27,6 @@ dist
 ### Extras ###
 zomes/converse
 test/unit_test/test_converse.js
+
+### Temp ###
+tmp-storage-1

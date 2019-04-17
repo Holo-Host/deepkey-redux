@@ -61,6 +61,7 @@ fn create_new_authorizor(authorization_key: &HashString, revocation_address: &Ha
 
 fn update_authorizor(authorization_key:&HashString,revocation_authority:&HashString,old_auth:Authorizor) -> ZomeApiResult<Address> {
     // TODO : add the src_id of the revocation_key
+    // Sign wit the old_auth.authorization_key
     let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
