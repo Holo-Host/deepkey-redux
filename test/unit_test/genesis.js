@@ -13,16 +13,6 @@ module.exports = (scenario) => {
     const keyset_root_address = liza.call("deepkey", "get_initialization_data", {})
     t.equal(keyset_root_address.Ok,address.Ok)
 
-// Its now time to commit your rules
-    const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})
-    t.ok(rule_commit.Ok)
-
-    sleep.sleep(5);
-// Check if your getting the right hash
-    const my_rules = liza.call("deepkey", "get_rules", {})
-    console.log("My Rules: ",my_rules);
-    t.deepEqual(my_rules.Ok[0].entry.revocationKey,"Revocation--------------Key" )
-
 // Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
     t.ok(authorizor_commit.Ok)

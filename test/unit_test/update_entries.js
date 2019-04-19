@@ -32,12 +32,6 @@ module.exports = (scenario) => {
     console.log("Error: ",check_rules);
     t.deepEqual(check_rules.Ok.length,0 )
 
-// Its now time to commit your rules
-    const rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Revocation--------------Key"})
-    t.ok(rule_commit.Ok)
-
-
-    sleep.sleep(5);
 // Check if your getting the right hash
     const my_rules = liza.call("deepkey", "get_rules", {})
     console.log("My Rules: ",my_rules.Ok[0]);

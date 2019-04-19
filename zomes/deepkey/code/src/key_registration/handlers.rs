@@ -12,7 +12,7 @@ use crate::key_anchor::KeyAnchor;
 
 pub fn handle_create_key_registration(new_agent_key: HashString) -> ZomeApiResult<Address> {
     let key_registration = KeyRegistration {
-        new_agent_key:new_agent_key.clone(),
+        new_agent_key: new_agent_key.clone(),
         authorization_sig: Signature::from("TODO"),
         prior_key: None, // (missing on Create, required on Update)
         revocation_sig: None, // (missing on Create, required on Update or Delete)

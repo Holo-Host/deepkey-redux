@@ -1,5 +1,5 @@
 use hdk::{
-    error::ZomeApiResult,
+    error::{ZomeApiResult,ZomeApiError},
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
@@ -18,17 +18,18 @@ pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address>
     let rules = handle_get_my_rule_details()?;
 
     if rules.len() == 0 {
-        create_new_rules(&keyset_root,&revocation_key)
+        // create_new_rules(&keyset_root,&revocation_key)
+        Err(ZomeApiError::from("Rules were not set during init".to_string()))
     } else {
         update_rules(&keyset_root,&revocation_key,rules[0].address.to_owned())
     }
 }
 
-fn create_new_rules(keyset_root:&HashString,revocation_key:&HashString) -> ZomeApiResult<Address>{
+pub fn create_new_rules(keyset_root:&HashString,revocation_key:&HashString, signature:Signature) -> ZomeApiResult<Address>{
     let rule = rules::Rules{
-        keyset_root:keyset_root.clone(),
-        revocation_key:revocation_key.to_owned(),
-        prior_revocation_self_sig:Signature::from("TODO")
+        keyset_root: keyset_root.clone(),
+        revocation_key: revocation_key.to_owned(),
+        prior_revocation_self_sig: signature
     };
     let entry = Entry::App("rules".into(), rule.into());
     utils::commit_and_link(&entry, &keyset_root, "rules_link_tag")
@@ -36,9 +37,9 @@ fn create_new_rules(keyset_root:&HashString,revocation_key:&HashString) -> ZomeA
 
 fn update_rules(keyset_root:&HashString,revocation_key:&HashString,old_rule_address:HashString) -> ZomeApiResult<Address> {
     let rule = rules::Rules{
-        keyset_root:keyset_root.clone(),
-        revocation_key:revocation_key.to_owned(),
-        prior_revocation_self_sig:Signature::from("TODO Updated")
+        keyset_root: keyset_root.clone(),
+        revocation_key: revocation_key.to_owned(),
+        prior_revocation_self_sig: Signature::from("TODO Updated")
     };
     let entry = Entry::App("rules".into(), rule.into());
     let address = hdk::update_entry(entry, &old_rule_address)?;
