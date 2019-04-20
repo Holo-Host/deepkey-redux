@@ -29,11 +29,13 @@ pub mod dpki;
 define_zome! {
     entries: [
         authorizor::definitions(),
+        authorizor::auth_path_definitions(),
         // device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
         keyset_root::definitions(),
-        rules::definitions()
+        rules::definitions(),
+        rules::rev_path_definitions()
     ]
 
     genesis: || {
