@@ -1,5 +1,5 @@
 const test = require('tape');
-const { Conductor, DnaInstance } = require('../../holochain-rust/nodejs_conductor')
+const { Conductor, DnaInstance } = require("@holochain/holochain-nodejs")
 
 
 const toml = `

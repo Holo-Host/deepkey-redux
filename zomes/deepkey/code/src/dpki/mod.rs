@@ -10,9 +10,7 @@ use hdk::holochain_core_types::{
     hash::HashString,
 };
 
-pub fn init () -> ZomeApiResult<Address>{
-    // TODO :Generate Revocation Key
-    let revocation_key: HashString = HashString::from("Revocation...............Key".to_string());
+pub fn init (revocation_key: HashString) -> ZomeApiResult<Address>{
     // If this is the First DeepKey instance for an agent
     // We have to do the following steps
     // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key

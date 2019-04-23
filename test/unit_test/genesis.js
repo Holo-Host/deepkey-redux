@@ -1,7 +1,7 @@
 const sleep = require('sleep');
 
 function genesis (liza){
-  return liza.call("deepkey", "init", {})
+  return liza.call("deepkey", "init", {revocation_key: "Revocation...............Key"})
 }
 
 module.exports = (scenario) => {

@@ -1,7 +1,7 @@
 const sleep = require('sleep');
 
 function genesis (liza){
-  return liza.call("deepkey", "init", {})
+  return liza.call("deepkey", "init", {revocation_key: "Revocation...............Key"})
 }
 
 module.exports = (scenario) => {
@@ -28,9 +28,11 @@ module.exports = (scenario) => {
 
     genesis(liza)
 
+    sleep.sleep(5)
+
     const check_rules = liza.call("deepkey", "get_rules", {})
-    console.log("Error: ",check_rules);
-    t.deepEqual(check_rules.Ok.length,0 )
+    console.log("Initial Rules: ",check_rules);
+    t.deepEqual(check_rules.Ok.length,1 )
 
 // Check if your getting the right hash
     const my_rules = liza.call("deepkey", "get_rules", {})
