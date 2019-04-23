@@ -1,11 +1,9 @@
 use hdk::{
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
-    holochain_wasm_utils::api_serialization::{
-        query::{
+    holochain_wasm_utils::api_serialization::query::{
             QueryArgsOptions, QueryResult,
         },
-    }
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
@@ -13,45 +11,32 @@ use hdk::holochain_core_types::{
     entry::Entry,
     error::HolochainError,
     hash::HashString,
-    signature::Signature,
+    signature::Signature
 };
-use core::convert::TryFrom;
 
 use crate::authorizor::Authorizor;
-use crate::rules;
+use crate::rules::{self,Rules};
 use crate::key_anchor::KeyAnchor;
 
 pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<Address> {
-    let revocation_authority = rules::handlers::handle_get_my_rules()?;
-
+    let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
-            match authorizor_entry{
-                Some(authorizor_entry)=>{
-                    match authorizor_entry{
-                        Entry::App(_,value) =>{
-                            let old_auth = Authorizor::try_from(value.to_owned())?;
-                            update_authorizor(&authorization_key,&revocation_authority,old_auth)
-                        },
-                        _=>Err(ZomeApiError::from("handle_create_authorizor: Rules entry not found while updating".to_string()))
-                    }
-                },
-                _=>Err(ZomeApiError::from("handle_create_authorizor: Rules entry not found while updating".to_string()))
-            }
+            update_authorizor(&authorization_key,&revocation_authority[0].address,authorizor_entry)
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,&revocation_authority)
+            create_new_authorizor(&authorization_key,&revocation_authority[0].address,&revocation_authority[0].entry)
         }
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString, revocation_authority: &HashString) -> ZomeApiResult<Address> {
-    // Delete the old entry
-    // add new entry
+fn create_new_authorizor(authorization_key: &HashString, revocation_address: &HashString, _revocation_entry:&Rules) -> ZomeApiResult<Address> {
+    // TODO : add the src_id of the revocation_key
+    // let revocation_sig = utils::sign(revocation_entry.revocation_key.to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
-        revocation_authority:revocation_authority.to_owned(),
-        revocation_sig: Signature::from("TODO"),
+        revocation_authority:revocation_address.to_owned(),
+        revocation_sig: Signature::from("revocation_sig"),
     };
     let authorizor_entry = Entry::App("authorizor".into(), authorizor.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
@@ -73,10 +58,13 @@ fn create_new_authorizor(authorization_key: &HashString, revocation_authority: &
 
 
 fn update_authorizor(authorization_key:&HashString,revocation_authority:&HashString,old_auth:Authorizor) -> ZomeApiResult<Address> {
+    // TODO : add the src_id of the revocation_key
+    // Sign wit the old_auth.authorization_key
+    let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
         revocation_authority:revocation_authority.to_owned(),
-        revocation_sig: Signature::from("TODO"),
+        revocation_sig: revocation_sig,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
     let old_authorizor_address = handle_get_my_authorizor()?;
@@ -107,15 +95,9 @@ fn update_authorizor(authorization_key:&HashString,revocation_authority:&HashStr
     }
 }
 
-// pub fn handle_get_authorizor(address: Address) -> ZomeApiResult<Option<Entry>> {
-//     hdk::get_entry(&address)
-// }
-
-// TODO: Better return type
-pub fn handle_get_authorizor() -> ZomeApiResult<Option<Entry>> {
+pub fn handle_get_authorizor() -> ZomeApiResult<Authorizor> {
     let authorizor_address = handle_get_my_authorizor()?;
-    hdk::get_entry(&authorizor_address)
-    // utils::get_as_type(rules_address)
+    utils::get_as_type(authorizor_address)
 }
 
 pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{

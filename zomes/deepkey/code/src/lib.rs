@@ -13,7 +13,6 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
-    entry::Entry,
     error::HolochainError,
     json::{JsonString,RawString},
     hash::HashString,
@@ -25,15 +24,19 @@ pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
+pub mod dpki;
 
 define_zome! {
     entries: [
         authorizor::definitions(),
+        // authorizor::auth_path_definitions(),
         // device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
+        // key_registration::meta_definitions(),
         keyset_root::definitions(),
         rules::definitions()
+        // rules::rev_path_definitions()
     ]
 
     genesis: || {
@@ -41,12 +44,12 @@ define_zome! {
     }
 
     functions: [
-        set_keyset_root: {
-            inputs: | |,
+        init: {
+            inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: keyset_root::handlers::handle_set_keyset_root
+            handler: dpki::init
         }
-        get_my_keyset_root: {
+        get_initialization_data: {
             inputs: | |,
             outputs: |result: ZomeApiResult<HashString>|,
             handler: keyset_root::handlers::handle_get_my_keyset_root
@@ -58,8 +61,8 @@ define_zome! {
         }
         get_rules: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<Option<Entry>> |,
-            handler: rules::handlers::handle_get_rules
+            outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<rules::Rules>> |,
+            handler: rules::handlers::handle_get_my_rule_details
         }
         set_authorizor: {
             inputs: | authorization_key: HashString |,
@@ -80,8 +83,8 @@ define_zome! {
 
     traits: {
         hc_public [
-        set_keyset_root,
-        get_my_keyset_root,
+        init,
+        get_initialization_data,
         set_rules,
         get_rules,
         set_authorizor,

@@ -19,15 +19,15 @@ use hdk::{
 };
 use crate::keyset_root::KeysetRoot;
 
-pub fn handle_set_keyset_root() -> ZomeApiResult<Address>   {
+pub fn handle_set_keyset_root(root_pubkey:HashString,signature:Signature) -> ZomeApiResult<Address>   {
     // Check if the keyset_root Exists
     match handle_get_my_keyset_root(){
         Ok(address) => Ok(address),
         Err(_)=>{
             let root : KeysetRoot = KeysetRoot {
                 first_deepkey_agent: HashString::from(AGENT_ADDRESS.to_string()),
-                root_pubkey: HashString::from(AGENT_ADDRESS.to_string()), // How to get the OTKey?
-                fda_signed_by_rootkey: Signature::from("TODO"), // Need Sign Functions to sign the fda wit the rootkey
+                root_pubkey: root_pubkey, // How to get the OTKey?
+                fda_signed_by_rootkey: signature, // Need Sign Functions to sign the fda wit the rootkey
             };
             let entry = Entry::App("keyset_root".into(), root.into());
             let entry_addr = hdk::commit_entry(&entry)?;
@@ -42,7 +42,7 @@ pub fn handle_set_keyset_root() -> ZomeApiResult<Address>   {
 // }
 
 pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
-    match get_all_keyset_root(){
+    match get_keyset_root_from_source_chain(){
         Ok(keyset_root_list) => {
             let mut address:Vec<HashString>=Vec::new();
             for k in keyset_root_list {
@@ -54,7 +54,7 @@ pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
                 Ok(address[0].to_owned())
             }
             else{
-                Err(ZomeApiError::from("handle_get_my_keyset_root: No KeysetRoot Exists".to_string()))
+                Err(ZomeApiError::from("fn handle_get_my_keyset_root(): No KeysetRoot Exists".to_string()))
             }
         }
         Err(e) =>{
@@ -68,7 +68,7 @@ pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
 // "provenances":[["liza------------------------------------------------------------------------------AAAOKtP2nI","TODO"]],
 // "link":"QmSdoZMyqJFL7bBfsMP6wZYSmVd1kVqpoGrHuyRuxfqG7Y",
 // "link_same_type":null,"link_crud":null,"timestamp":"1970-01-01T00:00:00+00:00"}'
-pub fn get_all_keyset_root() -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
+pub fn get_keyset_root_from_source_chain() -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
     if let QueryResult::HeadersWithEntries( entries_with_headers ) = hdk::query_result(
         vec![
             "keyset_root",
