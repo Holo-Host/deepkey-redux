@@ -15,6 +15,7 @@ module.exports = (scenario) => {
 
 // Lets create an authorizor key
     const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
+    console.log("------->",authorizor_commit);
     t.ok(authorizor_commit.Ok)
 
 // Check if the key exist for the authorizor

@@ -1,11 +1,9 @@
 use hdk::{
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
-    holochain_wasm_utils::api_serialization::{
-        query::{
+    holochain_wasm_utils::api_serialization::query::{
             QueryArgsOptions, QueryResult,
         },
-    }
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
@@ -13,6 +11,7 @@ use hdk::holochain_core_types::{
     entry::Entry,
     error::HolochainError,
     hash::HashString,
+    signature::Signature
 };
 
 use crate::authorizor::Authorizor;
@@ -21,7 +20,6 @@ use crate::key_anchor::KeyAnchor;
 
 pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<Address> {
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
-
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
             update_authorizor(&authorization_key,&revocation_authority[0].address,authorizor_entry)
@@ -34,11 +32,11 @@ pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<A
 
 fn create_new_authorizor(authorization_key: &HashString, revocation_address: &HashString, _revocation_entry:&Rules) -> ZomeApiResult<Address> {
     // TODO : add the src_id of the revocation_key
-    let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
+    // let revocation_sig = utils::sign(revocation_entry.revocation_key.to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
         revocation_authority:revocation_address.to_owned(),
-        revocation_sig: revocation_sig,
+        revocation_sig: Signature::from("revocation_sig"),
     };
     let authorizor_entry = Entry::App("authorizor".into(), authorizor.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.

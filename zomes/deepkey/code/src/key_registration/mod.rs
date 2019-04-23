@@ -57,3 +57,49 @@ pub fn definitions() -> ValidatingEntryType{
         links: [ ]
     )
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
+enum KeyType {
+    AppUI,
+    AppSig,
+    AppEnc,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
+#[serde(rename_all = "camelCase")]
+struct KeyMeta {
+    pub new_agent_key: HashString,
+    pub derivation_index: String,
+    pub key_type: KeyType,
+    pub context: HashString // some_app_DNA_hash
+}
+pub fn meta_definitions() -> ValidatingEntryType{
+    entry!(
+        name: "key_meta",
+        description: "private entry for NewKey registration which provides context and ability to regenerate from Master Seed.",
+        sharing: Sharing::Private,
+        validation_package: || {
+            hdk::ValidationPackageDefinition::Entry
+        },
+        validation: |validation_data: hdk::EntryValidationData<KeyMeta>| {
+            match validation_data
+            {
+                EntryValidationData::Create{entry:_domain_name,validation_data:_} =>
+                {
+                    Ok(())
+                },
+                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                },
+                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+                {
+                   Ok(())
+                }
+
+            }
+
+        },
+        links: [ ]
+    )
+}
