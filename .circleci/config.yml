@@ -17,5 +17,5 @@ jobs:
           path: ~/DeepKey
 
       - run:
-          name: build dna
+          name: test dna
           command: cd ~/DeepKey && /root/.cargo/bin/hc test
