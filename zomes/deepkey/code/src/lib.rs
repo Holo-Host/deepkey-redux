@@ -16,6 +16,7 @@ use hdk::holochain_core_types::{
     error::HolochainError,
     json::{JsonString,RawString},
     hash::HashString,
+    signature::Signature,
 };
 
 pub mod authorizor;
@@ -54,7 +55,7 @@ define_zome! {
             outputs: |result: ZomeApiResult<HashString>|,
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
-        set_rules: {
+        update_rules: {
             inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: rules::handlers::handle_create_rules
@@ -65,7 +66,7 @@ define_zome! {
             handler: rules::handlers::handle_get_my_rule_details
         }
         set_authorizor: {
-            inputs: | authorization_key: HashString |,
+            inputs: | authorization_key_path: u64, signed_auth_key:Signature |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: authorizor::handlers::handle_create_authorizor
         }

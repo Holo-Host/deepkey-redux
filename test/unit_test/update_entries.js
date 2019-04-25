@@ -40,7 +40,7 @@ module.exports = (scenario) => {
     t.ok(my_rules.Ok[0].entry.revocationKey,"Revocation--------------Key")
 
 
-    const updated_rule_commit = liza.call("deepkey", "set_rules", {revocation_key:"Updated_Revocation--------------Key"})
+    const updated_rule_commit = liza.call("deepkey", "update_rules", {revocation_key:"Updated_Revocation--------------Key"})
     t.ok(updated_rule_commit.Ok )
 
     sleep.sleep(5);
