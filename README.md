@@ -2,7 +2,7 @@
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/holo-host/DeepKey.svg)
 
-Circle CI: [![CircleCI](https://circleci.com/gh/holo-host/DeepKey.svg?style=svg)](https://circleci.com/gh/holo-host/DeepKey)
+**Circle CI:** [![CircleCI](https://circleci.com/gh/Holo-Host/DeepKey.svg?style=svg)](https://circleci.com/gh/holo-host/DeepKey)
 
 ## Summary
 This is a core hApp. The DeepKey is used for Key Management for hApps in Holochain.
