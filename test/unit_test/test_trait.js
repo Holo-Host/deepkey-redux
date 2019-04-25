@@ -3,10 +3,10 @@ const sleep = require('sleep');
 module.exports = (scenario) => {
   scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
     const REVOCATION_KEY = "HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa";
-    const SIGNED_AUTH_KEY_1 ="D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAMN13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
+    const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeudekZoVYcPtktf+tDTtP/yFu8O3+jsZDbBQ==";
     const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
 
-    const SIGNED_AUTH_KEY_2 ="eMdi7uIuCkrdfpyTR5hSXnlUOtVEYMRRoQgLvc9Qg531ywCW6M9Jg7GD+LdeRfpCE0bUhk3R1ChTBhy8C6yIAw==";
+    const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
     const keyset_root_address = liza.call("deepkey", "init", {revocation_key: REVOCATION_KEY})
     console.log("My keyset_root_address : ",keyset_root_address.Ok);
