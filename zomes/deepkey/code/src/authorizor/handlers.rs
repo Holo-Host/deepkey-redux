@@ -1,9 +1,12 @@
 use hdk::{
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
-    holochain_wasm_utils::api_serialization::query::{
+    holochain_wasm_utils::api_serialization::{
+        query::{
             QueryArgsOptions, QueryResult,
         },
+        keystore::KeyType,
+    },
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
@@ -11,32 +14,53 @@ use hdk::holochain_core_types::{
     entry::Entry,
     error::HolochainError,
     hash::HashString,
-    signature::Signature
+    signature::{Signature,Provenance},
 };
 
 use crate::authorizor::Authorizor;
 use crate::rules::{self,Rules};
 use crate::key_anchor::KeyAnchor;
 
-pub fn handle_create_authorizor(authorization_key:HashString) -> ZomeApiResult<Address> {
+fn generate_auth(index:u64) -> ZomeApiResult<String> {
+    let auth_seed = ["auth_seed:",&index.to_string()].concat();
+    let auth_key = ["auth_key:",&index.to_string()].concat();
+    // TODO : Check if the authSeed Exists before
+    let list_of_secreats = hdk::keystore_list().map(|keystore_ids| keystore_ids.ids)?;
+    if list_of_secreats.contains(&auth_seed){
+        return Err(ZomeApiError::Internal("Authorization key path seed already Exists".to_string()))
+    }
+    hdk::debug("Gene Seed**")?;
+    hdk::keystore_derive_seed("root_seed".to_string(), auth_seed.to_owned(), "authSeed".to_string(), index)?;
+    hdk::debug("Gene Key**")?;
+    hdk::keystore_derive_key(auth_seed.to_owned(),  auth_key, KeyType::Signing)
+}
+
+pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Signature) -> ZomeApiResult<Address> {
+
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
+    let authorization_key = HashString::from(generate_auth(authorization_key_path)?);
+    hdk::debug(format!("Generation Done**: {:}",authorization_key.to_owned().to_string()))?;
+
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
-            update_authorizor(&authorization_key,&revocation_authority[0].address,authorizor_entry)
+            update_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address, authorizor_entry)
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,&revocation_authority[0].address,&revocation_authority[0].entry)
+            create_new_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address,&revocation_authority[0].entry)
         }
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString, revocation_address: &HashString, _revocation_entry:&Rules) -> ZomeApiResult<Address> {
-    // TODO : add the src_id of the revocation_key
-    // let revocation_sig = utils::sign(revocation_entry.revocation_key.to_string(),String::from(authorization_key.clone()))?;
+fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules) -> ZomeApiResult<Address> {
+    // Verify if the right Revocation Key is used to sign the auth key
+    if !hdk::verify_signature(Provenance::new(Address::from(revocation_entry.revocation_key.to_owned()),auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
+        return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
+    }
+
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
         revocation_authority:revocation_address.to_owned(),
-        revocation_sig: Signature::from("revocation_sig"),
+        revocation_sig: auth_signed_by_revocation_key,
     };
     let authorizor_entry = Entry::App("authorizor".into(), authorizor.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
@@ -57,14 +81,20 @@ fn create_new_authorizor(authorization_key: &HashString, revocation_address: &Ha
 }
 
 
-fn update_authorizor(authorization_key:&HashString,revocation_authority:&HashString,old_auth:Authorizor) -> ZomeApiResult<Address> {
-    // TODO : add the src_id of the revocation_key
+fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor) -> ZomeApiResult<Address> {
+    hdk::debug("Updating**")?;
+    hdk::debug(old_auth.authorization_key.to_string())?;
+    if !hdk::verify_signature(Provenance::new(old_auth.authorization_key.to_owned(), auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
+        return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
+    }
+    hdk::debug("Verified**")?;
+
     // Sign wit the old_auth.authorization_key
-    let revocation_sig = utils::sign("".to_string(),String::from(authorization_key.clone()))?;
+    // let auth_signed_by_revocation_key = utils::sign("primary_keybundle:sign_key".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
-        revocation_authority:revocation_authority.to_owned(),
-        revocation_sig: revocation_sig,
+        revocation_authority:revocation_address.to_owned(),
+        revocation_sig: auth_signed_by_revocation_key,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
     let old_authorizor_address = handle_get_my_authorizor()?;
