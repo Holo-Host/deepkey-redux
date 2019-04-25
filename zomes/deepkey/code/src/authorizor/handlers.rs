@@ -38,9 +38,6 @@ fn generate_auth(index:u64) -> ZomeApiResult<String> {
 pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Signature) -> ZomeApiResult<Address> {
 
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
-    // let temp = generate_auth(authorization_key_path)?;
-    // hdk::debug(temp.to_owned().trim_matches('"'))?;
-
     let authorization_key = HashString::from(generate_auth(authorization_key_path)?.trim_matches('"'));
     hdk::debug(format!("Generation Done**: {}",authorization_key.to_owned().to_string()))?;
 
