@@ -1,26 +1,26 @@
 const sleep = require('sleep');
+const REVOCATION_KEY = "HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa";
+const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeudekZoVYcPtktf+tDTtP/yFu8O3+jsZDbBQ==";
+const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
+const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
 function genesis (liza){
-  return liza.call("deepkey", "init", {revocation_key: "Revocation...............Key"})
+  return liza.call("deepkey", "init", {revocation_key: REVOCATION_KEY})
 }
 
 module.exports = (scenario) => {
   scenario.runTape("testing checks if entries have been pushed", async(t, { liza }) => {
-// On genesis we have to make this call
+    // On genesis we have to make this call
     let address = genesis(liza)
-    // sleep.sleep(5);
-
     let address_recheck = genesis(liza)
     t.deepEqual(address.Ok, address_recheck.Ok )
   })
 
   scenario.runTape("create rules befor the keyset_root should throw an error", async(t, { liza }) => {
-
   // This is to just test out if we get the right keyset_root address
     const keyset_root_address = liza.call("deepkey", "get_initialization_data", {})
     console.log("My KeysetRoot Address: ",keyset_root_address);
     t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
-
   })
 
 
@@ -37,7 +37,32 @@ module.exports = (scenario) => {
 // Check if your getting the right hash
     const my_rules = liza.call("deepkey", "get_rules", {})
     console.log("My Rules: ",my_rules.Ok[0]);
-    t.ok(my_rules.Ok[0].entry.revocationKey,"Revocation--------------Key")
+    t.ok(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
+
+// Lets create an authorizor key
+    const authorizor_commit =await liza.callSync("deepkey", "set_authorizor", {
+      authorization_key_path: 1,
+      signed_auth_key:SIGNED_AUTH_KEY_1
+    })
+    t.ok(authorizor_commit.Ok)
+
+// Check if the key exist for the authorizor
+    const checking_authorizor_key = liza.call("deepkey", "key_status", {key:authorizor_commit.Ok})
+    t.deepEqual(checking_authorizor_key.Ok,"live" )
+
+    sleep.sleep(5);
+
+// Lets create an authorizor key
+    const updated_authorizor_commit = await liza.callSync("deepkey", "set_authorizor", {
+      authorization_key_path: 2,
+      signed_auth_key:SIGNED_AUTH_KEY_2
+    })
+    t.ok(updated_authorizor_commit.Ok)
+
+    sleep.sleep(5);
+// Check if the key exist for the authorizor
+    const checking_old_authorizor_key = liza.call("deepkey", "key_status", {key:authorizor_commit.Ok})
+    t.deepEqual(checking_old_authorizor_key.Ok,"Doesn\'t Exists" )
 
 
     const updated_rule_commit = liza.call("deepkey", "update_rules", {revocation_key:"Updated_Revocation--------------Key"})
@@ -49,24 +74,6 @@ module.exports = (scenario) => {
     console.log("My Updated Rules: ",my_updated_rules.Ok[0]);
     t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,"Updated_Revocation--------------Key" )
 
-// Lets create an authorizor key
-    const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
-    t.ok(authorizor_commit.Ok)
-
-// Check if the key exist for the authorizor
-    const checking_authorizor_key = liza.call("deepkey", "key_status", {key:"Authorizor------------Key"})
-    t.deepEqual(checking_authorizor_key.Ok,"live" )
-
-    sleep.sleep(5);
-
-// Lets create an authorizor key
-    const updated_authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Updated_Authorizor------------Key"})
-    t.ok(updated_authorizor_commit.Ok)
-
-    sleep.sleep(5);
-// Check if the key exist for the authorizor
-    const checking_old_authorizor_key = liza.call("deepkey", "key_status", {key:"Authorizor------------Key"})
-    t.deepEqual(checking_old_authorizor_key.Ok,"Doesn\'t Exists" )
 
   })
 }
