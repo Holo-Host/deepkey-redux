@@ -67,7 +67,7 @@ define_zome! {
         }
         set_authorizor: {
             inputs: | authorization_key_path: u64, signed_auth_key:Signature |,
-            outputs: |result: ZomeApiResult<Address>|,
+            outputs: |result: ZomeApiResult<HashString>|,
             handler: authorizor::handlers::handle_create_authorizor
         }
         set_key: {
@@ -86,7 +86,7 @@ define_zome! {
         hc_public [
         init,
         get_initialization_data,
-        set_rules,
+        update_rules,
         get_rules,
         set_authorizor,
         set_key,

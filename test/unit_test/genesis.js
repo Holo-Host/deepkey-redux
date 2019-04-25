@@ -1,7 +1,11 @@
 const sleep = require('sleep');
+const REVOCATION_KEY = "HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa";
+const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeudekZoVYcPtktf+tDTtP/yFu8O3+jsZDbBQ==";
+const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
+const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
 function genesis (liza){
-  return liza.call("deepkey", "init", {revocation_key: "Revocation...............Key"})
+  return liza.call("deepkey", "init", {revocation_key: REVOCATION_KEY})
 }
 
 module.exports = (scenario) => {
@@ -14,12 +18,15 @@ module.exports = (scenario) => {
     t.equal(keyset_root_address.Ok,address.Ok)
 
 // Lets create an authorizor key
-    const authorizor_commit = liza.call("deepkey", "set_authorizor", {authorization_key:"Authorizor------------Key"})
-    console.log("------->",authorizor_commit);
+    const authorizor_commit =await liza.callSync("deepkey", "set_authorizor", {
+      authorization_key_path: 1,
+      signed_auth_key:SIGNED_AUTH_KEY_1
+    })
+    console.log(authorizor_commit);
     t.ok(authorizor_commit.Ok)
 
 // Check if the key exist for the authorizor
-    const checking_authorizor_key = liza.call("deepkey", "key_status", {key:"Authorizor------------Key"})
+    const checking_authorizor_key = liza.call("deepkey", "key_status", {key:authorizor_commit.Ok})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
 
 // Check if the key exist for the key

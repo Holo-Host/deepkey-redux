@@ -36,7 +36,7 @@ fn generate_auth(index:u64) -> ZomeApiResult<String> {
     hdk::keystore_derive_key(auth_seed.to_owned(),  auth_key, KeyType::Signing)
 }
 
-pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Signature) -> ZomeApiResult<Address> {
+pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Signature) -> ZomeApiResult<HashString> {
 
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
     let authorization_key = HashString::from(generate_auth(authorization_key_path)?.trim_matches('"'));
@@ -51,7 +51,7 @@ pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Sign
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules) -> ZomeApiResult<Address> {
+fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules) -> ZomeApiResult<HashString> {
     // Verify if the right Revocation Key is used to sign the auth key
     if !hdk::verify_signature(Provenance::new(Address::from(revocation_entry.revocation_key.to_owned()),auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
@@ -70,9 +70,9 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
 
     // Hopfully we bundle this two commits once we have that feature
     match hdk::commit_entry(&authorizor_entry){
-        Ok(address) => {
+        Ok(_) => {
             hdk::commit_entry(&key_anchor)?;
-            Ok(address)
+            Ok(authorization_key.to_owned())
         },
         Err(e)=>{
             Err(e)
@@ -81,7 +81,7 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
 }
 
 
-fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor) -> ZomeApiResult<Address> {
+fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor) -> ZomeApiResult<HashString> {
     if !hdk::verify_signature(Provenance::new(old_auth.authorization_key.to_owned(), auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
     }
@@ -105,11 +105,11 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
 
     let old_key_anchor_address = hdk::entry_address(&old_key_anchor)?;
     match hdk::update_entry(entry, &old_authorizor_address){
-        Ok(address)=>{
+        Ok(_)=>{
             match hdk::remove_entry(&old_key_anchor_address){
                 Ok(_)=>{
                     hdk::commit_entry(&new_key_anchor)?;
-                    Ok(address)
+                    Ok(authorization_key.to_owned())
                 },
                 Err(_)=>{
                     Err(ZomeApiError::from("update_authorizor: Unable to remove key anchor".to_string()))
