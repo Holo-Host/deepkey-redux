@@ -1,7 +1,10 @@
 use hdk::{
     error::ZomeApiResult,
     holochain_wasm_utils::api_serialization::{
-        get_entry::{GetEntryOptions,GetEntryResultType},
+        get_entry::{GetEntryOptions,
+            GetEntryResultType,
+            StatusRequestKind
+        },
     },
 };
 use hdk::holochain_core_types::{
@@ -23,7 +26,7 @@ pub fn handle_key_status(key:HashString) ->ZomeApiResult<RawString> {
     if let GetEntryResultType::Single(result) = hdk::get_entry_result(
         &key_anchor_address,
         GetEntryOptions {
-            entry: true,
+            status_request: StatusRequestKind::Initial,
             ..Default::default()
         },)?
         .result
@@ -32,7 +35,7 @@ pub fn handle_key_status(key:HashString) ->ZomeApiResult<RawString> {
                 Some(m)=>{
                     Ok(RawString::from(String::from(m.crud_status)))
                 }
-                _=> Ok(RawString::from("Doesn't Exists"))
+                None => Ok(RawString::from(format!("Doesn't Exists")))
             }
         }
     else{
