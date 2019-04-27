@@ -40,13 +40,13 @@ module.exports = (scenario) => {
     console.log("These are the setting_rules : ",setting_rules);
     t.ok(setting_rules.Ok)
 
-    // // Updating the AUth
-    // const updating_rules = await liza.callSync("deepkey", "set_authorizor", {
-    //   authorization_key_path: 2,
-    //   signed_auth_key:SIGNED_AUTH_KEY_2
-    // })
-    // console.log("These are the updating_rules : ",updating_rules);
-    // t.ok(updating_rules.Ok)
+    // Updating the AUth
+    const updating_rules = await liza.callSync("deepkey", "set_authorizor", {
+      authorization_key_path: 2,
+      signed_auth_key:SIGNED_AUTH_KEY_2
+    })
+    console.log("These are the updating_rules : ",updating_rules);
+    t.ok(updating_rules.Ok)
 
     // Register A Key
 

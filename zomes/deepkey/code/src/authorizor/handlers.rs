@@ -43,15 +43,15 @@ pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Sign
 
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
-            update_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address, authorizor_entry)
+            update_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address, authorizor_entry,authorization_key_path)
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address,&revocation_authority[0].entry)
+            create_new_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address,&revocation_authority[0].entry,authorization_key_path)
         }
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules) -> ZomeApiResult<HashString> {
+fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules, authorization_key_path:u64) -> ZomeApiResult<HashString> {
     // Verify if the right Revocation Key is used to sign the auth key
     if !hdk::verify_signature(Provenance::new(Address::from(revocation_entry.revocation_key.to_owned()),auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
@@ -67,10 +67,12 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
     let key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : authorization_key.to_owned()
     }.into());
+    let meta = Entry::App("auth_key_derivation_path".into(),authorization_key_path.into());
 
     // Hopfully we bundle this two commits once we have that feature
     match hdk::commit_entry(&authorizor_entry){
         Ok(_) => {
+            hdk::commit_entry(&meta)?;
             hdk::commit_entry(&key_anchor)?;
             Ok(authorization_key.to_owned())
         },
@@ -81,7 +83,7 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
 }
 
 
-fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor) -> ZomeApiResult<HashString> {
+fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor, authorization_key_path:u64) -> ZomeApiResult<HashString> {
     if !hdk::verify_signature(Provenance::new(old_auth.authorization_key.to_owned(), auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
     }
@@ -102,18 +104,27 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
     let old_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : old_auth.authorization_key.to_owned()
     }.into());
-
     let old_key_anchor_address = hdk::entry_address(&old_key_anchor)?;
+
+    let new_meta = Entry::App("auth_key_derivation_path".into(),authorization_key_path.into());
+    let old_meta = Entry::App("auth_key_derivation_path".into(),(authorization_key_path-1).into());
+    let old_meta_address = hdk::entry_address(&old_meta)?;
+
     match hdk::update_entry(entry, &old_authorizor_address){
         Ok(_)=>{
-            match hdk::remove_entry(&old_key_anchor_address){
+            match hdk::update_entry(new_meta, &old_meta_address){
                 Ok(_)=>{
-                    hdk::commit_entry(&new_key_anchor)?;
-                    Ok(authorization_key.to_owned())
+                    match hdk::remove_entry(&old_key_anchor_address){
+                        Ok(_)=>{
+                            hdk::commit_entry(&new_key_anchor)?;
+                            return Ok(authorization_key.to_owned())
+                        },
+                        Err(_)=>{
+                            Err(ZomeApiError::from("update_authorizor: Unable to remove key anchor".to_string()))
+                        }
+                    }
                 },
-                Err(_)=>{
-                    Err(ZomeApiError::from("update_authorizor: Unable to remove key anchor".to_string()))
-                }
+                Err(_)=> Err(ZomeApiError::from("update_authorizor: Unable to Update Key Meta".to_string()))
             }
         },
         Err(_)=>{

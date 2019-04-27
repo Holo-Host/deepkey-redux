@@ -69,14 +69,14 @@ pub fn definitions() -> ValidatingEntryType{
 
 pub fn auth_path_definitions() -> ValidatingEntryType{
     entry!(
-        name: "auth _key_derivation_path",
+        name: "auth_key_derivation_path",
         description: "private entry provides us future ability to regenerate AuthKey from Master Seed",
-        sharing: Sharing::Private,
+        sharing: Sharing::Encrypted,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |validation_data: hdk::EntryValidationData<String>| {
+        validation: |validation_data: hdk::EntryValidationData<u64>| {
             match validation_data
             {
                 EntryValidationData::Create{entry:_r,validation_data:_} =>
