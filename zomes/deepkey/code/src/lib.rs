@@ -71,7 +71,7 @@ define_zome! {
             handler: authorizor::handlers::handle_create_authorizor
         }
         set_key: {
-            inputs: | new_agent_key: HashString |,
+            inputs: | new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_create_key_registration
         }

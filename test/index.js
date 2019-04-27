@@ -9,8 +9,8 @@ const instanceLiza = Config.instance(agentLiza, dna)
 const scenario = new Scenario([instanceLiza], { debugLog: true })
 
 // require('./unit_test/genesis')(scenario);
-require('./unit_test/update_entries')(scenario);
-// require('./unit_test/test_trait')(scenario);
+// require('./unit_test/update_entries')(scenario);
+require('./unit_test/test_trait')(scenario);
 
 // require('./unit_test/test_converse')(scenario);
 

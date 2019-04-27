@@ -4,6 +4,8 @@ const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeude
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
 const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
+const APP_KEY = "HcSCJw6d7h53IAh8twROoUTe8qEiibgfxd3AuB9TwU7UktskXWiSyJ6b8334Umz";
+
 module.exports = (scenario) => {
   scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
 
@@ -16,7 +18,6 @@ module.exports = (scenario) => {
     // let auth_signed_by_revocation_key = liza.call("converse","signed_auth_key",{key_id:1})
     // console.log("auth_signed_by_revocation_key: ",auth_signed_by_revocation_key);
     // t.ok(auth_signed_by_revocation_key.Ok)
-    // // t.equal(auth_signed_by_revocation_key.Ok,SIGNED_AUTH_KEY_1)
 
     //***************
     // Solve this bug.
@@ -39,13 +40,25 @@ module.exports = (scenario) => {
     console.log("These are the setting_rules : ",setting_rules);
     t.ok(setting_rules.Ok)
 
-    // Updating the AUth
-    const updating_rules = await liza.callSync("deepkey", "set_authorizor", {
-      authorization_key_path: 2,
-      signed_auth_key:SIGNED_AUTH_KEY_2
+    // // Updating the AUth
+    // const updating_rules = await liza.callSync("deepkey", "set_authorizor", {
+    //   authorization_key_path: 2,
+    //   signed_auth_key:SIGNED_AUTH_KEY_2
+    // })
+    // console.log("These are the updating_rules : ",updating_rules);
+    // t.ok(updating_rules.Ok)
+
+    // Register A Key
+
+    const registering_app_key = await liza.callSync("deepkey", "set_key", {
+      new_key: APP_KEY,
+      derivation_index:1,
+      key_type:"AppSig",
+      context:"dna12345"
     })
-    console.log("These are the updating_rules : ",updating_rules);
-    t.ok(updating_rules.Ok)
+    console.log("These are the registering_app_key : ",registering_app_key);
+    t.ok(registering_app_key.Ok)
+
 
   })
 }
