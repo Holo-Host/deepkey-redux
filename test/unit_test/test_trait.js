@@ -40,6 +40,10 @@ module.exports = (scenario) => {
     console.log("These are the setting_rules : ",setting_rules);
     t.ok(setting_rules.Ok)
 
+    const auth_meta_1 = await liza.callSync("deepkey", "get_auth_meta", {})
+    console.log("These are the auth_meta : ",auth_meta_1);
+    t.equal(auth_meta_1.Ok,1)
+
     // Updating the AUth
     const updating_rules = await liza.callSync("deepkey", "set_authorizor", {
       authorization_key_path: 2,
@@ -47,6 +51,10 @@ module.exports = (scenario) => {
     })
     console.log("These are the updating_rules : ",updating_rules);
     t.ok(updating_rules.Ok)
+
+    const auth_meta_2 = await liza.callSync("deepkey", "get_auth_meta", {})
+    console.log("These are the auth_meta : ",auth_meta_2);
+    t.equal(auth_meta_2.Ok,2)
 
     // Register A Key
 
@@ -58,7 +66,7 @@ module.exports = (scenario) => {
     })
     console.log("These are the registering_app_key : ",registering_app_key);
     t.ok(registering_app_key.Ok)
-
+    
 
   })
 }

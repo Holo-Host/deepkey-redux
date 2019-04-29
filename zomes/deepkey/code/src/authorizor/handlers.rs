@@ -138,6 +138,11 @@ pub fn handle_get_authorizor() -> ZomeApiResult<Authorizor> {
     utils::get_as_type(authorizor_address)
 }
 
+pub fn handle_get_authorizor_meta() -> ZomeApiResult<u64> {
+    let authorizor_meta_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("auth_key_derivation_path".to_string())?)?;
+    utils::get_as_type(authorizor_meta_address)
+}
+
 // ----------------------
 // Helper functions
 // ----------------------
