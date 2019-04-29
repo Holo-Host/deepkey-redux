@@ -11,7 +11,7 @@ use crate::key_registration::{
     KeyRegistration,
     AppKeyType
 };
-// use crate::authorizor;
+use crate::authorizor;
 use crate::key_anchor::KeyAnchor;
 
 fn choose_key_type(key_type: AppKeyType) -> KeyType {
@@ -29,14 +29,11 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
     if derived_key_hashstring != new_key {
         return Err(ZomeApiError::Internal("DeepKey Error : The derivation path does not match the key you passed in".to_string()))
     }
-    // *********************
-    // TODO :  get the auth_key_src_id currently used
-    // *********************
 
-    // let auth_key_id =
-    let auth_key_src_id= "auth_key:1";//Get the Auth Kye ID
-
-    let auth_key_signing_keys = hdk::keystore_sign(auth_key_src_id, &derived_key)?;
+//Get the Auth Kye ID
+    let auth_key_id = authorizor::handlers::handle_get_authorizor_meta()?;
+    let auth_key_src_id = ["auth_key:",&auth_key_id.to_string()].concat();
+    let auth_key_signing_keys = hdk::keystore_sign(auth_key_src_id, derived_key)?;
 
 // Registering the Key
     let key_registration = KeyRegistration {
