@@ -96,7 +96,7 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
         revocation_sig: auth_signed_by_revocation_key,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
-    let old_authorizor_address = handle_get_my_authorizor()?;
+    let old_authorizor_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("authorizor".to_string())?)?;
     let new_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : authorization_key.to_owned()
     }.into());
@@ -134,14 +134,17 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
 }
 
 pub fn handle_get_authorizor() -> ZomeApiResult<Authorizor> {
-    let authorizor_address = handle_get_my_authorizor()?;
+    let authorizor_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("authorizor".to_string())?)?;
     utils::get_as_type(authorizor_address)
 }
 
-pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
-    let authorizor_list = get_all_authorizor()?;
+// ----------------------
+// Helper functions
+// ----------------------
+
+pub fn check_vec_if_valid_value(list:Vec<(ChainHeader,Entry)>)-> Result<HashString,HolochainError> {
     let mut address:Vec<HashString>=Vec::new();
-    for k in authorizor_list {
+    for k in list {
         if &AGENT_ADDRESS.to_string() == &k.0.provenances()[0].0.to_string(){
             address.push(k.0.entry_address().to_owned());
         }
@@ -150,7 +153,7 @@ pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
         Ok(address[0].to_owned())
     }
     else{
-        Err(ZomeApiError::from("handle_get_my_authorizor: No Rules Exists".to_string()))
+        Err(HolochainError::ErrorGeneric( format!("check_vec_if_valid_value: The values your Searching does not exists")))
     }
 }
 
@@ -159,10 +162,10 @@ pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
 // "provenances":[["liza------------------------------------------------------------------------------AAAOKtP2nI","TODO"]],
 // "link":"QmSdoZMyqJFL7bBfsMP6wZYSmVd1kVqpoGrHuyRuxfqG7Y",
 // "link_same_type":null,"link_crud":null,"timestamp":"1970-01-01T00:00:00+00:00"}'
-pub fn get_all_authorizor() -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
+pub fn query_local_chain_for_authorizor_key(entry_type: String) -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
     if let QueryResult::HeadersWithEntries( entries_with_headers ) = hdk::query_result(
         vec![
-            "authorizor",
+            entry_type,
         ].into(),
         QueryArgsOptions{ headers: true, entries: true, ..Default::default()})? {
         Ok(entries_with_headers)
