@@ -40,7 +40,7 @@ module.exports = (scenario) => {
     t.ok(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
 
 // Lets create an authorizor key
-    const authorizor_commit =await liza.callSync("deepkey", "set_authorizor", {
+    const authorizor_commit =await liza.call("deepkey", "set_authorizor", {
       authorization_key_path: 1,
       signed_auth_key:SIGNED_AUTH_KEY_1
     })
@@ -55,7 +55,7 @@ module.exports = (scenario) => {
     t.deepEqual(checking_authorizor_key.Ok,"live" )
 
 // Lets create an authorizor key
-    const updated_authorizor_commit = await liza.callSync("deepkey", "set_authorizor", {
+    const updated_authorizor_commit = await liza.call("deepkey", "set_authorizor", {
       authorization_key_path: 2,
       signed_auth_key:SIGNED_AUTH_KEY_2
     })
@@ -64,6 +64,7 @@ module.exports = (scenario) => {
     const checking_new_authorizor_key = liza.call("deepkey", "key_status", {key:updated_authorizor_commit.Ok})
     t.deepEqual(checking_new_authorizor_key.Ok,"live" )
 
+    sleep.sleep(5);
 // Check if the key exist for the authorizor
     const checking_old_authorizor_key = liza.call("deepkey", "key_status", {key:authorizor_commit.Ok})
     t.deepEqual(checking_old_authorizor_key.Ok,"deleted" )

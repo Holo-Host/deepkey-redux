@@ -20,7 +20,7 @@ module.exports = (scenario) => {
     t.equal(keyset_root_address.Ok,address.Ok)
 
 // Lets create an authorizor key
-    const authorizor_commit =await liza.callSync("deepkey", "set_authorizor", {
+    const authorizor_commit =await liza.call("deepkey", "set_authorizor", {
       authorization_key_path: 1,
       signed_auth_key:SIGNED_AUTH_KEY_1
     })
@@ -37,7 +37,7 @@ module.exports = (scenario) => {
     t.deepEqual(checking_key_1.Ok,"Doesn't Exists" )
 
 // Lets create an agent key
-    const key_commit = await liza.callSync("deepkey", "set_key", {
+    const key_commit = await liza.call("deepkey", "set_key", {
       new_key: APP_KEY,
       derivation_index:1,
       key_type:"AppSig",

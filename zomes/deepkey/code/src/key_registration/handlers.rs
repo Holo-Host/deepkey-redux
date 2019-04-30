@@ -38,7 +38,7 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
 
 // Registering the Key
     let key_registration = KeyRegistration {
-        new_agent_key: new_key.clone(),
+        new_agent_key: new_key.to_owned(),
         authorization_sig: Signature::from(auth_key_signing_keys),
         prior_key: None, // (missing on Create, required on Update)
         revocation_sig: None, // (missing on Create, required on Update or Delete)
@@ -46,10 +46,10 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
     let key_registration_entry = Entry::App("key_registration".into(), key_registration.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
     let key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
-        pub_key : new_key.clone()
+        pub_key : new_key.to_owned()
     }.into());
     let key_meta = Entry::App("key_meta".into(), KeyMeta{
-        new_key: new_key.clone(),
+        new_key: new_key.to_owned(),
         derivation_index: derivation_index,
         key_type: key_type,
         context: context // some_app_DNA_hash
