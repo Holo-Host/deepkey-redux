@@ -71,7 +71,7 @@ pub fn auth_path_definitions() -> ValidatingEntryType{
     entry!(
         name: "auth_key_derivation_path",
         description: "private entry provides us future ability to regenerate AuthKey from Master Seed",
-        sharing: Sharing::Public,
+        sharing: Sharing::Private,
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },

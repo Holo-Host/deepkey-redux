@@ -34,7 +34,7 @@ define_zome! {
         // device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
-        // key_registration::meta_definitions(),
+        key_registration::meta_definitions(),
         keyset_root::definitions(),
         rules::definitions()
         // rules::rev_path_definitions()

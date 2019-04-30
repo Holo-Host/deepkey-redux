@@ -9,12 +9,13 @@ use hdk::holochain_core_types::{
 };
 use crate::key_registration::{
     KeyRegistration,
-    AppKeyType
+    AppKeyType,
+    KeyMeta
 };
 use crate::authorizor;
 use crate::key_anchor::KeyAnchor;
 
-fn choose_key_type(key_type: AppKeyType) -> KeyType {
+fn choose_key_type(key_type: &AppKeyType) -> KeyType {
     match key_type {
         AppKeyType::AppUI => return KeyType::Signing,
         AppKeyType::AppSig => return KeyType::Signing,
@@ -24,7 +25,7 @@ fn choose_key_type(key_type: AppKeyType) -> KeyType {
 
 pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64, key_type:AppKeyType, context:String) -> ZomeApiResult<Address> {
 // Validate the key and sign the key wit the auth key
-    let derived_key = derive_key(derivation_index, context, choose_key_type(key_type))?.trim_matches('"').to_owned();
+    let derived_key = derive_key(&derivation_index, &context, choose_key_type(&key_type))?.trim_matches('"').to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
     if derived_key_hashstring != new_key {
         return Err(ZomeApiError::Internal("DeepKey Error : The derivation path does not match the key you passed in".to_string()))
@@ -45,12 +46,18 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
     let key_registration_entry = Entry::App("key_registration".into(), key_registration.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
     let key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
-        pub_key : new_key
+        pub_key : new_key.clone()
     }.into());
-
+    let key_meta = Entry::App("key_meta".into(), KeyMeta{
+        new_key: new_key.clone(),
+        derivation_index: derivation_index,
+        key_type: key_type,
+        context: context // some_app_DNA_hash
+    }.into());
     // Hopfully we bundle this two commits once we have that feature
     match hdk::commit_entry(&key_registration_entry){
         Ok(address) => {
+            hdk::commit_entry(&key_meta)?;
             hdk::commit_entry(&key_anchor)?;
             Ok(address)
         },
@@ -58,6 +65,10 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
     }
 }
 
+// // Update a registered Key
+// pub fn handle_update_key_registration(old_key:HashString, new_key:HashString, derivation_index: u64, key_type:AppKeyType, context:String ) -> ZomeApiResult<Address> {
+//
+// }
 // pub fn handle_get_key_registration(address: Address) -> ZomeApiResult<Option<Entry>> {
 //     hdk::get_entry(&address)
 // }
@@ -67,9 +78,9 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
 // Gen Seed and Key
 // **********************
 
-fn derive_key(index:u64, context: String, key_type: KeyType) -> ZomeApiResult<String> {
-    let app_seed = ["app_seed:",&context.to_string(),":",&index.to_string()].concat();
-    let app_key = ["app_key:",&context.to_string(),":",&index.to_string()].concat();
+fn derive_key(index:&u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
+    let app_seed = ["app_seed:",context,":",&index.to_string()].concat();
+    let app_key = ["app_key:",context,":",&index.to_string()].concat();
     // Check if the appSeed Exists before
     //*******************
     // TODO : if it exist send the app_key back not an Err
@@ -78,6 +89,6 @@ fn derive_key(index:u64, context: String, key_type: KeyType) -> ZomeApiResult<St
     if list_of_secreats.contains(&app_seed){
         return Err(ZomeApiError::Internal("App key path seed already Exists".to_string()))
     }
-    hdk::keystore_derive_seed("root_seed".to_string(), app_seed.to_owned(), context.to_string(), index)?;
+    hdk::keystore_derive_seed("root_seed".to_string(), app_seed.to_owned(), context.to_string(), index.to_owned())?;
     hdk::keystore_derive_key(app_seed.to_owned(),  app_key, key_type)
 }

@@ -67,11 +67,11 @@ pub enum AppKeyType {
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
-struct KeyMeta {
+pub struct KeyMeta {
     pub new_key: HashString,
-    pub derivation_index: String,
+    pub derivation_index: u64,
     pub key_type: AppKeyType,
-    pub context: HashString // some_app_DNA_hash
+    pub context: String // some_app_DNA_hash
 }
 pub fn meta_definitions() -> ValidatingEntryType{
     entry!(
