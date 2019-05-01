@@ -4,7 +4,9 @@ const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeude
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
 const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
-const APP_KEY = "HcSCJw6d7h53IAh8twROoUTe8qEiibgfxd3AuB9TwU7UktskXWiSyJ6b8334Umz";
+const APP_KEY_1 = "HcSCJw6d7h53IAh8twROoUTe8qEiibgfxd3AuB9TwU7UktskXWiSyJ6b8334Umz";
+const APP_KEY_2 = "HcScIidm755H3Oohd6PFA5TY9ebhxofqpbtZVceQ3yp4p6bbDfaGijB3sbapmii";
+const SIGNED_APP_KEY_1_BY_REV_KEY ="b9VltsBRq71nPcJO/EzBz4EtUkqVPNhbS9ggYi90/hldNgHMOETtW19TdLxUXg3VpznjDP6pesyoBpcvzJXsBA==";
 
 module.exports = (scenario) => {
   scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
@@ -59,13 +61,26 @@ module.exports = (scenario) => {
     // Register A Key
 
     const registering_app_key = await liza.call("deepkey", "set_key", {
-      new_key: APP_KEY,
+      new_key: APP_KEY_1,
       derivation_index:1,
       key_type:"AppSig",
       context:"dna12345"
     })
     console.log("These are the registering_app_key : ",registering_app_key);
     t.ok(registering_app_key.Ok)
+
+
+    const updated_key = await liza.call("deepkey", "update_key", {
+      old_key:APP_KEY_1,
+      signed_old_key:SIGNED_APP_KEY_1_BY_REV_KEY,
+      new_key:APP_KEY_2,
+      derivation_index:2,
+      key_type:"AppSig",
+      context:"dna12345"
+    })
+    console.log("Updated Key: ",updated_key);
+    t.ok(updated_key.Ok)
+
 
   })
 }

@@ -96,7 +96,7 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
         revocation_sig: auth_signed_by_revocation_key,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
-    let old_authorizor_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("authorizor".to_string())?)?;
+    let old_authorizor_address = check_vec_if_valid_value(query_local_chain_for_entry_type("authorizor".to_string())?)?;
     let new_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : authorization_key.to_owned()
     }.into());
@@ -134,12 +134,12 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
 }
 
 pub fn handle_get_authorizor() -> ZomeApiResult<Authorizor> {
-    let authorizor_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("authorizor".to_string())?)?;
+    let authorizor_address = check_vec_if_valid_value(query_local_chain_for_entry_type("authorizor".to_string())?)?;
     utils::get_as_type(authorizor_address)
 }
 
 pub fn handle_get_authorizor_meta() -> ZomeApiResult<u64> {
-    let authorizor_meta_address = check_vec_if_valid_value(query_local_chain_for_authorizor_key("auth_key_derivation_path".to_string())?)?;
+    let authorizor_meta_address = check_vec_if_valid_value(query_local_chain_for_entry_type("auth_key_derivation_path".to_string())?)?;
     utils::get_as_type(authorizor_meta_address)
 }
 
@@ -167,7 +167,7 @@ pub fn check_vec_if_valid_value(list:Vec<(ChainHeader,Entry)>)-> Result<HashStri
 // "provenances":[["liza------------------------------------------------------------------------------AAAOKtP2nI","TODO"]],
 // "link":"QmSdoZMyqJFL7bBfsMP6wZYSmVd1kVqpoGrHuyRuxfqG7Y",
 // "link_same_type":null,"link_crud":null,"timestamp":"1970-01-01T00:00:00+00:00"}'
-pub fn query_local_chain_for_authorizor_key(entry_type: String) -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
+pub fn query_local_chain_for_entry_type(entry_type: String) -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
     if let QueryResult::HeadersWithEntries( entries_with_headers ) = hdk::query_result(
         vec![
             entry_type,

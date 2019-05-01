@@ -80,6 +80,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_create_key_registration
         }
+        update_key: {
+            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: key_registration::handlers::handle_update_key_registration
+        }
         key_status: {
             inputs: | key: HashString |,
             outputs: |result: ZomeApiResult<RawString>|,
@@ -96,6 +101,7 @@ define_zome! {
         set_authorizor,
         get_auth_meta,
         set_key,
+        update_key,
         key_status
         ]
     }
