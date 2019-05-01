@@ -119,15 +119,8 @@ pub fn handle_update_key_registration(old_key:HashString, signed_old_key:Signatu
         Ok(address)=>{
             match hdk::update_entry(key_meta, &old_key_meta_address){
                 Ok(_)=>{
-                    match hdk::remove_entry(&old_key_anchor_address){
-                        Ok(_)=>{
-                            hdk::commit_entry(&key_anchor)?;
-                            return Ok(address)
-                        },
-                        Err(_)=>{
-                            Err(ZomeApiError::from("handle_update_key_registration: Unable to remove key anchor".to_string()))
-                        }
-                    }
+                    hdk::update_entry(key_anchor,&old_key_anchor_address)?;
+                    return Ok(address)
                 },
                 Err(_)=> Err(ZomeApiError::from("handle_update_key_registration: Unable to Update Key Meta".to_string()))
             }
