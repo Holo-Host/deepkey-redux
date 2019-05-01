@@ -67,7 +67,7 @@ module.exports = (scenario) => {
     sleep.sleep(5);
 // Check if the key exist for the authorizor
     const checking_old_authorizor_key = liza.call("deepkey", "key_status", {key:authorizor_commit.Ok})
-    t.deepEqual(checking_old_authorizor_key.Ok,"deleted" )
+    t.deepEqual(checking_old_authorizor_key.Ok,"modified" )
 
 
     const updated_rule_commit = liza.call("deepkey", "update_rules", {revocation_key:"Updated_Revocation--------------Key"})

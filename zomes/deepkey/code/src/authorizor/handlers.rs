@@ -114,15 +114,8 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
         Ok(_)=>{
             match hdk::update_entry(new_meta, &old_meta_address){
                 Ok(_)=>{
-                    match hdk::remove_entry(&old_key_anchor_address){
-                        Ok(_)=>{
-                            hdk::commit_entry(&new_key_anchor)?;
-                            return Ok(authorization_key.to_owned())
-                        },
-                        Err(_)=>{
-                            Err(ZomeApiError::from("update_authorizor: Unable to remove key anchor".to_string()))
-                        }
-                    }
+                    hdk::update_entry(new_key_anchor,&old_key_anchor_address)?;
+                    Ok(authorization_key.to_owned())
                 },
                 Err(_)=> Err(ZomeApiError::from("update_authorizor: Unable to Update Key Meta".to_string()))
             }
