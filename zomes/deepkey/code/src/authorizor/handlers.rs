@@ -43,15 +43,15 @@ pub fn handle_create_authorizor(authorization_key_path:u64, signed_auth_key:Sign
 
     match handle_get_authorizor(){
         Ok(authorizor_entry)=>{
-            update_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address, authorizor_entry)
+            update_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address, authorizor_entry,authorization_key_path)
         },
         Err(_)=>{
-            create_new_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address,&revocation_authority[0].entry)
+            create_new_authorizor(&authorization_key,signed_auth_key,&revocation_authority[0].address,&revocation_authority[0].entry,authorization_key_path)
         }
     }
 }
 
-fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules) -> ZomeApiResult<HashString> {
+fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocation_key:Signature, revocation_address: &HashString, revocation_entry:&Rules, authorization_key_path:u64) -> ZomeApiResult<HashString> {
     // Verify if the right Revocation Key is used to sign the auth key
     if !hdk::verify_signature(Provenance::new(Address::from(revocation_entry.revocation_key.to_owned()),auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
@@ -67,10 +67,12 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
     let key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : authorization_key.to_owned()
     }.into());
+    let meta = Entry::App("auth_key_derivation_path".into(),authorization_key_path.into());
 
     // Hopfully we bundle this two commits once we have that feature
     match hdk::commit_entry(&authorizor_entry){
         Ok(_) => {
+            hdk::commit_entry(&meta)?;
             hdk::commit_entry(&key_anchor)?;
             Ok(authorization_key.to_owned())
         },
@@ -81,7 +83,7 @@ fn create_new_authorizor(authorization_key: &HashString,auth_signed_by_revocatio
 }
 
 
-fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor) -> ZomeApiResult<HashString> {
+fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_key:Signature, revocation_address:&HashString, old_auth:Authorizor, authorization_key_path:u64) -> ZomeApiResult<HashString> {
     if !hdk::verify_signature(Provenance::new(old_auth.authorization_key.to_owned(), auth_signed_by_revocation_key.to_owned()), String::from(authorization_key.to_owned()))? {
         return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
     }
@@ -94,7 +96,7 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
         revocation_sig: auth_signed_by_revocation_key,
     };
     let entry = Entry::App("authorizor".into(), authorizor.into());
-    let old_authorizor_address = handle_get_my_authorizor()?;
+    let old_authorizor_address = check_vec_if_valid_value(query_local_chain_for_entry_type("authorizor".to_string())?)?;
     let new_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : authorization_key.to_owned()
     }.into());
@@ -102,18 +104,20 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
     let old_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
         pub_key : old_auth.authorization_key.to_owned()
     }.into());
-
     let old_key_anchor_address = hdk::entry_address(&old_key_anchor)?;
+
+    let new_meta = Entry::App("auth_key_derivation_path".into(),authorization_key_path.into());
+    let old_meta = Entry::App("auth_key_derivation_path".into(),(authorization_key_path-1).into());
+    let old_meta_address = hdk::entry_address(&old_meta)?;
+
     match hdk::update_entry(entry, &old_authorizor_address){
         Ok(_)=>{
-            match hdk::remove_entry(&old_key_anchor_address){
+            match hdk::update_entry(new_meta, &old_meta_address){
                 Ok(_)=>{
-                    hdk::commit_entry(&new_key_anchor)?;
+                    hdk::update_entry(new_key_anchor,&old_key_anchor_address)?;
                     Ok(authorization_key.to_owned())
                 },
-                Err(_)=>{
-                    Err(ZomeApiError::from("update_authorizor: Unable to remove key anchor".to_string()))
-                }
+                Err(_)=> Err(ZomeApiError::from("update_authorizor: Unable to Update Key Meta".to_string()))
             }
         },
         Err(_)=>{
@@ -123,14 +127,22 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
 }
 
 pub fn handle_get_authorizor() -> ZomeApiResult<Authorizor> {
-    let authorizor_address = handle_get_my_authorizor()?;
+    let authorizor_address = check_vec_if_valid_value(query_local_chain_for_entry_type("authorizor".to_string())?)?;
     utils::get_as_type(authorizor_address)
 }
 
-pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
-    let authorizor_list = get_all_authorizor()?;
+pub fn handle_get_authorizor_meta() -> ZomeApiResult<u64> {
+    let authorizor_meta_address = check_vec_if_valid_value(query_local_chain_for_entry_type("auth_key_derivation_path".to_string())?)?;
+    utils::get_as_type(authorizor_meta_address)
+}
+
+// ----------------------
+// Helper functions
+// ----------------------
+
+pub fn check_vec_if_valid_value(list:Vec<(ChainHeader,Entry)>)-> Result<HashString,HolochainError> {
     let mut address:Vec<HashString>=Vec::new();
-    for k in authorizor_list {
+    for k in list {
         if &AGENT_ADDRESS.to_string() == &k.0.provenances()[0].0.to_string(){
             address.push(k.0.entry_address().to_owned());
         }
@@ -139,7 +151,7 @@ pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
         Ok(address[0].to_owned())
     }
     else{
-        Err(ZomeApiError::from("handle_get_my_authorizor: No Rules Exists".to_string()))
+        Err(HolochainError::ErrorGeneric( format!("check_vec_if_valid_value: The values your Searching does not exists")))
     }
 }
 
@@ -148,10 +160,10 @@ pub fn handle_get_my_authorizor()->ZomeApiResult<HashString>{
 // "provenances":[["liza------------------------------------------------------------------------------AAAOKtP2nI","TODO"]],
 // "link":"QmSdoZMyqJFL7bBfsMP6wZYSmVd1kVqpoGrHuyRuxfqG7Y",
 // "link_same_type":null,"link_crud":null,"timestamp":"1970-01-01T00:00:00+00:00"}'
-pub fn get_all_authorizor() -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
+pub fn query_local_chain_for_entry_type(entry_type: String) -> Result<Vec<(ChainHeader,Entry)>,HolochainError> {
     if let QueryResult::HeadersWithEntries( entries_with_headers ) = hdk::query_result(
         vec![
-            "authorizor",
+            entry_type,
         ].into(),
         QueryArgsOptions{ headers: true, entries: true, ..Default::default()})? {
         Ok(entries_with_headers)

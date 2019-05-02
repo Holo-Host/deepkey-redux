@@ -30,11 +30,11 @@ pub mod dpki;
 define_zome! {
     entries: [
         authorizor::definitions(),
-        // authorizor::auth_path_definitions(),
+        authorizor::auth_path_definitions(),
         // device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
-        // key_registration::meta_definitions(),
+        key_registration::meta_definitions(),
         keyset_root::definitions(),
         rules::definitions()
         // rules::rev_path_definitions()
@@ -70,10 +70,25 @@ define_zome! {
             outputs: |result: ZomeApiResult<HashString>|,
             handler: authorizor::handlers::handle_create_authorizor
         }
-        set_key: {
-            inputs: | new_agent_key: HashString |,
+        get_auth_meta: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<u64> |,
+            handler: authorizor::handlers::handle_get_authorizor_meta
+        }
+        register_key: {
+            inputs: | new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_create_key_registration
+        }
+        update_key: {
+            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: key_registration::handlers::handle_update_key_registration
+        }
+        delete_key: {
+            inputs: | old_key:HashString, signed_old_key:Signature |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: key_registration::handlers::handle_delete_key_registration
         }
         key_status: {
             inputs: | key: HashString |,
@@ -89,7 +104,10 @@ define_zome! {
         update_rules,
         get_rules,
         set_authorizor,
-        set_key,
+        get_auth_meta,
+        register_key,
+        update_key,
+        delete_key,
         key_status
         ]
     }

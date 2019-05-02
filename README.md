@@ -11,13 +11,13 @@ This is a core hApp. The DeepKey is used for Key Management for hApps in Holocha
 `hc test`
 
 ## Documentation
-- #### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA?both)
+- #### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA)
 
 ## Built With
 * [Holochain v0.0.12-alpha1](https://github.com/holochain/holochain-rust)
 
 ## Authors
-* **Joel Ulahanna** - [Zo-El](https://github.com/zo-el)
+* **Joel Ulahanna** - [zo-el](https://github.com/zo-el)
 
 ## License
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
