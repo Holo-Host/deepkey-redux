@@ -91,5 +91,10 @@ module.exports = (scenario) => {
     t.equal(deleated_key.Ok,null)
     console.log(" Deleated Key Succesfully ");
 
+    sleep.sleep(5);
+
+    const checking_key_4 = liza.call("deepkey", "key_status", {key:APP_KEY_2})
+    t.deepEqual(checking_key_4.Ok,"deleted" )
+
   })
 }
