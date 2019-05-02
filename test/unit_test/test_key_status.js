@@ -39,7 +39,7 @@ module.exports = (scenario) => {
     t.deepEqual(checking_key_1.Ok,"Doesn't Exists" )
 
 // Lets create an agent key
-    const key_commit = await liza.call("deepkey", "set_key", {
+    const key_commit = await liza.call("deepkey", "register_key", {
       new_key: APP_KEY_1,
       derivation_index:1,
       key_type:"AppSig",

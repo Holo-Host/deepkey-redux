@@ -75,7 +75,7 @@ define_zome! {
             outputs: |result: ZomeApiResult<u64> |,
             handler: authorizor::handlers::handle_get_authorizor_meta
         }
-        set_key: {
+        register_key: {
             inputs: | new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_create_key_registration
@@ -105,7 +105,7 @@ define_zome! {
         get_rules,
         set_authorizor,
         get_auth_meta,
-        set_key,
+        register_key,
         update_key,
         delete_key,
         key_status
