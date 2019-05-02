@@ -131,6 +131,40 @@ pub fn handle_update_key_registration(old_key:HashString, signed_old_key:Signatu
     }
 }
 
+pub fn handle_delete_key_registration( old_key: HashString, signed_old_key:Signature) -> ZomeApiResult<()> {
+// Fetch the revocation Key
+    let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
+
+// Verify if the right Revocation Key is used to sign the key
+    if !hdk::verify_signature(Provenance::new(revocation_authority[0].entry.revocation_key.to_owned(),signed_old_key.to_owned()), String::from(old_key.to_owned()))? {
+        return Err(ZomeApiError::Internal("Signature Not Able to be Verified".to_string()))
+    }
+
+// get Address of the registered old_key
+    let old_key_address = get_address_of_key(&old_key,query_local_chain_for_entry_type("key_registration".to_string())?)?;
+
+// Recreate the Anchor
+    let old_key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
+        pub_key : old_key.to_owned()
+    }.into());
+    let old_key_anchor_address = hdk::entry_address(&old_key_anchor)?;
+
+// get Address of the registered old_key
+    let old_key_meta_address = get_address_of_key_meta(&old_key,query_local_chain_for_entry_type("key_meta".to_string())?)?;
+
+
+    match hdk::remove_entry(&old_key_address){
+        Ok(_)=>{
+            hdk::remove_entry(&old_key_anchor_address)?;
+            hdk::remove_entry(&old_key_meta_address)?;
+            Ok(())
+        },
+        Err(_)=>{
+            Err(ZomeApiError::from("handle_delete_key_registration: Unable to Delete Key".to_string()))
+        }
+    }
+
+}
 
 // pub fn handle_get_key_registration(address: Address) -> ZomeApiResult<Option<Entry>> {
 //     hdk::get_entry(&address)
@@ -214,7 +248,7 @@ fn query_local_chain_for_entry_type(entry_type: String) -> Result<Vec<(ChainHead
         QueryArgsOptions{ headers: true, entries: true, ..Default::default()})? {
             Ok(entries_with_headers
             .into_iter()
-            .filter(|entry| entry.0.link_update_delete().is_none())
+            // .filter(|entry| entry.0.link_update_delete().is_none())
             .collect())
     } else {
         Err(HolochainError::ErrorGeneric(format!("Unexpected hdk::query_result")))

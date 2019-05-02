@@ -85,6 +85,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_update_key_registration
         }
+        delete_key: {
+            inputs: | old_key:HashString, signed_old_key:Signature |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: key_registration::handlers::handle_delete_key_registration
+        }
         key_status: {
             inputs: | key: HashString |,
             outputs: |result: ZomeApiResult<RawString>|,
@@ -102,6 +107,7 @@ define_zome! {
         get_auth_meta,
         set_key,
         update_key,
+        delete_key,
         key_status
         ]
     }
