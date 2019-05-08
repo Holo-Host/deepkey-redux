@@ -1,6 +1,6 @@
 /** Original Testing without manually setting up conductor */
-
-const { Config, Scenario } = require("@holochain/holochain-nodejs")
+const { Config, Scenario } = require("../../holochain-rust/nodejs_conductor")
+// const { Config, Scenario } = require("@holochain/holochain-nodejs")
 Scenario.setTape(require("tape"))
 const dnaPath = "./dist/DeepKey.dna.json"
 const agentLiza = Config.agent("liza")
