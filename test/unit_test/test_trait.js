@@ -60,8 +60,7 @@ module.exports = (scenario) => {
 
     // Register A Key
 
-    const registering_app_key = await liza.call("deepkey", "register_key", {
-      new_key: APP_KEY_1,
+    const registering_app_key = await liza.call("deepkey", "create_agent_key", {
       derivation_index:1,
       key_type:"AppSig",
       context:"dna12345"
