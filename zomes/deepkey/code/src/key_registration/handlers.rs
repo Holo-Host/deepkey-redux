@@ -33,20 +33,17 @@ fn choose_key_type(key_type: &AppKeyType) -> KeyType {
     }
 }
 
-pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64, key_type:AppKeyType, context:String) -> ZomeApiResult<Address> {
+pub fn handle_create_key_registration(derivation_index: u64, key_type:AppKeyType, context:String) -> ZomeApiResult<Address> {
 // Validate the key and sign the key wit the auth key
     let derived_key = derive_key(&derivation_index, &context, choose_key_type(&key_type))?.trim_matches('"').to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
-    if derived_key_hashstring != new_key {
-        return Err(ZomeApiError::Internal("DeepKey Error : The derivation path does not match the key you passed in".to_string()))
-    }
 
 //Get the Auth Kye ID
     let auth_key_signing_keys = sign_key_by_authorization_key(derived_key)?;
 
 // Registering the Key
     let key_registration = KeyRegistration {
-        new_agent_key: new_key.to_owned(),
+        new_agent_key: derived_key_hashstring.to_owned(),
         authorization_sig: Signature::from(auth_key_signing_keys),
         prior_key: None, // (missing on Create, required on Update)
         revocation_sig: None, // (missing on Create, required on Update or Delete)
@@ -54,10 +51,10 @@ pub fn handle_create_key_registration(new_key:HashString, derivation_index: u64,
     let key_registration_entry = Entry::App("key_registration".into(), key_registration.into());
     // Create KeyAnchor to see whether they are currently LIVE/valid or have been updated/deleted.
     let key_anchor = Entry::App("key_anchor".into(), KeyAnchor{
-        pub_key : new_key.to_owned()
+        pub_key : derived_key_hashstring.to_owned()
     }.into());
     let key_meta = Entry::App("key_meta".into(), KeyMeta{
-        new_key: new_key.to_owned(),
+        new_key: derived_key_hashstring.to_owned(),
         derivation_index: derivation_index,
         key_type: key_type,
         context: context // some_app_DNA_hash
