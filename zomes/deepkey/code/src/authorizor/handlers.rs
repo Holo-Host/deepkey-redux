@@ -25,12 +25,9 @@ fn generate_auth(index:u64) -> ZomeApiResult<String> {
     let auth_seed = ["auth_seed:",&index.to_string()].concat();
     let auth_key = ["auth_key:",&index.to_string()].concat();
     // Check if the authSeed Exists before
-    //*******************
-    // TODO : if it exist send the authorization_key back not an Err
-    //*******************
     let list_of_secreats = hdk::keystore_list().map(|keystore_ids| keystore_ids.ids)?;
     if list_of_secreats.contains(&auth_seed){
-        return Err(ZomeApiError::Internal("Authorization key path seed already Exists".to_string()))
+        return hdk::keystore_get_public_key(auth_key)
     }
     hdk::keystore_derive_seed("root_seed".to_string(), auth_seed.to_owned(), "authSeed".to_string(), index)?;
     hdk::keystore_derive_key(auth_seed.to_owned(),  auth_key, KeyType::Signing)

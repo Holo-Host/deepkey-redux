@@ -25,13 +25,13 @@ module.exports = (scenario) => {
     // Solve this bug.
     // should work when you run this commented out test as well
     //***************
-    // // Failure to pass valid signature
-    // const wrong_rules = liza.call("deepkey", "set_authorizor", {
-    //   authorization_key_path: 1,
-    //   signed_auth_key:WRONG_SINGED_AUTH_KEY
-    // })
-    // console.log("Error to set rules : ",wrong_rules);
-    // t.ok(wrong_rules.Err)
+    // Failure to pass valid signature
+    const wrong_rules = liza.call("deepkey", "set_authorizor", {
+      authorization_key_path: 1,
+      signed_auth_key:WRONG_SINGED_AUTH_KEY
+    })
+    console.log("Error to set rules : ",wrong_rules);
+    t.ok(wrong_rules.Err)
 
 
     // Setting the AUth
