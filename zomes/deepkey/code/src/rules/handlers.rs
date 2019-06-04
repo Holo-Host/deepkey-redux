@@ -1,4 +1,5 @@
 use hdk::{
+    utils,
     error::{ZomeApiResult,ZomeApiError},
 };
 use hdk::holochain_core_types::{
@@ -32,7 +33,7 @@ pub fn create_new_rules(keyset_root:&HashString,revocation_key:&HashString, sign
         prior_revocation_self_sig: signature
     };
     let entry = Entry::App("rules".into(), rule.into());
-    utils::commit_and_link(&entry, &keyset_root, "rules_link_tag")
+    utils::commit_and_link(&entry, &keyset_root, "rules_link_tag","")
 }
 
 fn update_rules(keyset_root:&HashString,revocation_key:&HashString,old_rule_address:HashString) -> ZomeApiResult<Address> {
@@ -43,11 +44,12 @@ fn update_rules(keyset_root:&HashString,revocation_key:&HashString,old_rule_addr
     };
     let entry = Entry::App("rules".into(), rule.into());
     let address = hdk::update_entry(entry, &old_rule_address)?;
-    hdk::link_entries(&keyset_root,&address,"rules_link_tag")?;
+    // TODO: update the tag
+    hdk::link_entries(&keyset_root,&address,"rules_link_tag","")?;
     Ok(address)
 }
 
-pub fn handle_get_my_rule_details() -> ZomeApiResult<utils::GetLinksLoadResult<rules::Rules>> {
+pub fn handle_get_my_rule_details() -> ZomeApiResult<hc_utils::GetLinksLoadResult<rules::Rules>> {
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
-    utils::get_links_and_load_type(&keyset_root,"rules_link_tag")
+    hc_utils::get_links_and_load_type(&keyset_root,Some("rules_link_tag".to_string()))
 }

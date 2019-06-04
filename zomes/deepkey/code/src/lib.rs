@@ -62,7 +62,7 @@ define_zome! {
         }
         get_rules: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<utils::GetLinksLoadResult<rules::Rules>> |,
+            outputs: |result: ZomeApiResult<hc_utils::GetLinksLoadResult<rules::Rules>> |,
             handler: rules::handlers::handle_get_my_rule_details
         }
         set_authorizor: {

@@ -31,14 +31,15 @@ pub fn handle_set_keyset_root(root_pubkey:HashString,signature:Signature) -> Zom
             };
             let entry = Entry::App("keyset_root".into(), root.into());
             let entry_addr = hdk::commit_entry(&entry)?;
-            hdk::link_entries(&entry_addr,&AGENT_ADDRESS, "deepkey_agent_link_tag")?;
+            // TODO: update the tag
+            hdk::link_entries(&entry_addr,&AGENT_ADDRESS, "deepkey_agent_link_tag","")?;
             Ok(entry_addr)
         }
     }
 }
 
-// pub fn handle_get_keyset_root_entry(address:Address) -> ZomeApiResult<utils::GetLinksLoadResult<KeysetRoot>> {
-//     utils::get_links_and_load_type(&address,"deepkey_agent_link_tag")
+// pub fn handle_get_keyset_root_entry(address:Address) -> ZomeApiResult<hc_utils::GetLinksLoadResult<KeysetRoot>> {
+//     hc_utils::get_links_and_load_type(&address,Some("deepkey_agent_link_tag".to_string()))
 // }
 
 pub fn handle_get_my_keyset_root()->ZomeApiResult<HashString>{
