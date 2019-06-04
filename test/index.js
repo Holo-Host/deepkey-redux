@@ -4,7 +4,7 @@ const { Config, Scenario } = require("@holochain/holochain-nodejs")
 Scenario.setTape(require("tape"))
 const dnaPath = "./dist/DeepKey.dna.json"
 const agentLiza = Config.agent("liza")
-const dna = Config.dna(dnaPath,'deepkey')
+const dna = Config.dna(dnaPath,'dpki')
 const instanceLiza = Config.instance(agentLiza, dna)
 const scenario = new Scenario([instanceLiza], { debugLog: true })
 

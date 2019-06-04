@@ -11,7 +11,7 @@ const SIGNED_APP_KEY_2_BY_REV_KEY = "88drLZ676Wez6SFSDmQrw1W0Cg4E04AdYWXfrgu6NFp
 module.exports = (scenario) => {
   scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
 
-    const keyset_root_address = liza.call("deepkey", "init", {revocation_key: REVOCATION_KEY})
+    const keyset_root_address = liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
     console.log("My keyset_root_address : ",keyset_root_address.Ok);
     t.ok(keyset_root_address.Ok)
 
@@ -26,7 +26,7 @@ module.exports = (scenario) => {
     // should work when you run this commented out test as well
     //***************
     // Failure to pass valid signature
-    const wrong_rules = liza.call("deepkey", "set_authorizor", {
+    const wrong_rules = liza.call("dpki", "set_authorizor", {
       authorization_key_path: 1,
       signed_auth_key:WRONG_SINGED_AUTH_KEY
     })
@@ -35,32 +35,32 @@ module.exports = (scenario) => {
 
 
     // Setting the AUth
-    const setting_rules = await liza.call("deepkey", "set_authorizor", {
+    const setting_rules = await liza.call("dpki", "set_authorizor", {
       authorization_key_path: 1,
       signed_auth_key:SIGNED_AUTH_KEY_1
     })
     console.log("These are the setting_rules : ",setting_rules);
     t.ok(setting_rules.Ok)
 
-    const auth_meta_1 = await liza.callSync("deepkey", "get_auth_meta", {})
+    const auth_meta_1 = await liza.callSync("dpki", "get_auth_meta", {})
     console.log("These are the auth_meta : ",auth_meta_1);
     t.equal(auth_meta_1.Ok,1)
 
     // Updating the AUth
-    const updating_rules = await liza.call("deepkey", "set_authorizor", {
+    const updating_rules = await liza.call("dpki", "set_authorizor", {
       authorization_key_path: 2,
       signed_auth_key:SIGNED_AUTH_KEY_2
     })
     console.log("These are the updating_rules : ",updating_rules);
     t.ok(updating_rules.Ok)
 
-    const auth_meta_2 = await liza.callSync("deepkey", "get_auth_meta", {})
+    const auth_meta_2 = await liza.callSync("dpki", "get_auth_meta", {})
     console.log("These are the auth_meta : ",auth_meta_2);
     t.equal(auth_meta_2.Ok,2)
 
     // Register A Key
 
-    const registering_app_key = await liza.call("deepkey", "create_agent_key", {
+    const registering_app_key = await liza.call("dpki", "create_agent_key", {
       derivation_index:1,
       key_type:"AppSig",
       context:"dna12345"
@@ -70,7 +70,7 @@ module.exports = (scenario) => {
 
     sleep.sleep(5);
 
-    const updated_key = await liza.call("deepkey", "update_key", {
+    const updated_key = await liza.call("dpki", "update_key", {
       old_key:APP_KEY_1,
       signed_old_key:SIGNED_APP_KEY_1_BY_REV_KEY,
       new_key:APP_KEY_2,
@@ -83,7 +83,7 @@ module.exports = (scenario) => {
 
     sleep.sleep(5);
 
-    const deleated_key = await liza.call("deepkey", "delete_key", {
+    const deleated_key = await liza.call("dpki", "delete_key", {
       old_key:APP_KEY_2,
       signed_old_key:SIGNED_APP_KEY_2_BY_REV_KEY
     })
@@ -92,7 +92,7 @@ module.exports = (scenario) => {
 
     sleep.sleep(5);
 
-    const checking_key_4 = liza.call("deepkey", "key_status", {key:APP_KEY_2})
+    const checking_key_4 = liza.call("dpki", "key_status", {key:APP_KEY_2})
     t.deepEqual(checking_key_4.Ok,"deleted" )
 
   })

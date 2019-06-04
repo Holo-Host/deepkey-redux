@@ -1,5 +1,5 @@
 [package]
-name = "deepkey"
+name = "dpki"
 version = "0.0.1"
 authors = ["zo-el <joel.ulahanna@holo.host>"]
 edition = "2018"

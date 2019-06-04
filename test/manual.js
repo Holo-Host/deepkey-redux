@@ -45,11 +45,11 @@ test('Initial test (run)', t => {
     Conductor.run(toml, (stop, conductor) => {
 
       const instance = new DnaInstance('deepkey_instance', conductor)
-      const keyset_root_address = instance.call("deepkey", "init", {})
+      const keyset_root_address = instance.call("dpki", "init", {})
       // console.log("keyset_root->",keyset_root_address);
       t.ok(keyset_root_address.Ok)
 
-      const get_root_address = instance.call("deepkey", "get_initialization_data", {})
+      const get_root_address = instance.call("dpki", "get_initialization_data", {})
       // console.log("->",get_root_address);
       t.ok(get_root_address.Ok)
 
