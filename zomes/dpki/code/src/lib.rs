@@ -25,7 +25,7 @@ pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
-pub mod dpki;
+pub mod dpki_trait;
 
 define_zome! {
     entries: [
@@ -45,16 +45,23 @@ define_zome! {
     }
 
     functions: [
+    // DPKI Trait functions
         init: {
             inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: dpki::init
+            handler: dpki_trait::init
         }
         get_initialization_data: {
             inputs: | |,
             outputs: |result: ZomeApiResult<HashString>|,
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
+        create_agent_key: {
+            inputs: | derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: key_registration::handlers::handle_create_key_registration
+        }
+    // Other Functions
         update_rules: {
             inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
@@ -74,11 +81,6 @@ define_zome! {
             inputs: | |,
             outputs: |result: ZomeApiResult<u64> |,
             handler: authorizor::handlers::handle_get_authorizor_meta
-        }
-        create_agent_key: {
-            inputs: | derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
-            outputs: |result: ZomeApiResult<Address>|,
-            handler: key_registration::handlers::handle_create_key_registration
         }
         update_key: {
             inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
@@ -101,11 +103,11 @@ define_zome! {
         hc_public [
         init,
         get_initialization_data,
+        create_agent_key,
         update_rules,
         get_rules,
         set_authorizor,
         get_auth_meta,
-        create_agent_key,
         update_key,
         delete_key,
         key_status

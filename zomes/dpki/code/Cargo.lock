@@ -91,18 +91,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "deepkey"
-version = "0.0.1"
-dependencies = [
- "hc_utils 0.1.0",
- "hdk 0.0.18-alpha1 (git+https://github.com/holochain/holochain-rust?branch=release-0.0.18-alpha1)",
- "holochain_core_types_derive 0.0.18-alpha1 (git+https://github.com/holochain/holochain-rust?branch=release-0.0.18-alpha1)",
- "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "difference"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -113,6 +101,18 @@ version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "dpki"
+version = "0.0.1"
+dependencies = [
+ "hc_utils 0.1.0",
+ "hdk 0.0.18-alpha1 (git+https://github.com/holochain/holochain-rust?branch=release-0.0.18-alpha1)",
+ "holochain_core_types_derive 0.0.18-alpha1 (git+https://github.com/holochain/holochain-rust?branch=release-0.0.18-alpha1)",
+ "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
