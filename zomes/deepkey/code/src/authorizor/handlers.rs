@@ -1,4 +1,5 @@
 use hdk::{
+    utils,
     error::{ZomeApiResult, ZomeApiError},
     AGENT_ADDRESS,
     holochain_wasm_utils::api_serialization::{
@@ -86,7 +87,7 @@ fn update_authorizor(authorization_key:&HashString, auth_signed_by_revocation_ke
     }
 
     // Sign wit the old_auth.authorization_key
-    // let auth_signed_by_revocation_key = utils::sign("primary_keybundle:sign_key".to_string(),String::from(authorization_key.clone()))?;
+    // let auth_signed_by_revocation_key = hc_utils::sign("primary_keybundle:sign_key".to_string(),String::from(authorization_key.clone()))?;
     let authorizor = Authorizor {
         authorization_key: authorization_key.to_owned(),
         revocation_authority:revocation_address.to_owned(),

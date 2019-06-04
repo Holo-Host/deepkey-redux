@@ -68,7 +68,7 @@ pub fn definitions() -> ValidatingEntryType{
         links: [
             to!(
                 "%agent_id",
-                tag: "deepkey_agent_link_tag",
+                link_type: "deepkey_agent_link_tag",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
@@ -80,7 +80,7 @@ pub fn definitions() -> ValidatingEntryType{
             ),
             to!(
                 "rules",
-                tag: "rules_link_tag",
+                link_type: "rules_link_tag",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry

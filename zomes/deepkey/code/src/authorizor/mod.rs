@@ -52,7 +52,7 @@ pub fn definitions() -> ValidatingEntryType{
         links: [
             from!(
                 "%agent_id",
-                tag: "authorizor_link_tag",
+                link_type: "authorizor_link_tag",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry

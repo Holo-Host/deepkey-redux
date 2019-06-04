@@ -81,7 +81,7 @@ pub fn definitions() -> ValidatingEntryType{
         links: [
             from!(
                 "keyset_root",
-                tag: "rules_link_tag",
+                link_type: "rules_link_tag",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
