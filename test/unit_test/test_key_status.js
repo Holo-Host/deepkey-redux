@@ -8,17 +8,17 @@ const APP_KEY_1 = "HcSCJw6d7h53IAh8twROoUTe8qEiibgfxd3AuB9TwU7UktskXWiSyJ6b8334U
 const APP_KEY_2 = "HcScIidm755H3Oohd6PFA5TY9ebhxofqpbtZVceQ3yp4p6bbDfaGijB3sbapmii";
 const SIGNED_APP_KEY_1_BY_REV_KEY ="b9VltsBRq71nPcJO/EzBz4EtUkqVPNhbS9ggYi90/hldNgHMOETtW19TdLxUXg3VpznjDP6pesyoBpcvzJXsBA==";
 
-function genesis (liza){
-  return liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
+async function genesis (liza){
+  return await liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
 }
 
 module.exports = (scenario) => {
-  scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
+  scenario("testing out how genesis/init calls should be set up", async(s, t, { liza }) => {
 // On genesis we have to make this call
-    let address = genesis(liza)
+    let address = await genesis(liza)
     sleep.sleep(5);
 // This is to just test out if we get the right keyset_root address
-    const keyset_root_address = liza.call("dpki", "get_initialization_data", {})
+    const keyset_root_address = await liza.call("dpki", "get_initialization_data", {})
     t.equal(keyset_root_address.Ok,address.Ok)
 
 // Lets create an authorizor key
@@ -30,12 +30,12 @@ module.exports = (scenario) => {
     t.ok(authorizor_commit.Ok)
 
 // Check if the key exist for the authorizor
-    const checking_authorizor_key = liza.call("dpki", "key_status", {key:authorizor_commit.Ok})
+    const checking_authorizor_key = await liza.call("dpki", "key_status", {key:authorizor_commit.Ok})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
 
 // Check if the key exist for the key
 // This is befor this is created
-    const checking_key_1 = liza.call("dpki", "key_status", {key:APP_KEY_1})
+    const checking_key_1 = await liza.call("dpki", "key_status", {key:APP_KEY_1})
     t.deepEqual(checking_key_1.Ok,"Doesn't Exists" )
 
 // Lets create an agent key
@@ -48,7 +48,7 @@ module.exports = (scenario) => {
 
 // Check if the key exist for the key
 // Now it should exist
-    const checking_key_2 = liza.call("dpki", "key_status", {key:APP_KEY_1})
+    const checking_key_2 = await liza.call("dpki", "key_status", {key:APP_KEY_1})
     t.deepEqual(checking_key_2.Ok,"live" )
 
     sleep.sleep(5)
@@ -68,10 +68,10 @@ module.exports = (scenario) => {
 
 // Check if the key exist for the key
 // Now the old key should be shown as updated and the new should be live
-    const checking_key_3 = liza.call("dpki", "key_status", {key:APP_KEY_1})
+    const checking_key_3 = await liza.call("dpki", "key_status", {key:APP_KEY_1})
     t.deepEqual(checking_key_3.Ok,"modified" )
 
-    const checking_key_4 = liza.call("dpki", "key_status", {key:APP_KEY_2})
+    const checking_key_4 = await liza.call("dpki", "key_status", {key:APP_KEY_2})
     t.deepEqual(checking_key_4.Ok,"live" )
 
   })
