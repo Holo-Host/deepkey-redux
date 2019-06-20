@@ -9,6 +9,7 @@ use hdk::{
     	entry::{AppEntryValue, Entry},
     	cas::content::AddressableContent,
         signature::Signature,
+        link::LinkMatch
     },
     error::{ZomeApiResult, ZomeApiError}
 };
@@ -26,9 +27,11 @@ pub fn get_links_and_load_type<
 	R: TryFrom<AppEntryValue>
 >(
     base: &HashString,
-    tag: Option<String>
+    link_type: Option<String>
 ) -> ZomeApiResult<GetLinksLoadResult<R>> {
-	let link_load_results = hdk::get_links_and_load(base, tag, Some("".to_string()))?;
+    let link_type = match link_type {Some(ref s) => LinkMatch::Regex(s.as_ref()), None => LinkMatch::Any};
+
+	let link_load_results = hdk::get_links_and_load(base, link_type, LinkMatch::Exactly(""))?;
 
 	Ok(link_load_results
 	.iter()

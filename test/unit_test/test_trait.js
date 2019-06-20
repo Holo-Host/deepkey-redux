@@ -9,10 +9,10 @@ const APP_KEY_2 = "HcScIidm755H3Oohd6PFA5TY9ebhxofqpbtZVceQ3yp4p6bbDfaGijB3sbapm
 const SIGNED_APP_KEY_1_BY_REV_KEY = "b9VltsBRq71nPcJO/EzBz4EtUkqVPNhbS9ggYi90/hldNgHMOETtW19TdLxUXg3VpznjDP6pesyoBpcvzJXsBA==";
 const SIGNED_APP_KEY_2_BY_REV_KEY = "88drLZ676Wez6SFSDmQrw1W0Cg4E04AdYWXfrgu6NFpr81NNsyoNr9jKU6StS/BaAVxR5mC9+cDAmgm+97pqCQ==";
 module.exports = (scenario) => {
-  scenario.runTape("testing out how genesis/init calls should be set up", async(t, { liza }) => {
+  scenario("testing out how genesis/init calls should be set up", async(s, t, { liza }) => {
 
-    const keyset_root_address = liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
-    console.log("My keyset_root_address : ",keyset_root_address.Ok);
+    const keyset_root_address = await liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
+    console.log("My keyset_root_address : ",keyset_root_address);
     t.ok(keyset_root_address.Ok)
 
 
@@ -26,7 +26,7 @@ module.exports = (scenario) => {
     // should work when you run this commented out test as well
     //***************
     // Failure to pass valid signature
-    const wrong_rules = liza.call("dpki", "set_authorizor", {
+    const wrong_rules = await liza.call("dpki", "set_authorizor", {
       authorization_key_path: 1,
       signed_auth_key:WRONG_SINGED_AUTH_KEY
     })
@@ -92,7 +92,7 @@ module.exports = (scenario) => {
 
     sleep.sleep(5);
 
-    const checking_key_4 = liza.call("dpki", "key_status", {key:APP_KEY_2})
+    const checking_key_4 = await liza.call("dpki", "key_status", {key:APP_KEY_2})
     t.deepEqual(checking_key_4.Ok,"deleted" )
 
   })
