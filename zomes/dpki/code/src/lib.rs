@@ -51,6 +51,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<Address>|,
             handler: dpki_trait::init
         }
+        is_initialized: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<bool>|,
+            handler: dpki_trait::is_initialized
+        }
         get_initialization_data: {
             inputs: | |,
             outputs: |result: ZomeApiResult<HashString>|,
