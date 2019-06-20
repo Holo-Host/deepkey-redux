@@ -1,0 +1,101 @@
+bridges = []
+persistence_dir = "/home/zo-el/Documents/deepkey-dnas/tmp"
+
+[[agents]]
+id = "host-agent"
+name = "DeepKey Host"
+keystore_file = "/home/zo-el/.config/holochain/keys/HcSCIgT5rYY5Nx76mpROT8GTegrej8awvBGqI98Zfdskh6jb4UTj5YT5xMvfjwz"
+public_address = "HcSCIgT5rYY5Nx76mpROT8GTegrej8awvBGqI98Zfdskh6jb4UTj5YT5xMvfjwz"
+
+
+[[dnas]]
+file = "/home/zo-el/Documents/deepkey-dnas/DeepKey.dna.json"
+hash = "QmTeoXN8BmxLdr1nGhWcRZkBG2K8U991W3EmkBKGXhyrz1"
+id = "deepkey"
+
+[[dnas]]
+file = "/home/zo-el/Documents/deepkey-dnas/hha.dna.json"
+hash = "QmXuPFimMCoYQrXqX9vr1vve8JtpQ7smfkw1LugqEhyWTr"
+id = "holo-hosting-app"
+
+[[dnas]]
+file = "/home/zo-el/Documents/deepkey-dnas/happ-store.dna.json"
+hash = "QmWXJD8gF4j27rgWRem5ST8WasskPxwRN5wropMMhYn36x"
+id = "happ-store"
+
+[[instances]]
+agent = "host-agent"
+dna = "holo-hosting-app"
+id = "holo-hosting-app"
+[instances.storage]
+path = "/home/zo-el/Documents/storage/holo-hosting-app"
+type = "file"
+
+[[instances]]
+agent = "host-agent"
+dna = "happ-store"
+id = "happ-store"
+[instances.storage]
+path = "/home/zo-el/Documents/storage/happ-store"
+type = "file"
+
+[[instances]]
+agent = "host-agent"
+dna = "deepkey"
+id = "dpki_happ"
+[instances.storage]
+path = "/home/zo-el/Documents/storage/deepkey"
+type = "file"
+
+[[interfaces]]
+id = "master-interface"
+admin = true
+
+[[interfaces.instances]]
+id = "holo-hosting-app"
+[[interfaces.instances]]
+id = "happ-store"
+
+[interfaces.driver]
+port = 1111
+type = "websocket"
+
+[[ui_bundles]]
+hash = 'Qm000'
+id = 'bundle1'
+root_dir = '/home/zo-el/Documents/deepkey-dnas/hha_ui'
+
+[[ui_interfaces]]
+bundle = 'bundle1'
+dna_interface = 'master-interface'
+id = 'ui-interface-1'
+port = 8800
+
+[[ui_bundles]]
+hash = 'Qm001'
+id = 'bundle2'
+root_dir = '/home/zo-el/Documents/deepkey-dnas/happ-store'
+
+[[ui_interfaces]]
+bundle = 'bundle2'
+dna_interface = 'master-interface'
+id = 'ui-interface-2'
+port = 8000
+
+[dpki]
+instance_id = "dpki_happ"
+init_params = "{}"
+
+[logger]
+type = "debug"
+[[logger.rules.rules]]
+color = "red"
+exclude = false
+pattern = "^err/"
+[[logger.rules.rules]]
+color = "green"
+exclude = false
+pattern = "^debug/dna"
+[[logger.rules.rules]]
+exclude = true
+pattern = ".*"

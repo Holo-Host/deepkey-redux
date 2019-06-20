@@ -27,3 +27,9 @@ pub fn init (revocation_key: HashString) -> ZomeApiResult<Address>{
 
     Ok(keyset_root)
 }
+
+// TODO
+// NOTE: Just for the testing
+pub fn is_initialized () -> ZomeApiResult<bool>{
+    Ok(false)
+}
