@@ -9,7 +9,7 @@ const APP_KEY_2 = "HcScIidm755H3Oohd6PFA5TY9ebhxofqpbtZVceQ3yp4p6bbDfaGijB3sbapm
 const SIGNED_APP_KEY_1_BY_REV_KEY ="b9VltsBRq71nPcJO/EzBz4EtUkqVPNhbS9ggYi90/hldNgHMOETtW19TdLxUXg3VpznjDP6pesyoBpcvzJXsBA==";
 
 async function genesis (liza){
-  return await liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
+  return await liza.call("dpki", "init",  {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
 }
 
 module.exports = (scenario) => {

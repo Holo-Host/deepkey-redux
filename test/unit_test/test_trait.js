@@ -11,7 +11,7 @@ const SIGNED_APP_KEY_2_BY_REV_KEY = "88drLZ676Wez6SFSDmQrw1W0Cg4E04AdYWXfrgu6NFp
 module.exports = (scenario) => {
   scenario("testing out how genesis/init calls should be set up", async(s, t, { liza }) => {
 
-    const keyset_root_address = await liza.call("dpki", "init", {revocation_key: REVOCATION_KEY})
+    const keyset_root_address = await liza.call("dpki", "init", {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
     console.log("My keyset_root_address : ",keyset_root_address);
     t.ok(keyset_root_address.Ok)
 
