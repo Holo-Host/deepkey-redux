@@ -84,7 +84,7 @@ port = 8000
 
 [dpki]
 instance_id = "dpki_happ"
-init_params = "{}"
+init_params = "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"
 
 [logger]
 type = "debug"
