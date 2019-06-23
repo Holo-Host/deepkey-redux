@@ -7,10 +7,26 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
+    error::HolochainError,
+    json::JsonString,
     hash::HashString,
 };
+use serde::{Deserialize, Serialize};
+use serde_json::Result;
 
-pub fn init (revocation_key: HashString) -> ZomeApiResult<Address>{
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct InitParams {
+    revocation_key: String
+}
+
+pub fn init (params: String) -> ZomeApiResult<Address>{
+
+    // DANGER :: Used unrap
+    let init_params: InitParams = serde_json::from_str(&params).unwrap();
+    // Conver the string to get the Json you expect
+    // let init_params = InitParams::try_from(params)?;
+    let revocation_key = HashString::from(init_params.revocation_key.to_owned());
+
     // If this is the First DeepKey instance for an agent
     // We have to do the following steps
     // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key
