@@ -47,7 +47,7 @@ define_zome! {
     functions: [
     // DPKI Trait functions
         init: {
-            inputs: | revocation_key: HashString |,
+            inputs: | params: String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: dpki_trait::init
         }
