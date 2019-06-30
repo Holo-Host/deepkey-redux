@@ -4,13 +4,22 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
+    cas::content::AddressableContent,
     entry::Entry,
     hash::HashString,
     signature::Signature,
+    link::LinkMatch,
 };
 
-use crate::rules;
+
+use crate::rules::{
+    self,
+    Rules,
+    GetResponse
+};
 use crate::keyset_root;
+
+
 
 pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
     // Checking if keyset_root Exists
@@ -49,7 +58,17 @@ fn update_rules(keyset_root:&HashString,revocation_key:&HashString,old_rule_addr
     Ok(address)
 }
 
-pub fn handle_get_my_rule_details() -> ZomeApiResult<hc_utils::GetLinksLoadResult<rules::Rules>> {
+pub fn handle_get_my_rule_details() -> ZomeApiResult<Vec<GetResponse<rules::Rules>>> {
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
-    hc_utils::get_links_and_load_type(&keyset_root,Some("rules_link_tag".to_string()))
+
+    Ok(
+    hdk::utils::get_links_and_load_type(
+        &keyset_root,
+        LinkMatch::Exactly("rules_link_tag"), // the link type to match
+        LinkMatch::Any
+    )?.into_iter().map(|rules: Rules| {
+        let address = Entry::App("rules".into(), rules.clone().into()).address();
+        GetResponse{entry: rules, address}
+    }).collect()
+    )
 }

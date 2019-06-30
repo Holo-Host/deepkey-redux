@@ -25,6 +25,8 @@ pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
+use rules::GetResponse;
+
 pub mod dpki_trait;
 
 define_zome! {
@@ -74,7 +76,7 @@ define_zome! {
         }
         get_rules: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<hc_utils::GetLinksLoadResult<rules::Rules>> |,
+            outputs: |result: ZomeApiResult<Vec<GetResponse<rules::Rules>>> |,
             handler: rules::handlers::handle_get_my_rule_details
         }
         set_authorizor: {
