@@ -3,18 +3,34 @@ use hdk::{
     entry_definition::ValidatingEntryType,
 };
 use hdk::holochain_core_types::{
-    entry::Entry,
+    cas::content::Address,
     dna::entry_types::Sharing,
+    entry::Entry,
     error::HolochainError,
-    json::JsonString,
+    json::{JsonString, default_to_json},
     hash::HashString,
     signature::Signature,
     validation::{EntryValidationData},
 };
 use std::convert::TryFrom;
+use std::fmt::Debug;
+use serde::Serialize;
 
 pub mod handlers;
 use crate::keyset_root::KeysetRoot;
+
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct GetResponse<T> {
+    pub entry: T,
+    pub address: Address
+}
+
+impl<T: Into<JsonString> + Debug + Serialize> From<GetResponse<T>> for JsonString {
+    fn from(u: GetResponse<T>) -> JsonString {
+        default_to_json(u)
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]

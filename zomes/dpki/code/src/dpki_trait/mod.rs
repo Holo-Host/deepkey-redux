@@ -7,12 +7,8 @@ use hdk::{
 };
 use hdk::holochain_core_types::{
     cas::content::Address,
-    error::HolochainError,
-    json::JsonString,
     hash::HashString,
 };
-use serde::{Deserialize, Serialize};
-use serde_json::Result;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct InitParams {

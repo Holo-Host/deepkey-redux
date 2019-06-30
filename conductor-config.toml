@@ -23,6 +23,15 @@ file = "/home/zo-el/Documents/deepkey-dnas/happ-store.dna.json"
 hash = "QmWXJD8gF4j27rgWRem5ST8WasskPxwRN5wropMMhYn36x"
 id = "happ-store"
 
+
+[[interfaces]]
+admin = true
+id = "admin interface"
+
+    [interfaces.driver]
+    port = 3000
+    type = "http"
+
 [[instances]]
 agent = "host-agent"
 dna = "holo-hosting-app"
