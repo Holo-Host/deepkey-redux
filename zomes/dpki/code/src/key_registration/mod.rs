@@ -1,16 +1,19 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
+    holochain_persistence_api::{
+        hash::HashString,
+    },
+    holochain_json_api::{
+        error::JsonError,
+        json::JsonString,
+    },
+    holochain_core_types::{
+        dna::entry_types::Sharing,
+        signature::Signature,
+        validation::{EntryValidationData},
+    }
 };
-use hdk::holochain_core_types::{
-    dna::entry_types::Sharing,
-    error::HolochainError,
-    json::JsonString,
-    hash::HashString,
-    signature::Signature,
-    validation::{EntryValidationData},
-};
-
 pub mod handlers;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]

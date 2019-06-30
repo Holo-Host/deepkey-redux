@@ -1,16 +1,16 @@
 use hdk::{
     utils,
     error::{ZomeApiResult,ZomeApiError},
+    holochain_persistence_api::{
+        cas::content::{Address,AddressableContent},
+        hash::HashString,
+    },
+    holochain_core_types::{
+        entry::Entry,
+        signature::Signature,
+        link::LinkMatch,
+    }
 };
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    cas::content::AddressableContent,
-    entry::Entry,
-    hash::HashString,
-    signature::Signature,
-    link::LinkMatch,
-};
-
 
 use crate::rules::{
     self,
@@ -18,7 +18,6 @@ use crate::rules::{
     GetResponse
 };
 use crate::keyset_root;
-
 
 
 pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address> {

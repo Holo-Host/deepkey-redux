@@ -4,10 +4,10 @@ use hdk::{
     error::ZomeApiResult,
     AGENT_ADDRESS,
     holochain_wasm_utils::api_serialization::sign::SignOneTimeResult,
-};
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    hash::HashString,
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
 };
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

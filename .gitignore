@@ -6,7 +6,7 @@ dna/
 .cache/
 npm-debug.log
 bundle.json
-
+package-lock.json
 node_modules
 target
 tmp-storage

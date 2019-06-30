@@ -7,14 +7,16 @@ use hdk::{
         },
         keystore::KeyType,
     },
-};
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    entry::Entry,
-    error::HolochainError,
-    chain_header::ChainHeader,
-    hash::HashString,
-    signature::{Signature,Provenance},
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
+    holochain_core_types::{
+        entry::Entry,
+        error::HolochainError,
+        chain_header::ChainHeader,
+        signature::{Signature,Provenance},
+    }
 };
 use crate::key_registration::{
     KeyRegistration,
