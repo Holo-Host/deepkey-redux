@@ -6,17 +6,21 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
-extern crate holochain_core_types_derive;
+extern crate holochain_json_derive;
 
 use hdk::{
     error::ZomeApiResult,
-};
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    error::HolochainError,
-    json::{JsonString,RawString},
-    hash::HashString,
-    signature::Signature,
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
+    holochain_json_api::{
+        error::JsonError,
+        json::{JsonString,RawString},
+    },
+    holochain_core_types::{
+        signature::Signature,
+    }
 };
 
 pub mod authorizor;

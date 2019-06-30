@@ -1,21 +1,21 @@
 use hdk::{
     error::{ZomeApiResult,ZomeApiError},
     AGENT_ADDRESS,
-};
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    chain_header::ChainHeader,
-    entry::Entry,
-    error::HolochainError,
-    hash::HashString,
-    signature::Signature,
-};
-use hdk::{
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
     holochain_wasm_utils::api_serialization::{
             query::{
                 QueryArgsOptions, QueryResult,
             },
-    }
+    },
+    holochain_core_types::{
+        chain_header::ChainHeader,
+        entry::Entry,
+        error::HolochainError,
+        signature::Signature,
+    },
 };
 use crate::keyset_root::KeysetRoot;
 

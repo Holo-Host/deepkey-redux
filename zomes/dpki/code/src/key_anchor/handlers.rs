@@ -6,11 +6,15 @@ use hdk::{
             StatusRequestKind
         },
     },
-};
-use hdk::holochain_core_types::{
-    entry::Entry,
-    hash::HashString,
-    json::RawString,
+    holochain_persistence_api::{
+        hash::HashString,
+    },
+    holochain_json_api::{
+        json::RawString,
+    },
+    holochain_core_types::{
+        entry::Entry,
+    }
 };
 
 use crate::key_anchor::KeyAnchor;

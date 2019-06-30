@@ -8,16 +8,17 @@ use hdk::{
         },
         keystore::KeyType,
     },
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
+    holochain_core_types::{
+        chain_header::ChainHeader,
+        entry::Entry,
+        error::HolochainError,
+        signature::{Signature,Provenance},
+    }
 };
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    chain_header::ChainHeader,
-    entry::Entry,
-    error::HolochainError,
-    hash::HashString,
-    signature::{Signature,Provenance},
-};
-
 use crate::authorizor::Authorizor;
 use crate::rules::{self,Rules};
 use crate::key_anchor::KeyAnchor;

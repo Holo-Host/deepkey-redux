@@ -1,16 +1,21 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-};
-use hdk::holochain_core_types::{
-    cas::content::Address,
-    dna::entry_types::Sharing,
-    entry::Entry,
-    error::HolochainError,
-    json::{JsonString, default_to_json},
-    hash::HashString,
-    signature::Signature,
-    validation::{EntryValidationData},
+    holochain_persistence_api::{
+        cas::content::Address,
+        hash::HashString,
+    },
+    holochain_json_api::{
+        error::JsonError,
+        json::{JsonString, default_to_json},
+    },
+    holochain_core_types::{
+        dna::entry_types::Sharing,
+        entry::Entry,
+        error::HolochainError,
+        signature::Signature,
+        validation::{EntryValidationData},
+    },
 };
 use std::convert::TryFrom;
 use std::fmt::Debug;
