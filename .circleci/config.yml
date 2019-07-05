@@ -6,5 +6,6 @@ jobs:
       - image: holochain/holochain-rust:circle.01.warm.nix
   steps:
     - checkout
-    - run: nix-shell --run hf-test
-    
+    - run:
+      name: Starting test...
+      command: nix-shell --run hf-test
