@@ -1,21 +1,12 @@
 version: 2
+
 jobs:
   build:
     docker:
-      - image: holochain/holochain-rust:latest
-
-    steps:
-
-      - run:
-          name: clone hc rust
-          command: git clone https://github.com/holochain/holochain-rust
-      - run:
-          name: install cli
-          command: cd holochain-rust && nix-shell --run hc-cli-install
-
-      - checkout:
-          path: ~/DeepKey
-
-      - run:
-          name: test dna
-          command: cd ~/DeepKey && /root/.cargo/bin/hc test
+      - image: holochain/holochain-rust:circle.01.warm.nix
+  steps:
+    - checkout
+    - run:
+        command: |
+          echo "Starting tests..."
+          nix-shell --run hf-test
