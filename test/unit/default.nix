@@ -1,6 +1,6 @@
 { pkgs }:
 let
-  name = "hc-test-unit";
+  name = "dk-test-unit";
 
   script = pkgs.writeShellScriptBin name
   ''

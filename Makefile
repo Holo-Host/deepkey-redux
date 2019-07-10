@@ -6,13 +6,13 @@ all: test
 # test -- Use nix-shell environment to obtain Holochain runtime, run tests
 #
 test:
-	nix-shell --run hc-test
+	nix-shell --run dk-test
 
 # test-unit:
-# 	nix-shell --run hc-test-unit
+# 	nix-shell --run dk-test-unit
 #
 # test-e2e:
-# 	nix-shell --run hc-test-e2e
+# 	nix-shell --run dk-test-e2e
 #
 # install:
 # 	nix-shell --run hf-install
