@@ -11,6 +11,8 @@ This is a core hApp. The DeepKey is used for Key Management for hApps in Holocha
 `hc test`
 
 ## Documentation
+- [Everthing you need to know about DeepKey](https://hackmd.io/@zo-el/hc-deepkey/)
+## Specs
 - #### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA)
 
 ## Built With
