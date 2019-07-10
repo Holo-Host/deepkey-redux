@@ -11,10 +11,16 @@ const SIGNED_APP_KEY_2_BY_REV_KEY = "88drLZ676Wez6SFSDmQrw1W0Cg4E04AdYWXfrgu6NFp
 module.exports = (scenario) => {
   scenario("testing out how genesis/init calls should be set up", async(s, t, { liza }) => {
 
+    let check = await liza.call("dpki", "is_initialized", {})
+    t.equal(check.Ok,false)
+
     const keyset_root_address = await liza.call("dpki", "init", {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
     console.log("My keyset_root_address : ",keyset_root_address);
     t.ok(keyset_root_address.Ok)
 
+
+    check = await liza.call("dpki", "is_initialized", {})
+    t.equal(check.Ok,true)
 
     // // IGNORE : Using this func to get the revocation keys and auth key for my tests
     // let auth_signed_by_revocation_key = liza.call("converse","signed_auth_key",{key_id:1})
