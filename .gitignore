@@ -1,16 +1,10 @@
-build/
-build-HApps/
-ui/
-dna/
 .dist/
 .cache/
 npm-debug.log
 bundle.json
 package-lock.json
 node_modules
-target
-tmp-storage
-
+.cargo
 
 # OS generated files #
 ######################
@@ -27,5 +21,8 @@ dist
 ### Extras ###
 test/unit_test/test_converse.js
 zomes/converse
+
 ### Temp ###
+tmp-storage
 tmp-storage-1
+target
