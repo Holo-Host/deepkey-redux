@@ -1,5 +1,5 @@
 let
- holonix-release-tag = "0.0.2";
+ holonix-release-tag = "0.0.18";
  holonix-release-sha256 = "1njv2zr9f3kcz5v1p3ff6z4gp49k5l9knh2sss6f71sgmsr5q3zm";
 
  holonix = import (fetchTarball {
