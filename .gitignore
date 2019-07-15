@@ -5,6 +5,7 @@ bundle.json
 package-lock.json
 node_modules
 .cargo
+Cargo.lock
 
 # OS generated files #
 ######################
