@@ -1,18 +1,11 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-    holochain_persistence_api::{
-        hash::HashString,
-    },
-    holochain_json_api::{
-        error::JsonError,
-        json::JsonString,
-    },
     holochain_core_types::{
-        dna::entry_types::Sharing,
-        signature::Signature,
-        validation::{EntryValidationData},
-    }
+        dna::entry_types::Sharing, signature::Signature, validation::EntryValidationData,
+    },
+    holochain_json_api::{error::JsonError, json::JsonString},
+    holochain_persistence_api::hash::HashString,
 };
 
 pub mod handlers;
@@ -26,7 +19,11 @@ pub struct KeysetRoot {
 }
 
 impl KeysetRoot {
-    pub fn new(first_deepkey_agent: &HashString, root_pubkey: &HashString, fda_signed_by_rootkey:&Signature ) -> KeysetRoot {
+    pub fn new(
+        first_deepkey_agent: &HashString,
+        root_pubkey: &HashString,
+        fda_signed_by_rootkey: &Signature,
+    ) -> KeysetRoot {
         KeysetRoot {
             first_deepkey_agent: first_deepkey_agent.to_owned(),
             root_pubkey: root_pubkey.to_owned(),
@@ -34,7 +31,7 @@ impl KeysetRoot {
         }
     }
 }
-pub fn definitions() -> ValidatingEntryType{
+pub fn definitions() -> ValidatingEntryType {
     entry!(
         name: "keyset_root",
         description: "Root hash that would be used as an anchor",
