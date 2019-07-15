@@ -46,8 +46,8 @@ const diorama = new Diorama({
   middleware: backwardCompatibilityMiddleware,
 })
 
-// require('./unit_test/update_auth_entries')(diorama.registerScenario);
-// require('./unit_test/test_key_status')(diorama.registerScenario);
+require('./unit_test/update_auth_entries')(diorama.registerScenario);
+require('./unit_test/test_key_status')(diorama.registerScenario);
 require('./unit_test/test_trait')(diorama.registerScenario);
 
 diorama.run()
