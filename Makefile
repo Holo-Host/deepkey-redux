@@ -32,7 +32,11 @@ fmt: tools
 	cargo fmt
 
 clean:
-	rm -rf target && rm -rf dist test/node_modules
+	rm -rf zomes/dpki/code/target
+	rm -rf dist test/node_modules
+	rm -rf dist test/package-lock.json
+	rm -rf zomes/dpki/code/Cargo.lock
+	rm -rf Cargo.lock
 
 tools: tool_rust tool_fmt tool_clippy
 
