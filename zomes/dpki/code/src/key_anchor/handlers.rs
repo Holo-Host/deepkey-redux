@@ -26,7 +26,7 @@ pub fn handle_key_status(key: HashString) -> ZomeApiResult<RawString> {
     {
         match result.meta {
             Some(m) => Ok(RawString::from(String::from(m.crud_status))),
-            None => Ok(RawString::from(format!("Doesn't Exists"))),
+            None => Ok(RawString::from("Doesn't Exists".to_string())),
         }
     } else {
         Ok(RawString::from("Doesn't Exists"))
