@@ -1,18 +1,11 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-    holochain_persistence_api::{
-        hash::HashString,
-    },
-    holochain_json_api::{
-        error::JsonError,
-        json::JsonString,
-    },
     holochain_core_types::{
-        dna::entry_types::Sharing,
-        signature::Signature,
-        validation::{EntryValidationData},
-    }
+        dna::entry_types::Sharing, signature::Signature, validation::EntryValidationData,
+    },
+    holochain_json_api::{error::JsonError, json::JsonString},
+    holochain_persistence_api::hash::HashString,
 };
 pub mod handlers;
 
@@ -24,7 +17,7 @@ pub struct Authorizor {
     pub revocation_sig: Signature,
 }
 
-pub fn definitions() -> ValidatingEntryType{
+pub fn definitions() -> ValidatingEntryType {
     entry!(
         name: "authorizor",
         description: "Used to set the authorizing keys for each device",
@@ -69,8 +62,7 @@ pub fn definitions() -> ValidatingEntryType{
     )
 }
 
-
-pub fn auth_path_definitions() -> ValidatingEntryType{
+pub fn auth_path_definitions() -> ValidatingEntryType {
     entry!(
         name: "auth_key_derivation_path",
         description: "private entry provides us future ability to regenerate AuthKey from Master Seed",

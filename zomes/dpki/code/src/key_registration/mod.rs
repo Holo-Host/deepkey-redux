@@ -1,18 +1,11 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-    holochain_persistence_api::{
-        hash::HashString,
-    },
-    holochain_json_api::{
-        error::JsonError,
-        json::JsonString,
-    },
     holochain_core_types::{
-        dna::entry_types::Sharing,
-        signature::Signature,
-        validation::{EntryValidationData},
-    }
+        dna::entry_types::Sharing, signature::Signature, validation::EntryValidationData,
+    },
+    holochain_json_api::{error::JsonError, json::JsonString},
+    holochain_persistence_api::hash::HashString,
 };
 pub mod handlers;
 
@@ -25,7 +18,7 @@ pub struct KeyRegistration {
     pub revocation_sig: Option<Signature>, // (missing on Create, required on Update or Delete)
 }
 
-pub fn definitions() -> ValidatingEntryType{
+pub fn definitions() -> ValidatingEntryType {
     entry!(
         name: "key_registration",
         description: "Entry to register a any keys on DeepKey",
@@ -74,9 +67,9 @@ pub struct KeyMeta {
     pub new_key: HashString,
     pub derivation_index: u64,
     pub key_type: AppKeyType,
-    pub context: String // some_app_DNA_hash
+    pub context: String, // some_app_DNA_hash
 }
-pub fn meta_definitions() -> ValidatingEntryType{
+pub fn meta_definitions() -> ValidatingEntryType {
     entry!(
         name: "key_meta",
         description: "private entry for NewKey registration which provides context and ability to regenerate from Master Seed.",

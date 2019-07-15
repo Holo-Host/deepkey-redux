@@ -1,34 +1,27 @@
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-    holochain_persistence_api::{
-        cas::content::Address,
-        hash::HashString,
+    holochain_core_types::{
+        dna::entry_types::Sharing, entry::Entry, error::HolochainError, signature::Signature,
+        validation::EntryValidationData,
     },
     holochain_json_api::{
         error::JsonError,
-        json::{JsonString, default_to_json},
+        json::{default_to_json, JsonString},
     },
-    holochain_core_types::{
-        dna::entry_types::Sharing,
-        entry::Entry,
-        error::HolochainError,
-        signature::Signature,
-        validation::{EntryValidationData},
-    },
+    holochain_persistence_api::{cas::content::Address, hash::HashString},
 };
+use serde::Serialize;
 use std::convert::TryFrom;
 use std::fmt::Debug;
-use serde::Serialize;
 
 pub mod handlers;
 use crate::keyset_root::KeysetRoot;
 
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GetResponse<T> {
     pub entry: T,
-    pub address: Address
+    pub address: Address,
 }
 
 impl<T: Into<JsonString> + Debug + Serialize> From<GetResponse<T>> for JsonString {
@@ -45,19 +38,22 @@ pub struct Rules {
     pub prior_revocation_self_sig: Signature, //(Signed by RootKey on Create by RevKey on Updates)
 }
 
-fn validation_source(source:&HashString,keyset_root_address:HashString)->Result<bool,HolochainError>{
+fn validation_source(
+    source: &HashString,
+    keyset_root_address: HashString,
+) -> Result<bool, HolochainError> {
     let keyset_roots_entry = hdk::get_entry(&keyset_root_address)?;
     if let Some(Entry::App(_, json_string)) = keyset_roots_entry {
         let root = KeysetRoot::try_from(json_string)?;
         if &root.first_deepkey_agent == source {
-            return Ok(true)
+            return Ok(true);
         }
         Ok(false)
     } else {
         Ok(false)
     }
 }
-pub fn definitions() -> ValidatingEntryType{
+pub fn definitions() -> ValidatingEntryType {
     entry!(
         name: "rules",
         description: "This is the rules that the agent sets for his DeepKey acc",
@@ -116,7 +112,7 @@ pub fn definitions() -> ValidatingEntryType{
     )
 }
 
-pub fn rev_path_definitions() -> ValidatingEntryType{
+pub fn rev_path_definitions() -> ValidatingEntryType {
     entry!(
         name: "rev_key_derivation_path",
         description: "private entry provides us future ability to regenerate RevKey from Master Seed",
