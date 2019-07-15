@@ -1,8 +1,3 @@
-# ======================================================
-# Run tests using local system tools, rather than nix-shell versions
-# Attempts to first ensure the tool versions are compatible
-# Note: You probably want to run the nix-shell version before pushing code
-
 .PHONY: all test fmt clean tools tool_rust tool_fmt
 # .PHONY: all test test-unit test-e2e install clean
 
@@ -10,10 +5,10 @@
 RUSTFLAGS += -D warnings -Z external-macro-backtrace -Z thinlto -C codegen-units=10
 
 SHELL = /usr/bin/env sh
-RUST_VER_WANT = "rustc 1.37.0-nightly (d132f544f 2019-06-07)"
-RUST_TAG_WANT = "nightly-2019-06-08"
-FMT_VER_WANT = "rustfmt 1.2.2-nightly (5274b49 2019-04-24)"
-CLP_VER_WANT = "clippy 0.0.212 (71be6f6 2019-06-06)"
+RUST_VER_WANT = "rustc 1.38.0-nightly (69656fa4c 2019-07-13)"
+RUST_TAG_WANT = "nightly-2019-07-14"
+FMT_VER_WANT = "rustfmt 1.3.0-nightly (d334502 2019-06-09)"
+CLP_VER_WANT = "clippy 0.0.212 (b029042 2019-07-12)"
 
 ENV = RUSTFLAGS='$(RUSTFLAGS)' OPENSSL_STATIC='1' CARGO_BUILD_JOBS='$(shell nproc)' NUM_JOBS='$(shell nproc)' CARGO_INCREMENTAL='1'
 
@@ -26,17 +21,13 @@ test: tools
 		-A clippy::pedantic -A clippy::restriction \
 		-D clippy::complexity -D clippy::perf -D clippy::correctness
 		nix-shell --run dk-test
-	# $(ENV) RUST_BACKTRACE=1 cargo test
 
 fmt: tools
 	cargo fmt
 
 clean:
-	rm -rf zomes/dpki/code/target
-	rm -rf dist test/node_modules
-	rm -rf dist test/package-lock.json
-	rm -rf zomes/dpki/code/Cargo.lock
-	rm -rf Cargo.lock
+	rm -rf zomes/dpki/code/target dist test/node_modules test/package-lock.json
+	rm -rf zomes/dpki/code/Cargo.lock Cargo.lock .cargo target
 
 tools: tool_rust tool_fmt tool_clippy
 

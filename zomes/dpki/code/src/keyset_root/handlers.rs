@@ -72,8 +72,8 @@ pub fn get_keyset_root_from_source_chain() -> Result<Vec<(ChainHeader, Entry)>, 
     )? {
         Ok(entries_with_headers)
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "Unexpected hdk::query_result"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "Unexpected hdk::query_result".to_string(),
+        ))
     }
 }

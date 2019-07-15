@@ -32,7 +32,7 @@ pub fn handle_create_key_registration(
     context: String,
 ) -> ZomeApiResult<Address> {
     // Validate the key and sign the key wit the auth key
-    let derived_key = derive_key(&derivation_index, &context, choose_key_type(&key_type))?
+    let derived_key = derive_key(derivation_index, &context, choose_key_type(&key_type))?
         .trim_matches('"')
         .to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
@@ -43,7 +43,7 @@ pub fn handle_create_key_registration(
     // Registering the Key
     let key_registration = KeyRegistration {
         new_agent_key: derived_key_hashstring.to_owned(),
-        authorization_sig: Signature::from(auth_key_signing_keys),
+        authorization_sig: auth_key_signing_keys,
         prior_key: None,      // (missing on Create, required on Update)
         revocation_sig: None, // (missing on Create, required on Update or Delete)
     };
@@ -239,7 +239,7 @@ fn sign_key_by_authorization_key(key: String) -> Result<Signature, ZomeApiError>
 }
 
 // Gen Seed and Key
-fn derive_key(index: &u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
+fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
     let app_seed = ["app_seed:", context, ":", &index.to_string()].concat();
     let app_key = ["app_key:", context, ":", &index.to_string()].concat();
     // Check if the appSeed Exists before
@@ -277,9 +277,9 @@ fn get_address_of_key(
     if !address.is_empty() {
         Ok(address[0].to_owned())
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "get_address_of_key: The values your Searching does not exists"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "get_address_of_key: The values your Searching does not exists".to_string(),
+        ))
     }
 }
 
@@ -299,9 +299,9 @@ fn get_address_of_key_meta(
     if !address.is_empty() {
         Ok(address[0].to_owned())
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "get_address_of_key: The values your Searching does not exists"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "get_address_of_key: The values your Searching does not exists".to_string(),
+        ))
     }
 }
 
@@ -326,8 +326,8 @@ fn query_local_chain_for_entry_type(
             // .filter(|entry| entry.0.link_update_delete().is_none())
             .collect())
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "Unexpected hdk::query_result"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "Unexpected hdk::query_result".to_string(),
+        ))
     }
 }

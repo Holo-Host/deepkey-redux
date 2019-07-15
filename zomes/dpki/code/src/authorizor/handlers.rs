@@ -9,7 +9,7 @@ use hdk::{
         error::HolochainError,
         signature::{Provenance, Signature},
     },
-    holochain_persistence_api::{cas::content::Address, hash::HashString},
+    holochain_persistence_api::hash::HashString,
     holochain_wasm_utils::api_serialization::{
         keystore::KeyType,
         query::{QueryArgsOptions, QueryResult},
@@ -70,7 +70,7 @@ fn create_new_authorizor(
     // Verify if the right Revocation Key is used to sign the auth key
     if !hdk::verify_signature(
         Provenance::new(
-            Address::from(revocation_entry.revocation_key.to_owned()),
+            revocation_entry.revocation_key.to_owned(),
             auth_signed_by_revocation_key.to_owned(),
         ),
         String::from(authorization_key.to_owned()),
@@ -211,9 +211,9 @@ pub fn check_vec_if_valid_value(
     if !address.is_empty() {
         Ok(address[0].to_owned())
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "check_vec_if_valid_value: The values your Searching does not exists"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "check_vec_if_valid_value: The values your Searching does not exists".to_string(),
+        ))
     }
 }
 
@@ -235,8 +235,8 @@ pub fn query_local_chain_for_entry_type(
     )? {
         Ok(entries_with_headers)
     } else {
-        Err(HolochainError::ErrorGeneric(format!(
-            "Unexpected hdk::query_result"
-        )))
+        Err(HolochainError::ErrorGeneric(
+            "Unexpected hdk::query_result".to_string(),
+        ))
     }
 }
