@@ -1,4 +1,7 @@
-use crate::keyset_root::handlers::handle_set_keyset_root;
+use crate::keyset_root::handlers::{
+    handle_set_keyset_root,
+    handle_get_my_keyset_root,
+};
 use crate::rules::handlers::create_new_rules;
 use hdk::{
     error::ZomeApiResult,
@@ -40,8 +43,9 @@ pub fn init (params: String) -> ZomeApiResult<Address>{
     Ok(keyset_root)
 }
 
-// TODO
-// NOTE: Just for the testing
 pub fn is_initialized () -> ZomeApiResult<bool>{
-    Ok(false)
+    match handle_get_my_keyset_root(){
+        Ok(_) => Ok(true),
+        Err(_) => Ok(false)
+    }
 }

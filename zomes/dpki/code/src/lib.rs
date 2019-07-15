@@ -113,6 +113,7 @@ define_zome! {
     traits: {
         hc_public [
         init,
+        is_initialized,
         get_initialization_data,
         create_agent_key,
         update_rules,
