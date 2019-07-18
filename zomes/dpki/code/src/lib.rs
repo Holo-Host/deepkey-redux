@@ -62,9 +62,9 @@ define_zome! {
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
         create_agent_key: {
-            inputs: | derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
-            outputs: |result: ZomeApiResult<Address>|,
-            handler: key_registration::handlers::handle_create_key_registration
+            inputs: | context:String |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: key_registration::handlers::handle_create_agent_keys
         }
     // Other Functions
         update_rules: {

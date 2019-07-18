@@ -55,18 +55,11 @@ pub fn definitions() -> ValidatingEntryType {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
-pub enum AppKeyType {
-    AppUI,
-    AppSig,
-    AppEnc,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]
 pub struct KeyMeta {
     pub new_key: HashString,
     pub derivation_index: u64,
-    pub key_type: AppKeyType,
+    pub key_type: KeyType,
     pub context: String, // some_app_DNA_hash
 }
 pub fn meta_definitions() -> ValidatingEntryType {

@@ -1,6 +1,6 @@
 use crate::authorizor;
 use crate::key_anchor::KeyAnchor;
-use crate::key_registration::{AppKeyType, KeyMeta, KeyRegistration};
+use crate::key_registration::{KeyMeta, KeyRegistration};
 use crate::rules;
 use hdk::{
     error::{ZomeApiError, ZomeApiResult},
@@ -18,21 +18,22 @@ use hdk::{
 };
 use std::convert::TryFrom;
 
-fn choose_key_type(key_type: &AppKeyType) -> KeyType {
-    match key_type {
-        AppKeyType::AppUI => return KeyType::Signing,
-        AppKeyType::AppSig => return KeyType::Signing,
-        AppKeyType::AppEnc => return KeyType::Encrypting,
-    }
+pub fn handle_create_agent_keys(
+    context:String
+) -> ZomeApiResult<()> {
+        handle_create_key_registration(context.to_owned(), KeyType::Signing)?;
+        handle_create_key_registration(context.to_owned(), KeyType::Encrypting)?;
+        Ok(())
 }
 
+// Used to create the First Agent Keys
 pub fn handle_create_key_registration(
-    derivation_index: u64,
-    key_type: AppKeyType,
+    // derivation_index: u64,
     context: String,
+    key_type: KeyType,
 ) -> ZomeApiResult<Address> {
     // Validate the key and sign the key wit the auth key
-    let derived_key = derive_key(derivation_index, &context, choose_key_type(&key_type))?
+    let derived_key = derive_key(1, &context, key_type)?
         .trim_matches('"')
         .to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
@@ -56,20 +57,21 @@ pub fn handle_create_key_registration(
         }
         .into(),
     );
-    let key_meta = Entry::App(
-        "key_meta".into(),
-        KeyMeta {
-            new_key: derived_key_hashstring.to_owned(),
-            derivation_index: derivation_index,
-            key_type: key_type,
-            context: context, // some_app_DNA_hash
-        }
-        .into(),
-    );
+    // TODO Add meta only on instalation of DNA
+    // let key_meta = Entry::App(
+    //     "key_meta".into(),
+    //     KeyMeta {
+    //         new_key: derived_key_hashstring.to_owned(),
+    //         derivation_index: derivation_index,
+    //         key_type: key_type,
+    //         context: context, // some_app_DNA_hash
+    //     }
+    //     .into(),
+    // );
     // Hopfully we bundle this two commits once we have that feature
     match hdk::commit_entry(&key_registration_entry) {
         Ok(address) => {
-            hdk::commit_entry(&key_meta)?;
+            // hdk::commit_entry(&key_meta)?;
             hdk::commit_entry(&key_anchor)?;
             Ok(address)
         }
@@ -240,25 +242,34 @@ fn sign_key_by_authorization_key(key: String) -> Result<Signature, ZomeApiError>
 
 // Gen Seed and Key
 fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
-    let app_seed = ["app_seed:", context, ":", &index.to_string()].concat();
-    let app_key = ["app_key:", context, ":", &index.to_string()].concat();
-    // Check if the appSeed Exists before
+    let agent_seed = ["agent_seed:", context, ":", &index.to_string()].concat();
+    // let app_key = ["app_key:", context, ":", &index.to_string()].concat();
+
+    let agent_key_id_str;
+    match key_type {
+        KeyType::Signing => agent_key_id_str = [context.to_owned(),":sign_key".to_string()].concat(),
+        KeyType::Encrypting => agent_key_id_str = [context.to_owned(),":enc_key".to_string()].concat(),
+    }
+
+    // Check if the agent_seed Exists before
     //*******************
-    // TODO : if it exist send the app_key back not an Err
+    // TODO : if it exist send the agent_key_id_str back not an Err
     //*******************
     let list_of_secreats = hdk::keystore_list().map(|keystore_ids| keystore_ids.ids)?;
-    if list_of_secreats.contains(&app_seed) {
+    if list_of_secreats.contains(&agent_key_id_str) {
         return Err(ZomeApiError::Internal(
-            "App key path seed already Exists".to_string(),
+            "Agent key already Exists".to_string(),
         ));
     }
-    hdk::keystore_derive_seed(
-        "root_seed".to_string(),
-        app_seed.to_owned(),
-        context.to_string(),
-        index.to_owned(),
-    )?;
-    hdk::keystore_derive_key(app_seed.to_owned(), app_key, key_type)
+    else if !list_of_secreats.contains(&agent_seed) {
+        hdk::keystore_derive_seed(
+            "root_seed".to_string(),
+            agent_seed.to_owned(),
+            context.to_string(),
+            index.to_owned(),
+        )?;
+    }
+    hdk::keystore_derive_key(agent_seed.to_owned(), agent_key_id_str, key_type)
 }
 
 fn get_address_of_key(
