@@ -48,7 +48,7 @@ const orchestratorSimple = new Orchestrator({
 // })
 
 require('./unit_test/update_auth_entries')(orchestratorSimple.registerScenario);
-require('./unit_test/test_key_status')(orchestratorSimple.registerScenario);
+require('./unit_test/set_up_conductor')(orchestratorSimple.registerScenario);
 // require('./multi-dna')(orchestratorMultiDna.registerScenario)
 
 const run = async () => {

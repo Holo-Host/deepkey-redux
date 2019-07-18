@@ -240,25 +240,37 @@ fn sign_key_by_authorization_key(key: String) -> Result<Signature, ZomeApiError>
 
 // Gen Seed and Key
 fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
-    let app_seed = ["app_seed:", context, ":", &index.to_string()].concat();
-    let app_key = ["app_key:", context, ":", &index.to_string()].concat();
-    // Check if the appSeed Exists before
+    let agent_seed = ["agent_seed:", context, ":", &index.to_string()].concat();
+    // let app_key = ["app_key:", context, ":", &index.to_string()].concat();
+
+    let agent_key_id_str;
+    match key_type {
+        KeyType::Signing => {
+            agent_key_id_str = [context.to_owned(), ":sign_key".to_string()].concat()
+        }
+        KeyType::Encrypting => {
+            agent_key_id_str = [context.to_owned(), ":enc_key".to_string()].concat()
+        }
+    }
+
+    // Check if the agent_seed Exists before
     //*******************
-    // TODO : if it exist send the app_key back not an Err
+    // TODO : if it exist send the agent_key_id_str back not an Err
     //*******************
     let list_of_secreats = hdk::keystore_list().map(|keystore_ids| keystore_ids.ids)?;
-    if list_of_secreats.contains(&app_seed) {
+    if list_of_secreats.contains(&agent_key_id_str) {
         return Err(ZomeApiError::Internal(
-            "App key path seed already Exists".to_string(),
+            "Agent key already Exists".to_string(),
         ));
+    } else if !list_of_secreats.contains(&agent_seed) {
+        hdk::keystore_derive_seed(
+            "root_seed".to_string(),
+            agent_seed.to_owned(),
+            context.to_string(),
+            index.to_owned(),
+        )?;
     }
-    hdk::keystore_derive_seed(
-        "root_seed".to_string(),
-        app_seed.to_owned(),
-        context.to_string(),
-        index.to_owned(),
-    )?;
-    hdk::keystore_derive_key(app_seed.to_owned(), app_key, key_type)
+    hdk::keystore_derive_key(agent_seed.to_owned(), agent_key_id_str, key_type)
 }
 
 fn get_address_of_key(

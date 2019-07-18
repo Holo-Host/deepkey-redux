@@ -16,7 +16,7 @@ module.exports = (scenario) => {
     t.deepEqual(address.Ok, address_recheck.Ok )
   })
 
-  scenario("create rules befor the keyset_root should throw an error", async(s, t, { liza }) => {
+  scenario("testing if create rules before the keyset_root should throw an error", async(s, t, { liza }) => {
   // This is to just test out if we get the right keyset_root address
     const keyset_root_address = await liza.app.call("dpki", "get_initialization_data", {})
     console.log("My KeysetRoot Address: ",keyset_root_address);
@@ -24,7 +24,7 @@ module.exports = (scenario) => {
   })
 
 
-  scenario("create", async(s, t, { liza }) => {
+  scenario("testing the initial set up process and trying to update it", async(s, t, { liza }) => {
 
     await genesis(liza)
 
