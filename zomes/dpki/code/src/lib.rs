@@ -15,6 +15,7 @@ use hdk::{
         json::{JsonString, RawString},
     },
     holochain_persistence_api::{cas::content::Address, hash::HashString},
+    holochain_wasm_utils::api_serialization::keystore::KeyType,
 };
 
 pub mod authorizor;
@@ -88,7 +89,7 @@ define_zome! {
             handler: authorizor::handlers::handle_get_authorizor_meta
         }
         update_key: {
-            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
+            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:KeyType, context:String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: key_registration::handlers::handle_update_key_registration
         }

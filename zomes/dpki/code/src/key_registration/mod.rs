@@ -6,6 +6,7 @@ use hdk::{
     },
     holochain_json_api::{error::JsonError, json::JsonString},
     holochain_persistence_api::hash::HashString,
+    holochain_wasm_utils::api_serialization::keystore::KeyType,
 };
 pub mod handlers;
 

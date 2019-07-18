@@ -18,12 +18,10 @@ use hdk::{
 };
 use std::convert::TryFrom;
 
-pub fn handle_create_agent_keys(
-    context:String
-) -> ZomeApiResult<()> {
-        handle_create_key_registration(context.to_owned(), KeyType::Signing)?;
-        handle_create_key_registration(context.to_owned(), KeyType::Encrypting)?;
-        Ok(())
+pub fn handle_create_agent_keys(context: String) -> ZomeApiResult<()> {
+    handle_create_key_registration(context.to_owned(), KeyType::Signing)?;
+    handle_create_key_registration(context.to_owned(), KeyType::Encrypting)?;
+    Ok(())
 }
 
 // Used to create the First Agent Keys
@@ -85,7 +83,7 @@ pub fn handle_update_key_registration(
     signed_old_key: Signature,
     new_key: HashString,
     derivation_index: u64,
-    key_type: AppKeyType,
+    key_type: KeyType,
     context: String,
 ) -> ZomeApiResult<Address> {
     // Fetch the revocation Key
@@ -247,8 +245,12 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
 
     let agent_key_id_str;
     match key_type {
-        KeyType::Signing => agent_key_id_str = [context.to_owned(),":sign_key".to_string()].concat(),
-        KeyType::Encrypting => agent_key_id_str = [context.to_owned(),":enc_key".to_string()].concat(),
+        KeyType::Signing => {
+            agent_key_id_str = [context.to_owned(), ":sign_key".to_string()].concat()
+        }
+        KeyType::Encrypting => {
+            agent_key_id_str = [context.to_owned(), ":enc_key".to_string()].concat()
+        }
     }
 
     // Check if the agent_seed Exists before
@@ -260,8 +262,7 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
         return Err(ZomeApiError::Internal(
             "Agent key already Exists".to_string(),
         ));
-    }
-    else if !list_of_secreats.contains(&agent_seed) {
+    } else if !list_of_secreats.contains(&agent_seed) {
         hdk::keystore_derive_seed(
             "root_seed".to_string(),
             agent_seed.to_owned(),
