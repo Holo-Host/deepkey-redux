@@ -84,6 +84,8 @@ Check if the keys exist for the key
     t.equal(deleated_key.Ok,null)
     console.log(" Deleated Key Succesfully ");
 
+    sleep.sleep(5);
+
     const checking_key_5 = await liza.call("dpki", "key_status", {key:AGENT_ENC_KEY_1})
     t.deepEqual(checking_key_5.Ok,"deleted" )
 
