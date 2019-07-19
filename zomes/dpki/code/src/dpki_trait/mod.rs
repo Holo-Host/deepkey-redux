@@ -1,3 +1,4 @@
+use crate::key_registration::{handlers::handle_create_key_registration, AppKeyType};
 use crate::keyset_root::handlers::{handle_get_my_keyset_root, handle_set_keyset_root};
 use crate::rules::handlers::create_new_rules;
 use hdk::{
@@ -45,4 +46,10 @@ pub fn is_initialized() -> ZomeApiResult<bool> {
         Ok(_) => Ok(true),
         Err(_) => Ok(false),
     }
+}
+
+pub fn create_agent_keys(context: String) -> ZomeApiResult<()> {
+    handle_create_key_registration(1, AppKeyType::AppSig, context.to_owned())?;
+    handle_create_key_registration(1, AppKeyType::AppEnc, context.to_owned())?;
+    Ok(())
 }

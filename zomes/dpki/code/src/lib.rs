@@ -24,6 +24,7 @@ pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
 use rules::GetResponse;
+// pub mod test;
 
 pub mod dpki_trait;
 
@@ -62,9 +63,9 @@ define_zome! {
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
         create_agent_key: {
-            inputs: | derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
-            outputs: |result: ZomeApiResult<Address>|,
-            handler: key_registration::handlers::handle_create_key_registration
+            inputs: | context:String |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: dpki_trait::create_agent_keys
         }
     // Other Functions
         update_rules: {
@@ -88,9 +89,9 @@ define_zome! {
             handler: authorizor::handlers::handle_get_authorizor_meta
         }
         update_key: {
-            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
-            outputs: |result: ZomeApiResult<Address>|,
-            handler: key_registration::handlers::handle_update_key_registration
+            inputs: | old_key:HashString, signed_old_key:Signature, context:String |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: key_registration::handlers::update_key
         }
         delete_key: {
             inputs: | old_key:HashString, signed_old_key:Signature |,
@@ -102,10 +103,16 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
+        // sign: {
+        //     inputs: | |,
+        //     outputs: |result: ZomeApiResult<Signature>|,
+        //     handler: test::handle_sign_message
+        // }
     ]
 
     traits: {
         hc_public [
+        // sign,
         init,
         is_initialized,
         get_initialization_data,
