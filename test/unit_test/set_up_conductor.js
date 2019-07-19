@@ -41,7 +41,7 @@ module.exports = (scenario) => {
 
 // Lets create an agent key
     const key_commit = await liza.call("dpki", "create_agent_key", {
-      context:"MY_AGENT"
+      agent_name:"MY_AGENT"
     })
     t.deepEqual(key_commit.Ok,null)
 
@@ -68,7 +68,7 @@ Check if the keys exist for the key
     t.deepEqual(updated_key.Ok,null)
 
     sleep.sleep(5);
-    
+
 // Check if the key exist for the key
 // Now the old key should be shown as updated and the new should be live
     const checking_key_4 = await liza.call("dpki", "key_status", {key:AGENT_SIG_KEY_1})

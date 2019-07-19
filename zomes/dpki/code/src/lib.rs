@@ -63,7 +63,7 @@ define_zome! {
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
         create_agent_key: {
-            inputs: | context:String |,
+            inputs: | agent_name:String |,
             outputs: |result: ZomeApiResult<()>|,
             handler: dpki_trait::create_agent_keys
         }
