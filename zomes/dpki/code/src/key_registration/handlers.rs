@@ -77,6 +77,41 @@ pub fn handle_create_key_registration(
     }
 }
 
+pub fn update_key(
+    old_key: HashString,
+    signed_old_key: Signature,
+    context: String,
+) -> ZomeApiResult<()>{
+    // Get the Old Meta for details
+    let new_key_type;
+    let new_derivation_index;
+    let old_key_meta_address = get_address_of_key_meta(
+        &old_key,
+        query_local_chain_for_entry_type("key_meta".to_string())?,
+    )?;
+    let meta = hdk::get_entry(&old_key_meta_address)?;
+    if let Some(Entry::App(_, json_string)) = meta {
+        let meta_data = KeyMeta::try_from(json_string)?;
+        new_key_type = meta_data.key_type.to_owned();
+        new_derivation_index = &meta_data.derivation_index.to_owned() + 1;
+    } else {
+        return Err(ZomeApiError::Internal(
+            "ERROR:(NEED TO BE SOLVED) Not Able to Find meta. i.e. it is possible you are trying to revoke a key from a diffrent device".to_string(),
+        ));
+    }
+
+// Need to Derive the new key
+    let new_key = derive_key(new_derivation_index.to_owned(),&context.to_owned(),choose_key_type(&new_key_type))?
+        .trim_matches('"')
+        .to_owned();
+
+// Finally Update your key
+    handle_update_key_registration(old_key,signed_old_key,HashString::from(new_key),new_derivation_index,new_key_type.to_owned(),context)?;
+
+    Ok(())
+}
+
+
 // Update a registered Key
 pub fn handle_update_key_registration(
     old_key: HashString,
@@ -270,6 +305,8 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
             index.to_owned(),
         )?;
     }
+    // NOTE: This will throw an error when called on update, because this string already exists
+    // This can be solved only if we can update or deleate the previously created values in the keystore
     hdk::keystore_derive_key(agent_seed.to_owned(), agent_key_id_str, key_type)
 }
 

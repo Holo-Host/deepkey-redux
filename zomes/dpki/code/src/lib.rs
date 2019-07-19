@@ -15,6 +15,9 @@ use hdk::{
         json::{JsonString, RawString},
     },
     holochain_persistence_api::{cas::content::Address, hash::HashString},
+    holochain_wasm_utils::api_serialization::{
+        keystore::KeyType,
+    },
 };
 
 pub mod authorizor;
@@ -88,9 +91,9 @@ define_zome! {
             handler: authorizor::handlers::handle_get_authorizor_meta
         }
         update_key: {
-            inputs: | old_key:HashString, signed_old_key:Signature, new_key:HashString, derivation_index: u64, key_type:key_registration::AppKeyType, context:String |,
-            outputs: |result: ZomeApiResult<Address>|,
-            handler: key_registration::handlers::handle_update_key_registration
+            inputs: | old_key:HashString, signed_old_key:Signature, context:String |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: key_registration::handlers::update_key
         }
         delete_key: {
             inputs: | old_key:HashString, signed_old_key:Signature |,
@@ -102,10 +105,16 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
+        // sign: {
+        //     inputs: | |,
+        //     outputs: |result: ZomeApiResult<Signature>|,
+        //     handler: handle_sign_message
+        // }
     ]
 
     traits: {
         hc_public [
+        // sign,
         init,
         is_initialized,
         get_initialization_data,
@@ -120,3 +129,12 @@ define_zome! {
         ]
     }
 }
+
+// // This function is just for testing
+// // TODO : DELEATE
+// pub fn handle_sign_message() -> ZomeApiResult<Signature> {
+//     // Create Revocation key
+//         let rev_key = hdk::keystore_derive_key("root_seed".to_string(),  "rev_key".to_string(), KeyType::Signing)?;
+//         hdk::debug(format!("Revocation Key 1 : {:}",rev_key).to_string())?;
+//         hdk::keystore_sign("rev_key".to_string(), "HcKciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".to_string()).map(Signature::from)
+// }
