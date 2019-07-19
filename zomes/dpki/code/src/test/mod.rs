@@ -1,10 +1,6 @@
 use hdk::{
     error::ZomeApiResult,
     holochain_core_types::signature::Signature,
-    holochain_json_api::{
-        error::JsonError,
-        json::{JsonString, RawString},
-    },
     holochain_wasm_utils::api_serialization::{
         keystore::KeyType,
     },

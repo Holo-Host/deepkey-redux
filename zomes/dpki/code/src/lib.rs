@@ -112,6 +112,7 @@ define_zome! {
 
     traits: {
         hc_public [
+        // sign,
         init,
         is_initialized,
         get_initialization_data,
@@ -123,7 +124,6 @@ define_zome! {
         update_key,
         delete_key,
         key_status
-        // sign,
         ]
     }
 }
