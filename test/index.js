@@ -24,7 +24,7 @@ const orchestratorSimple = new Orchestrator({
     liza: commonConductorConfig,
     // jack: commonConductorConfig,
   },
-  debugLog: false,
+  debugLog: true,
   executor: tapeExecutor(require('tape')),
   middleware: backwardCompatibilityMiddleware,
 })

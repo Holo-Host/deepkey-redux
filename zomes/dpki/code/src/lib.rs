@@ -15,9 +15,6 @@ use hdk::{
         json::{JsonString, RawString},
     },
     holochain_persistence_api::{cas::content::Address, hash::HashString},
-    holochain_wasm_utils::api_serialization::{
-        keystore::KeyType,
-    },
 };
 
 pub mod authorizor;
@@ -27,6 +24,7 @@ pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
 use rules::GetResponse;
+// pub mod test;
 
 pub mod dpki_trait;
 
@@ -108,13 +106,12 @@ define_zome! {
         // sign: {
         //     inputs: | |,
         //     outputs: |result: ZomeApiResult<Signature>|,
-        //     handler: handle_sign_message
+        //     handler: test::handle_sign_message
         // }
     ]
 
     traits: {
         hc_public [
-        // sign,
         init,
         is_initialized,
         get_initialization_data,
@@ -126,15 +123,7 @@ define_zome! {
         update_key,
         delete_key,
         key_status
+        // sign,
         ]
     }
 }
-
-// // This function is just for testing
-// // TODO : DELEATE
-// pub fn handle_sign_message() -> ZomeApiResult<Signature> {
-//     // Create Revocation key
-//         let rev_key = hdk::keystore_derive_key("root_seed".to_string(),  "rev_key".to_string(), KeyType::Signing)?;
-//         hdk::debug(format!("Revocation Key 1 : {:}",rev_key).to_string())?;
-//         hdk::keystore_sign("rev_key".to_string(), "HcKciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".to_string()).map(Signature::from)
-// }

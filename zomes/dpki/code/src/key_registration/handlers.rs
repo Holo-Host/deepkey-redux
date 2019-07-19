@@ -81,7 +81,7 @@ pub fn update_key(
     old_key: HashString,
     signed_old_key: Signature,
     context: String,
-) -> ZomeApiResult<()>{
+) -> ZomeApiResult<()> {
     // Get the Old Meta for details
     let new_key_type;
     let new_derivation_index;
@@ -100,17 +100,27 @@ pub fn update_key(
         ));
     }
 
-// Need to Derive the new key
-    let new_key = derive_key(new_derivation_index.to_owned(),&context.to_owned(),choose_key_type(&new_key_type))?
-        .trim_matches('"')
-        .to_owned();
+    // Need to Derive the new key
+    let new_key = derive_key(
+        new_derivation_index.to_owned(),
+        &context.to_owned(),
+        choose_key_type(&new_key_type),
+    )?
+    .trim_matches('"')
+    .to_owned();
 
-// Finally Update your key
-    handle_update_key_registration(old_key,signed_old_key,HashString::from(new_key),new_derivation_index,new_key_type.to_owned(),context)?;
+    // Finally Update your key
+    handle_update_key_registration(
+        old_key,
+        signed_old_key,
+        HashString::from(new_key),
+        new_derivation_index,
+        new_key_type.to_owned(),
+        context,
+    )?;
 
     Ok(())
 }
-
 
 // Update a registered Key
 pub fn handle_update_key_registration(
