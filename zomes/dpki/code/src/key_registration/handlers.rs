@@ -37,6 +37,8 @@ pub fn handle_create_key_registration(
         .to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
 
+    hdk::debug(format!("A Key was created: {}",derived_key.clone()))?;
+
     //Get the Auth Kye ID
     let auth_key_signing_keys = sign_key_by_authorization_key(derived_key)?;
 
@@ -287,7 +289,7 @@ fn sign_key_by_authorization_key(key: String) -> Result<Signature, ZomeApiError>
 fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
     let agent_seed = ["agent_seed:", context, ":", &index.to_string()].concat();
     // let app_key = ["app_key:", context, ":", &index.to_string()].concat();
-
+    hdk::debug(format!("Geretated Seed {:?}",agent_seed.clone()))?;
     let agent_key_id_str;
     match key_type {
         KeyType::Signing => {
@@ -297,7 +299,7 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
             agent_key_id_str = [context.to_owned(), ":enc_key".to_string()].concat()
         }
     }
-
+    hdk::debug(format!("Deriving Key for {:?}",agent_key_id_str.clone()))?;
     // Check if the agent_seed Exists before
     //*******************
     // TODO : if it exist send the agent_key_id_str back not an Err
