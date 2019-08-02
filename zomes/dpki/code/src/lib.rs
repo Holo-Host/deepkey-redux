@@ -83,10 +83,15 @@ define_zome! {
             outputs: |result: ZomeApiResult<HashString>|,
             handler: authorizor::handlers::handle_create_authorizor
         }
-        get_auth_meta: {
+        get_authorizor: {
             inputs: | |,
-            outputs: |result: ZomeApiResult<u64> |,
-            handler: authorizor::handlers::handle_get_authorizor_meta
+            outputs: |result: ZomeApiResult<authorizor::Authorizor> |,
+            handler: authorizor::handlers::handle_get_authorizor
+        }
+        get_all_keys: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<Vec<key_registration::KeyMeta>> |,
+            handler: key_registration::handlers::get_all_keys
         }
         update_key: {
             inputs: | old_key:HashString, signed_old_key:Signature, context:String |,
@@ -120,7 +125,8 @@ define_zome! {
         update_rules,
         get_rules,
         set_authorizor,
-        get_auth_meta,
+        get_authorizor,
+        get_all_keys,
         update_key,
         delete_key,
         key_status

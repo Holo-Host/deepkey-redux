@@ -366,6 +366,24 @@ fn get_address_of_key_meta(
     }
 }
 
+pub fn get_all_keys()-> ZomeApiResult<Vec<KeyMeta>>{
+    let list: Vec<(ChainHeader, Entry)> = query_local_chain_for_entry_type("key_meta".to_string())?;
+    let mut address: Vec<KeyMeta> = Vec::new();
+    for k in list {
+        if let Entry::App(_, json_string) = k.1 {
+            let root = KeyMeta::try_from(json_string)?;
+            address.push(root.to_owned());
+        }
+    }
+    if !address.is_empty() {
+        Ok(address.to_owned())
+    } else {
+        Err(ZomeApiError::Internal(
+            "No Keys are registered".to_string(),
+        ))
+    }
+}
+
 // Example o/p
 // [ [ { entry_type: { App: 'key_registration' }, entry_address: 'QmehfCVBoJXDkMJj1y3sT7Rfp3Dca3vfcZrNuR5MALcvhm',
 // provenances: [ [ 'HcSCJC7x6OoOQ6rwooaXCYUmsmv3csccsaxW6vSYXK6tm7rruQj6w9fHPBsbzsa', 'xjh6L/3rQhKp/M42mzLqbXbYnsIMt1jxsSkvlP8a3HEHIwM8m1v4UENe3ZWAt5meXkJL+M5sdE300ts0U7jkCQ==' ] ],
