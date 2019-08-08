@@ -1,5 +1,5 @@
 bridges = []
-persistence_dir = "./tmp-deepkey/tmp"
+persistence_dir = "./tmp/persistence-deepkey"
 
 [[agents]]
 id = "host-agent"
@@ -10,24 +10,39 @@ public_address = "HcSciNw8EPFNprfjnvpoZ97hTYZPb97zdkjqiTmb8epjozf5iC8XoQmxnvdrfe
 
 [[dnas]]
 file = "./dist/DeepKey.dna.json"
-hash = "QmaLK3zwzKf3zuidzfs71Wum3b4WJv9s9fx1mh7u2hhGqa"
+hash = "QmWwcDXzDHBhBj8rHbKG7kXaEEqoFWGyHgmTxLvuf6CV9G"
 id = "deepkey"
 
-[[interfaces]]
-admin = true
-id = "admin interface"
-
-    [interfaces.driver]
-    port = 3000
-    type = "http"
+[[dnas]]
+file = "./dist/holofuel.dna.json"
+hash = "QmZG3y4YqawFpZp7tFrjYc43wtjqGyVrKHDvqR4dLncKiy"
+id = "holofuel"
 
 [[instances]]
 agent = "host-agent"
 dna = "deepkey"
 id = "dpki_happ"
 [instances.storage]
-path = "./tmp-storage/deepkey"
+path = "./tmp/storage-deepkey"
 type = "file"
+
+[[interfaces]]
+admin = false
+id = "ws interface"
+
+    [interfaces.driver]
+    port = 8800
+    type = "websocket"
+    [[interfaces.instances]]
+    id = "dpki_happ"
+
+[[interfaces]]
+admin = true
+id = "admin interface"
+
+    [interfaces.driver]
+    port = 9300
+    type = "http"
 
 [dpki]
 instance_id = "dpki_happ"

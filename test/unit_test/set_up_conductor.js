@@ -45,6 +45,12 @@ module.exports = (scenario) => {
     })
     t.deepEqual(key_commit.Ok,null)
 
+
+    const all_keys = await liza.call("dpki", "get_all_keys", {})
+    console.log("----------->",all_keys);
+    t.deepEqual(all_keys.Ok.length,2 )
+
+
 /*
 Check if the keys exist for the key
  Now it should exist

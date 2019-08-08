@@ -43,6 +43,7 @@ pub fn handle_create_authorizor(
         HashString::from(generate_auth(authorization_key_path)?.trim_matches('"'));
 
     match handle_get_authorizor() {
+        // Case when authorizor key was already set. We need to update it..
         Ok(authorizor_entry) => update_authorizor(
             &authorization_key,
             signed_auth_key,
@@ -50,6 +51,7 @@ pub fn handle_create_authorizor(
             authorizor_entry,
             authorization_key_path,
         ),
+        // to set initial authorizor key
         Err(_) => create_new_authorizor(
             &authorization_key,
             signed_auth_key,
