@@ -11,7 +11,21 @@ use hdk::{
 use crate::keyset_root;
 use crate::rules::{self, GetResponse, Rules};
 
-pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
+pub fn create_new_rules(
+    keyset_root: &HashString,
+    revocation_key: &HashString,
+    signature: Signature,
+) -> ZomeApiResult<Address> {
+    let rule = rules::Rules {
+        keyset_root: keyset_root.clone(),
+        revocation_key: revocation_key.to_owned(),
+        prior_revocation_self_sig: signature,
+    };
+    let entry = Entry::App("rules".into(), rule.into());
+    utils::commit_and_link(&entry, &keyset_root, "rules_link_tag", "")
+}
+
+pub fn handle_updating_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
     // Checking if keyset_root Exists
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
     // Checking if rules exists if they do then update the values
@@ -25,20 +39,6 @@ pub fn handle_create_rules(revocation_key: HashString) -> ZomeApiResult<Address>
     } else {
         update_rules(&keyset_root, &revocation_key, rules[0].address.to_owned())
     }
-}
-
-pub fn create_new_rules(
-    keyset_root: &HashString,
-    revocation_key: &HashString,
-    signature: Signature,
-) -> ZomeApiResult<Address> {
-    let rule = rules::Rules {
-        keyset_root: keyset_root.clone(),
-        revocation_key: revocation_key.to_owned(),
-        prior_revocation_self_sig: signature,
-    };
-    let entry = Entry::App("rules".into(), rule.into());
-    utils::commit_and_link(&entry, &keyset_root, "rules_link_tag", "")
 }
 
 fn update_rules(

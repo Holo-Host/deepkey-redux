@@ -57,27 +57,32 @@ define_zome! {
             outputs: |result: ZomeApiResult<bool>|,
             handler: dpki_trait::is_initialized
         }
-        get_initialization_data: {
-            inputs: | |,
-            outputs: |result: ZomeApiResult<HashString>|,
-            handler: keyset_root::handlers::handle_get_my_keyset_root
-        }
         create_agent_key: {
             inputs: | agent_name:String |,
             outputs: |result: ZomeApiResult<()>|,
             handler: dpki_trait::create_agent_keys
         }
+
     // Other Functions
+        get_initialization_data: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<HashString>|,
+            handler: keyset_root::handlers::handle_get_my_keyset_root
+        }
         update_rules: {
             inputs: | revocation_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
-            handler: rules::handlers::handle_create_rules
+            handler: rules::handlers::handle_updating_rules
         }
         get_rules: {
             inputs: | |,
             outputs: |result: ZomeApiResult<Vec<GetResponse<rules::Rules>>> |,
             handler: rules::handlers::handle_get_my_rule_details
         }
+        // To generate Authorizor Key
+        // Derivation pattern use is
+        // For Auth Seed: 'auth_seed:0'
+        // For Auth Key: 'auth_key:0'
         set_authorizor: {
             inputs: | authorization_key_path: u64, signed_auth_key:Signature |,
             outputs: |result: ZomeApiResult<HashString>|,
@@ -88,11 +93,6 @@ define_zome! {
             outputs: |result: ZomeApiResult<authorizor::Authorizor> |,
             handler: authorizor::handlers::handle_get_authorizor
         }
-        get_all_keys: {
-            inputs: | |,
-            outputs: |result: ZomeApiResult<Vec<key_registration::KeyMeta>> |,
-            handler: key_registration::handlers::get_all_keys
-        }
         update_key: {
             inputs: | old_key:HashString, signed_old_key:Signature, context:String |,
             outputs: |result: ZomeApiResult<()>|,
@@ -102,6 +102,11 @@ define_zome! {
             inputs: | old_key:HashString, signed_old_key:Signature |,
             outputs: |result: ZomeApiResult<()>|,
             handler: key_registration::handlers::handle_delete_key_registration
+        }
+        get_all_keys: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<Vec<key_registration::KeyMeta>> |,
+            handler: key_registration::handlers::get_all_keys
         }
         key_status: {
             inputs: | key: HashString |,
