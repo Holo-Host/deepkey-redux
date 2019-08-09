@@ -26,6 +26,7 @@ const diorama = new Diorama({
 
 require('./unit_test/update_auth_entries')(diorama.registerScenario);
 require('./unit_test/set_up_conductor')(diorama.registerScenario);
+require('./unit_test/revoke_rev_key')(diorama.registerScenario);
 
 diorama.run()
 
