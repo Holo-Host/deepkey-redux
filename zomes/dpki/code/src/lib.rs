@@ -3,6 +3,7 @@ extern crate hdk;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate holochain_json_derive;
@@ -23,8 +24,8 @@ pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
+pub mod utils;
 use rules::GetResponse;
-// pub mod test;
 
 pub mod dpki_trait;
 
@@ -43,6 +44,10 @@ define_zome! {
 
     genesis: || {
         Ok(())
+    }
+
+    receive: |from, msg_json| {
+        utils::handle_receive(from, JsonString::from_json(&msg_json))
     }
 
     functions: [
@@ -113,16 +118,10 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
-        // sign: {
-        //     inputs: | |,
-        //     outputs: |result: ZomeApiResult<Signature>|,
-        //     handler: test::handle_sign_message
-        // }
     ]
 
     traits: {
         hc_public [
-        // sign,
         init,
         is_initialized,
         get_initialization_data,
