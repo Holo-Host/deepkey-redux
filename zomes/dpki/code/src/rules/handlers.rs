@@ -25,7 +25,7 @@ pub fn create_new_rules(
     utils::commit_and_link(&entry, &keyset_root, "rules_link_tag", "")
 }
 
-pub fn handle_updating_rules(revocation_key: HashString) -> ZomeApiResult<Address> {
+pub fn handle_updating_rules(revocation_key: HashString, signed_old_revocation_key:Signature) -> ZomeApiResult<Address> {
     // Checking if keyset_root Exists
     let keyset_root = keyset_root::handlers::handle_get_my_keyset_root()?;
     // Checking if rules exists if they do then update the values
@@ -37,7 +37,7 @@ pub fn handle_updating_rules(revocation_key: HashString) -> ZomeApiResult<Addres
             "Rules were not set during init".to_string(),
         ))
     } else {
-        update_rules(&keyset_root, &revocation_key, rules[0].address.to_owned())
+        update_rules(&keyset_root, &revocation_key, rules[0].address.to_owned(),signed_old_revocation_key)
     }
 }
 
@@ -45,11 +45,12 @@ fn update_rules(
     keyset_root: &HashString,
     revocation_key: &HashString,
     old_rule_address: HashString,
+    signed_old_revocation_key:Signature
 ) -> ZomeApiResult<Address> {
     let rule = rules::Rules {
         keyset_root: keyset_root.clone(),
         revocation_key: revocation_key.to_owned(),
-        prior_revocation_self_sig: Signature::from("TODO Updated"),
+        prior_revocation_self_sig: signed_old_revocation_key,
     };
     let entry = Entry::App("rules".into(), rule.into());
     let address = hdk::update_entry(entry, &old_rule_address)?;

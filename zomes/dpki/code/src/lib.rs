@@ -70,7 +70,7 @@ define_zome! {
             handler: keyset_root::handlers::handle_get_my_keyset_root
         }
         update_rules: {
-            inputs: | revocation_key: HashString |,
+            inputs: | revocation_key: HashString, signed_old_revocation_key:Signature |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: rules::handlers::handle_updating_rules
         }

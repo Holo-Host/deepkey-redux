@@ -2,7 +2,8 @@ use hdk::{
     self,
     entry_definition::ValidatingEntryType,
     holochain_core_types::{
-        dna::entry_types::Sharing, entry::Entry, error::HolochainError, signature::Signature,
+        dna::entry_types::Sharing, entry::Entry, error::HolochainError,
+        signature::{Provenance,Signature},
         validation::EntryValidationData,
     },
     holochain_json_api::{
@@ -78,13 +79,29 @@ pub fn definitions() -> ValidatingEntryType {
                         }
                         _=> Err("Could not Validate Rules: Source is not equal to the provenances".to_string())
                     }
-                    // **On Update**
-                    // Check if signed by Prior Revocation Key on Update
-                    // (field not required on Create)
-                    // Ok(())
                 },
-                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+                EntryValidationData::Modify{new_entry,old_entry,old_entry_header:_,validation_data} =>
                 {
+                    let source = &validation_data.package.chain_header.provenances()[0].0;
+                    match validation_source(source,new_entry.keyset_root){
+                        Ok(v)=>{
+                            if !v {return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())}
+                        }
+                        _=> return Err("Could not Validate Rules: Source is not equal to the provenances".to_string())
+                    };
+                    // Verifying Signature of the old revocation key
+                    if !hdk::verify_signature(
+                        Provenance::new(
+                            old_entry.revocation_key.to_owned(),
+                            new_entry.prior_revocation_self_sig.to_owned(),
+                        ),
+                        String::from(old_entry.revocation_key.to_owned()),
+                    )? {
+                        return Err(
+                            "Signature Not Able to be Verified".to_string(),
+                        );
+                    }
+
                    Ok(())
                 },
                 EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>

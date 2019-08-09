@@ -69,16 +69,5 @@ module.exports = (scenario) => {
     const checking_old_authorizor_key = await liza.call("dpki", "key_status", {key:authorizor_commit.Ok})
     t.deepEqual(checking_old_authorizor_key.Ok,"modified" )
 
-
-    const updated_rule_commit = await liza.call("dpki", "update_rules", {revocation_key:"Updated_Revocation--------------Key"})
-    t.ok(updated_rule_commit.Ok )
-
-    sleep.sleep(5);
-// Check if your getting the right hash
-    const my_updated_rules = await liza.call("dpki", "get_rules", {})
-    console.log("My Updated Rules: ",my_updated_rules.Ok[0]);
-    t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,"Updated_Revocation--------------Key" )
-
-
   })
 }
