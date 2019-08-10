@@ -118,6 +118,11 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
+        send_handshake_notify: {
+            inputs: | to: Address, signed_xor:Signature |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: utils::handle_send_handshake_notify
+        }
     ]
 
     traits: {
@@ -133,7 +138,8 @@ define_zome! {
         get_all_keys,
         update_key,
         delete_key,
-        key_status
+        key_status,
+        send_handshake_notify
         ]
     }
 }
