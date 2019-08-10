@@ -119,7 +119,7 @@ define_zome! {
             handler: key_anchor::handlers::handle_key_status
         }
         send_handshake_notify: {
-            inputs: | to: Address, signed_xor:Signature |,
+            inputs: | to: Address |,
             outputs: |result: ZomeApiResult<()>|,
             handler: utils::handle_send_handshake_notify
         }
