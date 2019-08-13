@@ -1,5 +1,5 @@
 use hdk::{
-    error::ZomeApiResult,
+    error::{ZomeApiResult,ZomeApiError},
     holochain_core_types::signature::Signature,
     holochain_json_api::{
         error::JsonError,
@@ -53,20 +53,21 @@ pub fn handle_receive(from: Address, msg_json: JsonString) -> String {
     }
 }
 
-pub fn handle_send_handshake_notify(to: Address) -> ZomeApiResult<()> {
+pub fn handle_send_handshake_notify(to: Address) -> ZomeApiResult<Signature> {
     if &AGENT_ADDRESS.to_string() == &to.to_string() {
-        hdk::debug(format!("No need to send a message to myself: {:?}", &to.to_string())).ok();
+        Err(ZomeApiError::from(
+            format!("No need to send a message to myself: {:?}", &to.to_string())
+        ))
     } else {
         hdk::debug(format!("Send a message to: {:?}", &to.to_string())).ok();
         let xor = get_xor_from_hashs(&AGENT_ADDRESS,&to);
-        get_xor_from_hashs(&to, &AGENT_ADDRESS);
-        let signed_xor = hdk::sign(xor.to_string()).map(Signature::from)?;
+        let signed_xor = hdk::sign(xor.to_owned().to_string()).map(Signature::from)?;
         hdk::send(to.to_owned(), json!({
             "msg_type": "handshake_request".to_string(),
             "new_agent_signed_xor": signed_xor,
         }).to_string(), 10000.into())?;
+        Ok(signed_xor)
     }
-    Ok(())
 }
 
 /********Healper Functions**********/

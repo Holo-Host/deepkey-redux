@@ -30,9 +30,9 @@ const multiInstance = new Diorama({
   middleware: backwardCompatibilityMiddleware,
 })
 
-require('./unit_test/update_auth_entries')(singleInstance.registerScenario);
-require('./unit_test/set_up_conductor')(singleInstance.registerScenario);
-require('./unit_test/revoke_rev_key')(singleInstance.registerScenario);
+// require('./unit_test/update_auth_entries')(singleInstance.registerScenario);
+// require('./unit_test/set_up_conductor')(singleInstance.registerScenario);
+// require('./unit_test/revoke_rev_key')(singleInstance.registerScenario);
 require('./unit_test/notification')(multiInstance.registerScenario);
 
 singleInstance.run()

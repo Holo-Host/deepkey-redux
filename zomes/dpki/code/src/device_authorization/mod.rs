@@ -10,21 +10,17 @@ use hdk::{
     self,
     entry_definition::ValidatingEntryType,
     holochain_persistence_api::{
-        cas::content::Address,
         hash::HashString,
     },
-    holochain_json_api::{
-        error::JsonError,
-        json::JsonString,
-    },
+    holochain_json_api::{error::JsonError, json::JsonString},
     holochain_core_types::{
         dna::entry_types::Sharing,
-        error::HolochainError,
         signature::Signature,
         validation::{EntryValidationData},
     }
 };
-pub mod device_authorization;
+
+pub mod handlers;
 
 #[derive(Serialize, Deserialize, Debug, Clone, DefaultJson)]
 #[serde(rename_all = "camelCase")]

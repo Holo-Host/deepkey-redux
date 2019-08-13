@@ -19,7 +19,7 @@ use hdk::{
 };
 
 pub mod authorizor;
-// pub mod device_authorization;
+pub mod device_authorization;
 pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
@@ -118,9 +118,14 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
+        authorize_device: {
+            inputs: | new_agent_hash: HashString, new_agent_signed_xor: Signature |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: device_authorization::handlers::handle_authorize_device
+        }
         send_handshake_notify: {
             inputs: | to: Address |,
-            outputs: |result: ZomeApiResult<()>|,
+            outputs: |result: ZomeApiResult<Signature>|,
             handler: utils::handle_send_handshake_notify
         }
     ]
@@ -139,6 +144,7 @@ define_zome! {
         update_key,
         delete_key,
         key_status,
+        authorize_device,
         send_handshake_notify
         ]
     }
