@@ -1,6 +1,6 @@
 const sleep = require('sleep');
 async function genesis (agent){
-  return await agent.call("dpki", "init",  {params: "{\"revocation_key\": \"HcSCJy6gGntzgr95qrpddfqNPGp48mw36pq6m3333pDo8M8kPcmW89TdUM8iwmz\"}"})
+  return await agent.call("dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCJy6gGntzgr95qrpddfqNPGp48mw36pq6m3333pDo8M8kPcmW89TdUM8iwmz\"}"})
 }
 
 module.exports = (scenario) => {

@@ -10,7 +10,11 @@ extern crate holochain_json_derive;
 
 use hdk::{
     error::ZomeApiResult,
-    holochain_core_types::signature::Signature,
+    holochain_core_types::{
+        agent::AgentId,
+        validation::EntryValidationData,
+        signature::Signature
+    },
     holochain_json_api::{
         error::JsonError,
         json::{JsonString, RawString},
@@ -42,17 +46,31 @@ define_zome! {
         // rules::rev_path_definitions()
     ]
 
-    genesis: || {
+    init: || {
         Ok(())
     }
 
-    receive: |from, msg_json| {
-        utils::handle_receive(from, JsonString::from_json(&msg_json))
-    }
+    validate_agent: |validation_data : EntryValidationData::<AgentId>| {{
+         if let EntryValidationData::Create{entry, ..} = validation_data {
+             let agent = entry as AgentId;
+             if agent.nick == "reject_agent::app" {
+                 Err("This agent will always be rejected".into())
+             } else {
+                 Ok(())
+             }
+         } else {
+             Err("Cannot update or delete an agent at this time".into())
+         }
+     }}
+
+
+     receive: |from, msg_json| {
+         utils::handle_receive(from, JsonString::from_json(&msg_json))
+     }
 
     functions: [
     // DPKI Trait functions
-        init: {
+        init_dpki: {
             inputs: | params: String |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: dpki_trait::init
@@ -132,7 +150,7 @@ define_zome! {
 
     traits: {
         hc_public [
-        init,
+        init_dpki,
         is_initialized,
         get_initialization_data,
         create_agent_key,
