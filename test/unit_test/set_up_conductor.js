@@ -9,7 +9,7 @@ const AGENT_ENC_KEY_1 = "HcKciaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 const SIGNED_AGENT_ENC_KEY_1_BY_REV_KEY = "M1XZQyfFdQYsZMBCQzs5Ham1s9jyFoMuvySs6+I46dPtV/+1NzOIvdhk1qphUjOWb2qIPnIJ+K3iL9NRnV5wCw==";
 const AGENT_SIG_KEY_2 = "HcScjbK68HBVnnk5xe9ChrhxWTymxfq6hCtyykUu7Dby3ewpdeHrp7ZaEm5bhra";
 async function conductor_init (liza){
-  return await liza.call("dpki", "init",  {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
+  return await liza.call("dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
 }
 
 module.exports = (scenario) => {
