@@ -67,7 +67,6 @@ pub fn definitions() -> ValidatingEntryType{
                                 "Validation Error: Signature in DeviceAuthorization is invalid".to_string(),
                             );
                         }
-                        hdk::debug("Validated device_authorization++++++++++++++++++++++++++++++++++++")?;
                         return Ok(())
                     }
                     Err("Validation Error: DeviceAuthorization source is invalid ".to_string())
@@ -85,6 +84,19 @@ pub fn definitions() -> ValidatingEntryType{
             }
 
         },
-        links: []
+        links: [
+            from!(
+                "keyset_root",
+                link_type: "deepkey_device_link",
+
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: | _validation_data: hdk::LinkValidationData | {
+                    Ok(())
+                }
+            )
+        ]
     )
 }

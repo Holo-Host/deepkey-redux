@@ -4,14 +4,17 @@ async function genesis (agent){
 }
 
 module.exports = (scenario) => {
-  scenario("testing the initial set up process and trying to update it", async(s, t, { liza, jack }) => {
+  scenario("testing the notification to device handshaking", async(s, t, { liza, jack }) => {
     await genesis(liza)
+    await genesis(jack)
     sleep.sleep(5)
-    const lizas_xor_signature = await liza.call("dpki", "send_handshake_notify", {to:jack.agentId})
 
-    t.ok(lizas_xor_signature.Ok)
+    const jack_receives = await jack.call("dpki", "send_handshake_notify", {to:liza.agentId})
+    console.log("jack_receives:: ",jack_receives);
+    t.ok(jack_receives.Ok)
 
-    const is_authorized = await jack.call("dpki", "authorize_device", {new_agent_hash: liza.agentId, new_agent_signed_xor: lizas_xor_signature.Ok})
+    const is_authorized = await liza.call("dpki", "authorize_device", {new_agent_hash: jack.agentId, new_agent_signed_xor: jack_receives.Ok })
+    console.log("is_authorized:: ",is_authorized);
     t.deepEqual(is_authorized.Ok,null)
 
   })
