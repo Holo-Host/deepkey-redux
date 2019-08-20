@@ -3,6 +3,7 @@ extern crate hdk;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate holochain_json_derive;
@@ -22,13 +23,13 @@ use hdk::{
 };
 
 pub mod authorizor;
-// pub mod device_authorization;
+pub mod device_authorization;
 pub mod key_anchor;
 pub mod key_registration;
 pub mod keyset_root;
 pub mod rules;
+pub mod utils;
 use rules::GetResponse;
-// pub mod test;
 
 pub mod dpki_trait;
 
@@ -36,7 +37,7 @@ define_zome! {
     entries: [
         authorizor::definitions(),
         authorizor::auth_path_definitions(),
-        // device_authorization::definitions(),
+        device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
         key_registration::meta_definitions(),
@@ -61,6 +62,11 @@ define_zome! {
              Err("Cannot update or delete an agent at this time".into())
          }
      }}
+
+
+     receive: |from, msg_json| {
+         utils::handle_receive(from, JsonString::from_json(&msg_json))
+     }
 
     functions: [
     // DPKI Trait functions
@@ -130,16 +136,20 @@ define_zome! {
             outputs: |result: ZomeApiResult<RawString>|,
             handler: key_anchor::handlers::handle_key_status
         }
-        // sign: {
-        //     inputs: | |,
-        //     outputs: |result: ZomeApiResult<Signature>|,
-        //     handler: test::handle_sign_message
-        // }
+        authorize_device: {
+            inputs: | new_agent_hash: HashString, new_agent_signed_xor: Signature |,
+            outputs: |result: ZomeApiResult<()>|,
+            handler: device_authorization::handlers::handle_authorize_device
+        }
+        send_handshake_notify: {
+            inputs: | to: Address |,
+            outputs: |result: ZomeApiResult<Signature>|,
+            handler: utils::handle_send_handshake_notify
+        }
     ]
 
     traits: {
         hc_public [
-        // sign,
         init_dpki,
         is_initialized,
         get_initialization_data,
@@ -151,7 +161,9 @@ define_zome! {
         get_all_keys,
         update_key,
         delete_key,
-        key_status
+        key_status,
+        authorize_device,
+        send_handshake_notify
         ]
     }
 }

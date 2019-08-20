@@ -47,7 +47,7 @@ module.exports = (scenario) => {
 
 
     const all_keys = await liza.call("dpki", "get_all_keys", {})
-    console.log("----------->",all_keys);
+    console.log(all_keys);
     t.deepEqual(all_keys.Ok.length,2 )
 
 

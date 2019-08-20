@@ -11,25 +11,32 @@ process.on('unhandledRejection', error => {
 const dnaPath = path.join(__dirname, "../dist/DeepKey.dna.json")
 const dna = Diorama.dna(dnaPath, 'deepkey')
 
-const diorama = new Diorama({
+const singleInstance = new Diorama({
   instances: {
     liza: dna,
-    // jack: dna,
   },
-  // bridges: [
-  //   Diorama.bridge('test-bridge', 'liza', 'jack')
-  // ],
   debugLog: false,
   executor: tapeExecutor(require('tape')),
   middleware: backwardCompatibilityMiddleware,
 })
 
-require('./unit_test/update_auth_entries')(diorama.registerScenario);
-require('./unit_test/set_up_conductor')(diorama.registerScenario);
-require('./unit_test/revoke_rev_key')(diorama.registerScenario);
+const multiInstance = new Diorama({
+  instances: {
+    liza: dna,
+    jack: dna,
+  },
+  debugLog: false,
+  executor: tapeExecutor(require('tape')),
+  middleware: backwardCompatibilityMiddleware,
+})
 
-diorama.run()
+// require('./unit_test/update_auth_entries')(singleInstance.registerScenario);
+// require('./unit_test/set_up_conductor')(singleInstance.registerScenario);
+// require('./unit_test/revoke_rev_key')(singleInstance.registerScenario);
+require('./unit_test/notification')(multiInstance.registerScenario);
 
+singleInstance.run()
+multiInstance.run()
 //===========================================
 // Old testing fremework
 //===========================================

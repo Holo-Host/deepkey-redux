@@ -80,6 +80,18 @@ pub fn definitions() -> ValidatingEntryType {
                 }
             ),
             to!(
+                "%agent_id",
+                link_type: "agent_link_tag",
+
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: | _validation_data: hdk::LinkValidationData | {
+                    Ok(())
+                }
+            ),
+            to!(
                 "rules",
                 link_type: "rules_link_tag",
 
