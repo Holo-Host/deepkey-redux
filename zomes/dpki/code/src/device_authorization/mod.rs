@@ -1,6 +1,3 @@
-/// TODO:
-/// > Implementation for the following functions is not inclueded for the closed alpha
-
 /// We need a struct for a handshake that need to happen to Authorize a device.
 /// This commit would we that the device will reach out to the other device that is owned by the same Agent,
 /// generating this hash and commiting.
