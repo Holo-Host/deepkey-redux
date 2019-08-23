@@ -35,6 +35,9 @@ pub fn init(params: String) -> ZomeApiResult<Address> {
     let rules = create_new_rules(&keyset_root, &revocation_key, sotr.signatures[1].to_owned())?;
     hdk::debug(format!("Initial Rules set:  {:}", rules.clone()).to_string())?;
 
+    // TODO: Take in the authorizor key and set
+    // Set authorizor Key
+    
     //TODO: if this is not the First DeepKey Agent
     // ???
 
