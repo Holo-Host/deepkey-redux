@@ -311,7 +311,7 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
         ));
     } else if !list_of_secreats.contains(&agent_seed) {
         hdk::keystore_derive_seed(
-            "root_seed".to_string(),
+            "device_seed".to_string(),
             agent_seed.to_owned(),
             context.to_string(),
             index.to_owned(),
