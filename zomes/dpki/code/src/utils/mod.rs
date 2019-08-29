@@ -70,7 +70,7 @@ pub fn handle_send_handshake_notify(to: Address) -> ZomeApiResult<Signature> {
     }
 }
 
-/********Healper Functions**********/
+/********Helper Functions**********/
 
 pub fn get_xor_from_hashs(a:&HashString, b:&HashString)->HashString{
     let a_vec: Vec<u8> = a.to_string().as_bytes().to_vec();

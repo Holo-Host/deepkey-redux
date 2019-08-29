@@ -10,7 +10,8 @@ use hdk::{
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct InitParams {
-    revocation_key: String,
+    revocation_key: Option<HashString>,
+    first_agent_key: Option<HashString>
 }
 
 pub fn init(params: String) -> ZomeApiResult<Address> {
@@ -19,25 +20,43 @@ pub fn init(params: String) -> ZomeApiResult<Address> {
     // Conver the string to get the Json you expect
     // let init_params = InitParams::try_from(params)?;
     let revocation_key = HashString::from(init_params.revocation_key.to_owned());
+    let first_agent_key = HashString::from(init_params.first_agent_key.to_owned());
 
-    // If this is the First DeepKey instance for an agent
-    // We have to do the following steps
-    // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key
-    // - set the KeysetRoot
-    let sotr: SignOneTimeResult =
-        hdk::sign_one_time(vec![AGENT_ADDRESS.to_string(), revocation_key.to_string()])?;
-    let keyset_root = handle_set_keyset_root(
-        HashString::from(sotr.pub_key),
-        sotr.signatures[0].to_owned(),
-    )?;
-    hdk::debug(format!("Initial KeysetRoot set:  {:}", keyset_root.clone()).to_string())?;
-    // - set the Rules
-    let rules = create_new_rules(&keyset_root, &revocation_key, sotr.signatures[1].to_owned())?;
-    hdk::debug(format!("Initial Rules set:  {:}", rules.clone()).to_string())?;
+    match init_params.revocation_key {
+        Some (x) => {
+            // If this is the First DeepKey instance for an agent
+            // We have to do the following steps
+            // - use the sign_one_time() to sign the FirstDeepKeyAgent and revocation Key
+            // - set the KeysetRoot
+            let sotr: SignOneTimeResult =
+                hdk::sign_one_time(vec![AGENT_ADDRESS.to_string(), revocation_key.to_string()])?;
+            let keyset_root = handle_set_keyset_root(
+                HashString::from(sotr.pub_key),
+                sotr.signatures[0].to_owned(),
+            )?;
+            hdk::debug(format!("Initial KeysetRoot set:  {:}", keyset_root.clone()).to_string())?;
+            // - set the Rules
+            let rules = create_new_rules(&keyset_root, &revocation_key, sotr.signatures[1].to_owned())?;
+            hdk::debug(format!("Initial Rules set:  {:}", rules.clone()).to_string())?;
+        }
+        None => {
+            match init_params.first_agent_key {
+                Some (x) => {
+
+                }
+                None => {
+                    Err(ZomeApiError::from(
+                        ""
+                    ))
+                }
+            }
+        }
+    }
+
 
     // TODO: Take in the authorizor key and set
     // Set authorizor Key
-    
+
     //TODO: if this is not the First DeepKey Agent
     // ???
 
