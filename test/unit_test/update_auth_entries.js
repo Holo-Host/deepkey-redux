@@ -9,6 +9,17 @@ async function genesis (liza){
 }
 
 module.exports = (scenario) => {
+
+  scenario("testing to check if the DNA is initialized", async(s, t, { liza }) => {
+    let check = await liza.call("dpki", "is_initialized", {})
+    console.log("IS INITIALIZED: ",check);
+    t.notOk(check.Ok)
+    let address = await genesis(liza)
+    check = await liza.call("dpki", "is_initialized", {})
+    console.log("IS INITIALIZED: ",check);
+    t.ok(check.Ok)
+  })
+
   scenario("testing checks if entries have been pushed", async(s, t, { liza }) => {
     // On genesis we have to make this call
     let address = await genesis(liza)
