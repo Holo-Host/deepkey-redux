@@ -109,7 +109,7 @@ define_zome! {
         set_authorizor: {
             inputs: | authorization_key_path: u64, signed_auth_key:Signature |,
             outputs: |result: ZomeApiResult<HashString>|,
-            handler: authorizor::handlers::handle_create_authorizor
+            handler: authorizor::handlers::handle_set_authorizor
         }
         get_authorizor: {
             inputs: | |,
