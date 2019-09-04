@@ -25,7 +25,12 @@ pub fn handle_set_keyset_root(
             let entry = Entry::App("keyset_root".into(), root.into());
             let entry_addr = hdk::commit_entry(&entry)?;
             // TODO: update the tag
-            hdk::link_entries(&entry_addr, &AGENT_ADDRESS, "first_deepkey_agent_link_tag", "")?;
+            hdk::link_entries(
+                &entry_addr,
+                &AGENT_ADDRESS,
+                "first_deepkey_agent_link_tag",
+                "",
+            )?;
             hdk::link_entries(&entry_addr, &AGENT_ADDRESS, "agent_link_tag", "")?;
             Ok(entry_addr)
         }

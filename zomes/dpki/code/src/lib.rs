@@ -10,11 +10,7 @@ extern crate holochain_json_derive;
 
 use hdk::{
     error::ZomeApiResult,
-    holochain_core_types::{
-        agent::AgentId,
-        validation::EntryValidationData,
-        signature::Signature
-    },
+    holochain_core_types::{agent::AgentId, signature::Signature, validation::EntryValidationData},
     holochain_json_api::{
         error::JsonError,
         json::{JsonString, RawString},

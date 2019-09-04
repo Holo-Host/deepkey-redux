@@ -1,29 +1,25 @@
+use crate::device_authorization::DeviceAuthorization;
+use crate::utils;
 use hdk::{
-    error::{ZomeApiResult,ZomeApiError},
-    holochain_persistence_api::{
-        cas::content::Address,
-        hash::HashString
-    },
+    error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::{
         entry::Entry,
         signature::{Provenance, Signature},
     },
+    holochain_persistence_api::{cas::content::Address, hash::HashString},
     AGENT_ADDRESS,
 };
-use crate::device_authorization::DeviceAuthorization;
-use crate::utils;
 
 use crate::keyset_root::handlers::handle_get_my_keyset_root;
 
-pub fn handle_authorize_device(new_agent_hash: HashString, new_agent_signed_xor: Signature) -> ZomeApiResult<()>{
-
-    let xor: HashString = utils::get_xor_from_hashs(&AGENT_ADDRESS,&new_agent_hash);
+pub fn handle_authorize_device(
+    new_agent_hash: HashString,
+    new_agent_signed_xor: Signature,
+) -> ZomeApiResult<()> {
+    let xor: HashString = utils::get_xor_from_hashs(&AGENT_ADDRESS, &new_agent_hash);
 
     if !hdk::verify_signature(
-        Provenance::new(
-            new_agent_hash.to_owned(),
-            new_agent_signed_xor.to_owned(),
-        ),
+        Provenance::new(new_agent_hash.to_owned(), new_agent_signed_xor.to_owned()),
         String::from(xor.to_owned()),
     )? {
         return Err(ZomeApiError::Internal(
@@ -54,10 +50,15 @@ fn commit_device_authorization(payload: DeviceAuthorization) -> ZomeApiResult<Ad
 
 fn link_new_agent_to_root(new_agent_hash: &Address) -> ZomeApiResult<Address> {
     let keyset_root = handle_get_my_keyset_root()?;
-    hdk::link_entries(&keyset_root, new_agent_hash,  "agent_link_tag", "")
+    hdk::link_entries(&keyset_root, new_agent_hash, "agent_link_tag", "")
 }
 
 fn link_device_auth_to_root(device_authorization_hash: &Address) -> ZomeApiResult<Address> {
     let keyset_root = handle_get_my_keyset_root()?;
-    hdk::link_entries(&keyset_root, device_authorization_hash, "deepkey_device_link", "")
+    hdk::link_entries(
+        &keyset_root,
+        device_authorization_hash,
+        "deepkey_device_link",
+        "",
+    )
 }

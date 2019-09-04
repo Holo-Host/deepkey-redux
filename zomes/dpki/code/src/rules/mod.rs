@@ -2,8 +2,10 @@ use hdk::{
     self,
     entry_definition::ValidatingEntryType,
     holochain_core_types::{
-        dna::entry_types::Sharing, entry::Entry, error::HolochainError,
-        signature::{Provenance,Signature},
+        dna::entry_types::Sharing,
+        entry::Entry,
+        error::HolochainError,
+        signature::{Provenance, Signature},
         validation::EntryValidationData,
     },
     holochain_json_api::{
