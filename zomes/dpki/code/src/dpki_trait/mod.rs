@@ -24,13 +24,6 @@ struct InitParams {
 pub fn init(params: String) -> ZomeApiResult<Address> {
     // DANGER :: Used unrap
     let init_params: InitParams = serde_json::from_str(&params).unwrap();
-    // Conver the string to get the Json you expect
-    // let init_params = InitParams::try_from(params)?;
-    hdk::debug("++++++++++++++++++++++++++++++++++++++++++++++++++++")?;
-    hdk::debug("++++++++++++++++++++++++++++++++++++++++++++++++++++")?;
-    hdk::debug("++++++++++++++++++++++++++++++++++++++++++++++++++++")?;
-    hdk::debug("++++++++++++++++++++++++++++++++++++++++++++++++++++")?;
-    hdk::debug("++++++++++++++++++++++++++++++++++++++++++++++++++++")?;
 
     match init_params.revocation_key {
         Some (revocation_key) => {
@@ -65,6 +58,8 @@ pub fn init(params: String) -> ZomeApiResult<Address> {
 
     // Set authorizor Key
     handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX,init_params.signed_auth_key)
+
+    //TODO: Register this DeepKey Agent
 
 }
 
