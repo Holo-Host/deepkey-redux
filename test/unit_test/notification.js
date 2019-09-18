@@ -7,7 +7,7 @@ function genesis (agent){
 
 module.exports = (scenario) => {
   scenario("testing the notification to device handshaking", async (s, t) => {
-    const { liza, jack } = await s.players({ liza: config, jack: config}, true)
+    const { liza, jack } = await s.players({ liza: config('liza'), jack: config('jack')}, true)
     await genesis(liza)
     await genesis(jack)
     await s.consistency()
