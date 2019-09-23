@@ -16,9 +16,9 @@ const { liza_conductor_config } = require('../config')
 module.exports = (scenario) => {
   scenario("testing out how conductor should be set up", async(s, t) => {
 
-    const { liza } = await s.players({ liza: liza_conductor_config()}, true)
+    const { liza } = await s.players({ liza: liza_conductor_config()}, false)
 
-
+    // await liza.spawn()
 // On conductor_init we have to make this call
     // let address = await conductor_init(liza)
 
@@ -102,6 +102,7 @@ Check if the keys exist for the key
     const checking_key_6 = await liza.call("dpki", "key_status", {key:AGENT_ENC_KEY_1})
     t.deepEqual(checking_key_6.Ok,"deleted" )
 
+    // await liza.kill()
   })
 }
 
