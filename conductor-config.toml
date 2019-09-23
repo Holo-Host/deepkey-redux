@@ -4,7 +4,7 @@ persistence_dir = "./tmp/persistence-deepkey"
 [[agents]]
 id = "host-agent"
 name = "DeepKey Host"
-keystore_file = "device.key"
+keystore_file = "device-1.key"
 public_address = "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr"
 
 

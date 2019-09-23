@@ -2,7 +2,7 @@ const path = require('path')
 const { Config } = require('@holochain/try-o-rama')
 
 const dnaPath = path.join(__dirname, "../dist/DeepKey.dna.json")
-const device1Path = path.join(__dirname, "../device.key")
+const device1Path = path.join(__dirname, "../device-1.key")
 const device2Path = path.join(__dirname, "../device-2.key")
 const dna = Config.dna(dnaPath, 'dpki_happ')
 
