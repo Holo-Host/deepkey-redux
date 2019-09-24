@@ -11,12 +11,15 @@ const AGENT_SIG_KEY_2 = "HcScjbK68HBVnnk5xe9ChrhxWTymxfq6hCtyykUu7Dby3ewpdeHrp7Z
 async function conductor_init (liza){
   return await liza.call("dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
 }
-const { liza_conductor_config } = require('../config')
+const { liza_conductor_config, handleHack } = require('../config')
 
 module.exports = (scenario) => {
   scenario("testing out how conductor should be set up", async(s, t) => {
 
-    const { liza } = await s.players({ liza: liza_conductor_config()}, false)
+    const { liza } = await s.players({ liza: liza_conductor_config()})
+
+    await liza.spawn(handleHack)
+
 
     // await liza.spawn()
 // On conductor_init we have to make this call

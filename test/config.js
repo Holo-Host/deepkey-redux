@@ -46,4 +46,11 @@ const jack_conductor_config = () => ({
   }
 })
 
-module.exports = { liza_conductor_config, jack_conductor_config }
+// Send a newline to the process to enter a null passphrase when prompted
+const handleHack = handle => {
+  handle.stdin.setEncoding('utf-8')
+  handle.stdin.write('\n')
+  handle.stdin.end()
+}
+
+module.exports = { liza_conductor_config, jack_conductor_config, handleHack }
