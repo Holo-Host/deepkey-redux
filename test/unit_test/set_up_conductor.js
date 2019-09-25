@@ -1,4 +1,5 @@
-const sleep = require('sleep');
+const { simple_conductor_config, handleHack } = require('../config')
+
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -12,7 +13,6 @@ const AGENT_SIG_KEY_2 = "HcSCJ6Q45PCMvwdg5rWKjzTVPi9hoo8ixIzSUFh84tNz9hrs8GfP839
 async function conductor_init (liza){
   return await liza.call('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
 }
-const { simple_conductor_config, handleHack } = require('../config')
 
 module.exports = (scenario) => {
   scenario("testing out how conductor should be set up", async(s, t) => {
@@ -83,8 +83,6 @@ Check if the keys exist for the key
     })
     console.log("Updated Key: ",updated_key);
     t.deepEqual(updated_key.Ok,null)
-
-    sleep.sleep(5);
 
 // Check if the key exist for the key
 // Now the old key should be shown as updated and the new should be live
