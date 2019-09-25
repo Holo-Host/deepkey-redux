@@ -4,15 +4,15 @@ const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeude
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
 const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 
-async function genesis (liza){
+async function conductor_init (liza){
   return await liza.call("dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"})
 }
 
 module.exports = (scenario) => {
   scenario("testing checks if entries have been pushed", async(s, t, { liza }) => {
-    // On genesis we have to make this call
-    let address = await genesis(liza)
-    let address_recheck = await genesis(liza)
+    // On conductor_init we have to make this call
+    let address = await conductor_init(liza)
+    let address_recheck = await conductor_init(liza)
     t.deepEqual(address.Ok, address_recheck.Ok )
   })
 
@@ -26,7 +26,7 @@ module.exports = (scenario) => {
 
   scenario("testing the initial set up process and trying to update it", async(s, t, { liza }) => {
 
-    await genesis(liza)
+    await conductor_init(liza)
 
     sleep.sleep(5)
 

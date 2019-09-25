@@ -1,4 +1,4 @@
-use crate::authorizor::handlers::handle_set_authorizor;
+// use crate::authorizor::handlers::handle_set_authorizor;
 use crate::key_registration::{handlers::handle_create_key_registration, AppKeyType};
 use crate::keyset_root::handlers::{handle_get_my_keyset_root, handle_set_keyset_root};
 use crate::rules::handlers::create_new_rules;
@@ -10,7 +10,7 @@ use hdk::{
     AGENT_ADDRESS,
 };
 
-const INITIAL_AUTH_DERIVATION_INDEX: u64 = 1;
+// const INITIAL_AUTH_DERIVATION_INDEX: u64 = 1;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct InitParams {
@@ -22,7 +22,6 @@ struct InitParams {
 pub fn init(params: String) -> ZomeApiResult<Address> {
     // DANGER :: Used unrap
     let init_params: InitParams = serde_json::from_str(&params).unwrap();
-
     match init_params.revocation_key {
         Some(revocation_key) => {
             // If this is the First DeepKey instance for an agent
@@ -49,9 +48,9 @@ pub fn init(params: String) -> ZomeApiResult<Address> {
         },
     }
 
-    // Set authorizor Key
-    handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key)
-
+    //TODO:  Set authorizor Key
+    // handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key)
+    Ok(Address::from("TODO"))
     //TODO: Register this DeepKey Agent
 }
 

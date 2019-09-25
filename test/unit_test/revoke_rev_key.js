@@ -6,14 +6,14 @@ const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9u
 const NEW_REVOCATION_KEY = "HcSCJy6gGntzgr95qrpddfqNPGp48mw36pq6m3333pDo8M8kPcmW89TdUM8iwmz";
 const REV_SIGNED_BY_REV_KEY = "1//sUXEZwizqTK6aefikiVQpXQaIbK224woC4DsSJ6U7B2Mx1GO6V9P7Du+rpPiuRVIbPJ9CGfz3vzbftp78AQ==";
 const BAD_SIGNED_REV_KEY = "Jkz3AWHO5bEZ11OpsNeotTIr3CGH3wZcyqUAae+xEVy+MwXhrAS1lfzUbWSRQgsSMWUNSjYTtE9NNUHXPkQkBg=="
-async function genesis (liza){
+async function conductor_init (liza){
   return await liza.call("dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCJy6gGntzgr95qrpddfqNPGp48mw36pq6m3333pDo8M8kPcmW89TdUM8iwmz\"}"})
 }
 
 module.exports = (scenario) => {
   scenario("testing the initial set up process and trying to update it", async(s, t, { liza }) => {
 
-    await genesis(liza)
+    await conductor_init(liza)
 
     sleep.sleep(5)
 

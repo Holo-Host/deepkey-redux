@@ -8,11 +8,10 @@ process.on('unhandledRejection', error => {
 });
 
 const orchestrator = new Orchestrator({
-  debugLog: false,
   middleware: tapeExecutor(require('tape')),
   globalConfig: {
     network: 'n3h',
-    logger: false,
+    logger: true,
   }
 })
 

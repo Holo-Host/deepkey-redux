@@ -6,24 +6,24 @@ const device1Path = path.join(__dirname, "../device-1.key")
 const device2Path = path.join(__dirname, "../device-2.key")
 const dna = Config.dna(dnaPath, 'dpki_happ')
 
-const liza_conductor_config = () => ({
+const simple_conductor_config = (agent) => ({
   instances: [{
     id: 'dpki_happ',
     agent: {
-      id: "liza",
-      name: `${"liza"}-${Math.floor(Math.random() * 100000)}`,
+      id: agent,
+      name: `${agent}-${Math.floor(Math.random() * 100000)}`,
       keystore_file: device1Path,
       public_address: "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr",
     },
     dna: {
-      id: 'dpki_happ',
+      id: 'deepkey',
       file: dnaPath,
     }
   }],
-  dpki: {
-    instance_id: 'dpki_happ',
-    init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
-  }
+  // dpki: {
+  //   instance_id: 'dpki_happ',
+  //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
+  // }
 })
 
 const jack_conductor_config = () => ({
@@ -36,7 +36,7 @@ const jack_conductor_config = () => ({
       public_address: "HcSCJ9rxPzSwzdqhaprQGkXIzJmmc9r9gq4AgGIcvIvjdftfF8HfHw6k8P6Akjr",
     },
     dna: {
-      id: 'dpki_happ',
+      id: 'deepkey',
       file: dnaPath,
     }
   }],
@@ -53,4 +53,4 @@ const handleHack = handle => {
   handle.stdin.end()
 }
 
-module.exports = { liza_conductor_config, jack_conductor_config, handleHack }
+module.exports = { simple_conductor_config, jack_conductor_config, handleHack }
