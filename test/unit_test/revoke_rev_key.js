@@ -35,5 +35,6 @@ module.exports = (scenario) => {
     console.log("My Updated Rules: ",my_updated_rules.Ok[0]);
     t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,NEW_REVOCATION_KEY )
 
+    await liza.kill()
   })
 }
