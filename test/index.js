@@ -15,7 +15,7 @@ const orchestrator = new Orchestrator({
   }
 })
 
-// require('./unit_test/update_auth_entries')(orchestrator.registerScenario);
+require('./unit_test/update_auth_entries')(orchestrator.registerScenario);
 require('./unit_test/set_up_conductor')(orchestrator.registerScenario);
 require('./unit_test/revoke_rev_key')(orchestrator.registerScenario);
 // require('./unit_test/notification')(orchestrator.registerScenario);

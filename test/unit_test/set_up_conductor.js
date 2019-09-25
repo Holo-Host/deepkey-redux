@@ -107,10 +107,3 @@ Check if the keys exist for the key
     await liza.kill()
   })
 }
-
-// module.exports = (scenario) => {
-//   scenario("FakeData: This function is just for getting the signature back for testing", async(s, t, { liza }) => {
-//     const signature = await liza.call("dpki","sign",{})
-//     console.log("SIGNATURE:-> ",signature);
-//   })
-// }

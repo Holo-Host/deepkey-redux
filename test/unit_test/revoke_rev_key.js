@@ -1,8 +1,6 @@
 const { simple_conductor_config, handleHack } = require('../config')
 
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
-const SIGNED_AUTH_KEY_1 ="LVeIAP0horN0UhEVuqZyDCPjcYzvQUj9AMRm4Hv+xtsS6QoHYUeudekZoVYcPtktf+tDTtP/yFu8O3+jsZDbBQ==";
-const SIGNED_AUTH_KEY_2 ="LbEReAxFLkkzfOHRBixC7+DYKGao6lPBYsUycVg3NHmNx7p8237/9unBwrt/o+9P4IWkKR+QCYeFxqBNRnn+Dg==";
 const NEW_REVOCATION_KEY = "HcSciCmrxP4w5yefdxiSc3W5nY7ic9yzxS4vpeX3iPtnvu7db59FY4z7vj55mDz";
 const REV_SIGNED_BY_REV_KEY = "Aul6kMS4K4rW7wpRiPC154zdDtXRc8ZQEj3wV3eOufOdbBK839045X8SzHoNI0VJVYLVB9YbL6gJ2goja/jxDw==";
 const BAD_SIGNED_REV_KEY = "Jkz3AWHO5bEZ11OpsNeotTIr3CGH3wZcyqUAae+xEVy+MwXhrAS1lfzUbWSRQgsSMWUNSjYTtE9NNUHXPkQkBg=="
