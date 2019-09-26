@@ -3,7 +3,7 @@ const { Config } = require('@holochain/try-o-rama')
 
 const dnaPath = path.join(__dirname, "../dist/DeepKey.dna.json")
 const device1Path = path.join(__dirname, "../device-1.key")
-const device2Path = path.join(__dirname, "../device-2.key")
+const device2Path = path.join(__dirname, "../device-2-n.key")
 const dna = Config.dna(dnaPath, 'dpki_happ')
 
 const simple_conductor_config = (agent) => ({
@@ -26,12 +26,12 @@ const simple_conductor_config = (agent) => ({
   // }
 })
 
-const jack_conductor_config = () => ({
+const simple_2_conductor_config = (agent) => ({
   instances: [{
     id: 'dpki_happ',
     agent: {
-      id: "jack",
-      name: `${"jack"}-${Math.floor(Math.random() * 100000)}`,
+      id: agent,
+      name: `${agent}-${Math.floor(Math.random() * 100000)}`,
       keystore_file: device2Path,
       public_address: "HcSCJ9rxPzSwzdqhaprQGkXIzJmmc9r9gq4AgGIcvIvjdftfF8HfHw6k8P6Akjr",
     },
@@ -40,10 +40,10 @@ const jack_conductor_config = () => ({
       file: dnaPath,
     }
   }],
-  dpki: {
-    instance_id: 'dpki_happ',
-    init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
-  }
+  // dpki: {
+  //   instance_id: 'dpki_happ',
+  //   init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
+  // }
 })
 
 // Send a newline to the process to enter a null passphrase when prompted
@@ -53,4 +53,4 @@ const handleHack = handle => {
   handle.stdin.end()
 }
 
-module.exports = { simple_conductor_config, jack_conductor_config, handleHack }
+module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack }
