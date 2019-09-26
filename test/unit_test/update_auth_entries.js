@@ -13,6 +13,7 @@ module.exports = (scenario) => {
     const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
 
     await liza.spawn(handleHack)
+    await jack.spawn(handleHack)
 
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
@@ -20,12 +21,14 @@ module.exports = (scenario) => {
     t.deepEqual(address.Ok, address_recheck.Ok )
 
     await liza.kill()
+    await jack.kill()
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
     const { liza } = await s.players({ liza: simple_conductor_config('liza')})
 
     await liza.spawn(handleHack)
+    await jack.spawn(handleHack)
 
   // This is to just test out if we get the right keyset_root address
     const keyset_root_address = await liza.call('dpki_happ', "dpki", "get_initialization_data", {})
@@ -33,6 +36,7 @@ module.exports = (scenario) => {
     t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
 
     await liza.kill()
+    await jack.kill()
   })
 
 
@@ -40,6 +44,7 @@ module.exports = (scenario) => {
     const { liza } = await s.players({ liza: simple_conductor_config('liza')})
 
     await liza.spawn(handleHack)
+    await jack.spawn(handleHack)
 
     await conductor_init(liza)
 
@@ -82,5 +87,6 @@ module.exports = (scenario) => {
 //     t.deepEqual(checking_old_authorizor_key.Ok,"modified" )
 
     await liza.kill()
+    await jack.kill()
   })
 }

@@ -20,6 +20,7 @@ module.exports = (scenario) => {
     const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
 
     await liza.spawn(handleHack)
+    await jack.spawn(handleHack)
 
 // On conductor_init we have to make this call
     let address = await conductor_init(liza)
@@ -109,5 +110,6 @@ Check if the keys exist for the key
     t.deepEqual(checking_key_6.Ok,"deleted" )
 
     await liza.kill()
+    await jack.kill()
   })
 }

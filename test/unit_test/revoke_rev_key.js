@@ -14,6 +14,7 @@ module.exports = (scenario) => {
     const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
 
     await liza.spawn(handleHack)
+    await jack.spawn(handleHack)
 
     await conductor_init(liza)
 
@@ -36,5 +37,6 @@ module.exports = (scenario) => {
     t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,NEW_REVOCATION_KEY )
 
     await liza.kill()
+    await jack.kill()
   })
 }
