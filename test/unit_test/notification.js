@@ -26,6 +26,7 @@ module.exports = (scenario) => {
     t.ok(jack_receives.Ok)
 
     sleep(5)
+    await s.consistency()
 
     const is_authorized = await liza.call("dpki_happ", "dpki", "authorize_device", {new_agent_hash: jack.info('dpki_happ').agentAddress, new_agent_signed_xor: jack_receives.Ok })
     console.log("is_authorized:: ",is_authorized);
