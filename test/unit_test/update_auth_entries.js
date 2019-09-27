@@ -25,7 +25,7 @@ module.exports = (scenario) => {
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
 
     await liza.spawn(handleHack)
     await jack.spawn(handleHack)
@@ -41,7 +41,7 @@ module.exports = (scenario) => {
 
 
   scenario("testing the initial set up process and trying to update it", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
 
     await liza.spawn(handleHack)
     await jack.spawn(handleHack)
