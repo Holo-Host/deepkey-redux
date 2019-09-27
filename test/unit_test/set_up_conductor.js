@@ -61,11 +61,8 @@ module.exports = (scenario) => {
     console.log(all_keys);
     t.deepEqual(all_keys.Ok.length,2 )
 
-
-/*
-Check if the keys exist for the key
- Now it should exist
-*/
+// Check if the keys exist for the key
+// Now it should exist
 
   // Checking Agents initial Signing key
     const checking_key_2 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_SIG_KEY_1})
