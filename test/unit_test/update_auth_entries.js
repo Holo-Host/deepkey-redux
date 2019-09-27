@@ -9,17 +9,25 @@ async function conductor_init (liza){
 }
 
 module.exports = (scenario) => {
+
   scenario("testing checks if entries have been pushed", async(s, t) => {
     const { liza } = await s.players({ liza: simple_conductor_config('liza')})
-
     await liza.spawn(handleHack)
-
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
     let address_recheck = await conductor_init(liza)
     t.deepEqual(address.Ok, address_recheck.Ok )
-
     await liza.kill()
+  })
+
+  scenario("testing to check if the DNA is initialized", async(s, t, { liza }) => {
+    let check = await liza.call("dpki", "is_initialized", {})
+    console.log("IS INITIALIZED: ",check);
+    t.notOk(check.Ok)
+    let address = await genesis(liza)
+    check = await liza.call("dpki", "is_initialized", {})
+    console.log("IS INITIALIZED: ",check);
+    t.ok(check.Ok)
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
