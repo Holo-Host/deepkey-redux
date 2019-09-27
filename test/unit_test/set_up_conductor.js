@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../config')
+const { simple_conductor_config, simple_2_conductor_config, handleHack } = require('../config')
 const { sleep } = require('sleep')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";

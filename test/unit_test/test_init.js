@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../config')
+const { simple_conductor_config, simple_2_conductor_config, handleHack } = require('../config')
 
 module.exports = (scenario) => {
   scenario("testing the notification to device handshaking", async(s, t) => {

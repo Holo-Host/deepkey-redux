@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../config')
+const { simple_conductor_config, simple_2_conductor_config, handleHack } = require('../config')
 
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const NEW_REVOCATION_KEY = "HcSciCmrxP4w5yefdxiSc3W5nY7ic9yzxS4vpeX3iPtnvu7db59FY4z7vj55mDz";
