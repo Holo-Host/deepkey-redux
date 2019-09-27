@@ -10,7 +10,7 @@ async function conductor_init (liza){
 
 module.exports = (scenario) => {
   scenario("testing checks if entries have been pushed", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')},false)
 
     await liza.spawn(handleHack)
 

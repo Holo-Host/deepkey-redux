@@ -17,7 +17,7 @@ async function conductor_init (liza){
 module.exports = (scenario) => {
   scenario("testing out how conductor should be set up", async(s, t) => {
 
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')},false)
 
     await liza.spawn(handleHack)
 
