@@ -1,5 +1,5 @@
 const { simple_conductor_config, handleHack } = require('../config')
-const sleep  = require('sleep')
+const { sleep }  = require('sleep')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -84,7 +84,7 @@ Check if the keys exist for the key
     console.log("Updated Key: ",updated_key);
     t.deepEqual(updated_key.Ok,null)
 
-    sleep.sleep(5)
+    sleep(5)
 
 // Check if the key exist for the key
 // Now the old key should be shown as updated and the new should be live
@@ -103,7 +103,7 @@ Check if the keys exist for the key
     t.equal(deleated_key.Ok,null)
     console.log(" Deleated Key Succesfully ");
 
-    sleep.sleep(5)
+    sleep(5)
 
     const checking_key_6 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_ENC_KEY_1})
     t.deepEqual(checking_key_6.Ok,"deleted" )
