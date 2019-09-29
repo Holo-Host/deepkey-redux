@@ -1,8 +1,8 @@
-// const { simple_conductor_config, handleHack } = require('../../config')
+// const { dpki_set_conductor_config, handleHack } = require('../../config')
 //
 // module.exports = (scenario) => {
 //   scenario("testing the notification to device handshaking", async(s, t) => {
-//     const { liza, jack } = await s.players({ liza: simple_conductor_config('liza'), jack: simple_conductor_config('jack')})
+//     const { liza } = await s.players({ liza: simple_conductor_config('liza')})
 //
 //     await liza.spawn(handleHack)
 //     await jack.spawn(handleHack)

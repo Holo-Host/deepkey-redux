@@ -11,7 +11,7 @@ const orchestrator = new Orchestrator({
   middleware: tapeExecutor(require('tape')),
   globalConfig: {
     network: 'n3h',
-    logger: false
+    logger: true
   }
 })
 
@@ -21,7 +21,7 @@ require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScen
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario);
 require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario);
 require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
-// require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
+require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
 orchestrator.run()
 
 // These tests have deepkey set as a dpki_instance in the conductor via the dpki settings

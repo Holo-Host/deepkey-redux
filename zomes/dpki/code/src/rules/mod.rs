@@ -131,31 +131,31 @@ pub fn definitions() -> ValidatingEntryType {
     )
 }
 
-pub fn rev_path_definitions() -> ValidatingEntryType {
-    entry!(
-        name: "rev_key_derivation_path",
-        description: "private entry provides us future ability to regenerate RevKey from Master Seed",
-        sharing: Sharing::Private,
-        validation_package: || {
-            hdk::ValidationPackageDefinition::Entry
-        },
-
-        validation: |validation_data: hdk::EntryValidationData<String>| {
-            match validation_data
-            {
-                EntryValidationData::Create{entry:_r,validation_data:_} =>
-                {
-                    Ok(())
-                },
-                EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
-                {
-                   Ok(())
-                },
-                EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
-                {
-                   Ok(())
-                }
-            }
-        }
-    )
-}
+// pub fn rev_path_definitions() -> ValidatingEntryType {
+//     entry!(
+//         name: "rev_key_derivation_path",
+//         description: "private entry provides us future ability to regenerate RevKey from Master Seed",
+//         sharing: Sharing::Private,
+//         validation_package: || {
+//             hdk::ValidationPackageDefinition::Entry
+//         },
+//
+//         validation: |validation_data: hdk::EntryValidationData<String>| {
+//             match validation_data
+//             {
+//                 EntryValidationData::Create{entry:_r,validation_data:_} =>
+//                 {
+//                     Ok(())
+//                 },
+//                 EntryValidationData::Modify{new_entry:_,old_entry:_,old_entry_header:_,validation_data:_} =>
+//                 {
+//                    Ok(())
+//                 },
+//                 EntryValidationData::Delete{old_entry:_,old_entry_header:_,validation_data:_} =>
+//                 {
+//                    Ok(())
+//                 }
+//             }
+//         }
+//     )
+// }

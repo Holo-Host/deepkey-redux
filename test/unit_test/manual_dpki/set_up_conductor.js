@@ -32,19 +32,6 @@ module.exports = (scenario) => {
     // t.equal(keyset_root_address.Ok,address.Ok)
     t.ok(keyset_root_address.Ok)
 
-// Lets create an authorizor key
-// QUESTION : How do we generate this auth_key and sign it (its signed using the deepkey agent key) ?
-    const authorizor_commit =await liza.call('dpki_happ', "dpki", "set_authorizor", {
-      authorization_key_path: 1,
-      signed_auth_key:SIGNED_AUTH_KEY_1
-    })
-    console.log(authorizor_commit);
-    t.ok(authorizor_commit.Ok)
-
-// Check if the key exist for the authorizor
-    const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
-    t.deepEqual(checking_authorizor_key.Ok,"live" )
-
 // Check if the key exist for the key
 // This is befor this is created
     const checking_key_1 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_SIG_KEY_1})

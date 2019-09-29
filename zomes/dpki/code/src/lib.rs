@@ -18,16 +18,17 @@ use hdk::{
     holochain_persistence_api::{cas::content::Address, hash::HashString},
 };
 
-pub mod authorizor;
-pub mod device_authorization;
-pub mod key_anchor;
-pub mod key_registration;
-pub mod keyset_root;
-pub mod rules;
-pub mod utils;
+mod authorizor;
+mod device_authorization;
+mod key_anchor;
+mod key_registration;
+mod keyset_root;
+mod rules;
+mod utils;
+mod dpki_trait;
+
 use rules::GetResponse;
 
-pub mod dpki_trait;
 
 define_zome! {
     entries: [
@@ -68,7 +69,7 @@ define_zome! {
     // DPKI Trait functions
         init_dpki: {
             inputs: | params: String |,
-            outputs: |result: ZomeApiResult<Address>|,
+            outputs: |result: ZomeApiResult<HashString>|,
             handler: dpki_trait::init
         }
         is_initialized: {
