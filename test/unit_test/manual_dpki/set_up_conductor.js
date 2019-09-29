@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../config')
+const { simple_conductor_config, handleHack } = require('../../config')
 const sleep  = require('sleep')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
@@ -31,19 +31,6 @@ module.exports = (scenario) => {
     // add this test when the init is fixed
     // t.equal(keyset_root_address.Ok,address.Ok)
     t.ok(keyset_root_address.Ok)
-
-// Lets create an authorizor key
-// QUESTION : How do we generate this auth_key and sign it (its signed using the deepkey agent key) ?
-    const authorizor_commit =await liza.call('dpki_happ', "dpki", "set_authorizor", {
-      authorization_key_path: 1,
-      signed_auth_key:SIGNED_AUTH_KEY_1
-    })
-    console.log(authorizor_commit);
-    t.ok(authorizor_commit.Ok)
-
-// Check if the key exist for the authorizor
-    const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
-    t.deepEqual(checking_authorizor_key.Ok,"live" )
 
 // Check if the key exist for the key
 // This is befor this is created

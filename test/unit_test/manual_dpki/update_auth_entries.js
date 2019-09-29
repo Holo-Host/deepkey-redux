@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../config')
+const { simple_conductor_config, handleHack } = require('../../config')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -16,16 +16,20 @@ module.exports = (scenario) => {
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
     let address_recheck = await conductor_init(liza)
-    t.deepEqual(address.Ok, address_recheck.Ok )
+    t.ok(address.Ok)
+    t.ok(address_recheck.Err)
     await liza.kill()
   })
 
-  scenario("testing to check if the DNA is initialized", async(s, t, { liza }) => {
-    let check = await liza.call("dpki", "is_initialized", {})
+  scenario("testing to check if the DNA is initialized", async(s, t) => {
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    await liza.spawn(handleHack)
+
+    let check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.notOk(check.Ok)
-    let address = await genesis(liza)
-    check = await liza.call("dpki", "is_initialized", {})
+    let address = await conductor_init(liza)
+    check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.ok(check.Ok)
   })
@@ -61,10 +65,7 @@ module.exports = (scenario) => {
     t.deepEqual(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
 
 // Lets create an authorizor key
-    const authorizor_commit = await liza.call('dpki_happ', "dpki", "set_authorizor", {
-      authorization_key_path: 1,
-      signed_auth_key:SIGNED_AUTH_KEY_1
-    })
+    const authorizor_commit = await liza.call('dpki_happ', "dpki", "get_authorizor", {})
     t.ok(authorizor_commit.Ok)
 
 // Check if the key exist for the authorizor
@@ -72,7 +73,7 @@ module.exports = (scenario) => {
     t.deepEqual(not_registered_key.Ok,"Doesn\'t Exists" )
 
 // Check if the key exist for the authorizor
-    const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
+    const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok.authorizationKey})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
 
 // // Lets create an authorizor key
