@@ -4,19 +4,15 @@ persistence_dir = "./tmp/persistence-deepkey"
 [[agents]]
 id = "host-agent"
 name = "DeepKey Host"
-keystore_file = "agent.key"
-public_address = "HcSCj7w5i5FCXworaouxG4aCq6to7zjqmCHwZHqyRkxgiz7c56ohs8gGqU8Dqaz"
+keystore_file = "device-1.key"
+public_address = "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr"
 
 
 [[dnas]]
 file = "./dist/DeepKey.dna.json"
-hash = "QmZMuuXQSLJhsjsz8TRSHV9U4HJxBHcbMqc4TzoS56qTYV"
+hash = "QmUZZw6p4gFuN9ec3xxp5gfr4PgMLMvCM9YWaatmyscDhT"
 id = "deepkey"
 
-[[dnas]]
-file = "./dist/holofuel.dna.json"
-hash = "QmZG3y4YqawFpZp7tFrjYc43wtjqGyVrKHDvqR4dLncKiy"
-id = "holofuel"
 
 [[instances]]
 agent = "host-agent"
@@ -32,7 +28,7 @@ id = "ws interface"
 
     [interfaces.driver]
     port = 8800
-    type = "websocket"
+    type = "http"
     [[interfaces.instances]]
     id = "dpki_happ"
 
@@ -46,18 +42,20 @@ id = "admin interface"
 
 [dpki]
 instance_id = "dpki_happ"
-init_params = "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\"}"
+init_params = "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"
 
 [logger]
 type = "debug"
-[[logger.rules.rules]]
-color = "red"
-exclude = false
-pattern = "^err/"
-[[logger.rules.rules]]
-color = "green"
-exclude = false
-pattern = "^debug/dna"
-[[logger.rules.rules]]
-exclude = true
-pattern = ".*"
+    [[logger.rules.rules]]
+    color = "red"
+    exclude = false
+    pattern = "^err/"
+
+    [[logger.rules.rules]]
+    color = "white"
+    exclude = false
+    pattern = "^debug/dna"
+
+    [[logger.rules.rules]]
+    exclude = true
+    pattern = ".*"

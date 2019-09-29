@@ -26,22 +26,21 @@ fn generate_auth(index: u64) -> ZomeApiResult<String> {
         return hdk::keystore_get_public_key(auth_key);
     }
     hdk::keystore_derive_seed(
-        "root_seed".to_string(),
+        "device_seed".to_string(),
         auth_seed.to_owned(),
-        "authSeed".to_string(),
+        "HCAUTHRZ".to_string(),
         index,
     )?;
     hdk::keystore_derive_key(auth_seed.to_owned(), auth_key, KeyType::Signing)
 }
 
-pub fn handle_create_authorizor(
+pub fn handle_set_authorizor(
     authorization_key_path: u64,
     signed_auth_key: Signature,
 ) -> ZomeApiResult<HashString> {
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
     let authorization_key =
         HashString::from(generate_auth(authorization_key_path)?.trim_matches('"'));
-
     match handle_get_authorizor() {
         // Case when authorizor key was already set. We need to update it..
         Ok(authorizor_entry) => update_authorizor(
@@ -78,7 +77,7 @@ fn create_new_authorizor(
         String::from(authorization_key.to_owned()),
     )? {
         return Err(ZomeApiError::Internal(
-            "Signature Not Able to be Verified".to_string(),
+            format!("Signature for Authorizor Key {:}, Not Able to be Verified", authorization_key.clone().to_string()).to_string()
         ));
     }
 

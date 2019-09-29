@@ -37,7 +37,7 @@ pub fn handle_create_key_registration(
         .to_owned();
     let derived_key_hashstring = HashString::from(derived_key.to_owned());
 
-    hdk::debug(format!("A Key was created: {}",derived_key.clone()))?;
+    hdk::debug(format!("A Key was created: {}", derived_key.clone()))?;
 
     //Get the Auth Kye ID
     let auth_key_signing_keys = sign_key_by_authorization_key(derived_key)?;
@@ -289,7 +289,7 @@ fn sign_key_by_authorization_key(key: String) -> Result<Signature, ZomeApiError>
 fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<String> {
     let agent_seed = ["agent_seed:", context, ":", &index.to_string()].concat();
     // let app_key = ["app_key:", context, ":", &index.to_string()].concat();
-    hdk::debug(format!("Geretated Seed {:?}",agent_seed.clone()))?;
+    hdk::debug(format!("Geretated Seed {:?}", agent_seed.clone()))?;
     let agent_key_id_str;
     match key_type {
         KeyType::Signing => {
@@ -299,7 +299,7 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
             agent_key_id_str = [context.to_owned(), ":enc_key".to_string()].concat()
         }
     }
-    hdk::debug(format!("Deriving Key for {:?}",agent_key_id_str.clone()))?;
+    hdk::debug(format!("Deriving Key for {:?}", agent_key_id_str.clone()))?;
     // Check if the agent_seed Exists before
     //*******************
     // TODO : if it exist send the agent_key_id_str back not an Err
@@ -311,7 +311,7 @@ fn derive_key(index: u64, context: &String, key_type: KeyType) -> ZomeApiResult<
         ));
     } else if !list_of_secreats.contains(&agent_seed) {
         hdk::keystore_derive_seed(
-            "root_seed".to_string(),
+            "device_seed".to_string(),
             agent_seed.to_owned(),
             context.to_string(),
             index.to_owned(),
@@ -366,7 +366,7 @@ fn get_address_of_key_meta(
     }
 }
 
-pub fn get_all_keys()-> ZomeApiResult<Vec<KeyMeta>>{
+pub fn get_all_keys() -> ZomeApiResult<Vec<KeyMeta>> {
     let list: Vec<(ChainHeader, Entry)> = query_local_chain_for_entry_type("key_meta".to_string())?;
     let mut address: Vec<KeyMeta> = Vec::new();
     for k in list {
@@ -378,9 +378,7 @@ pub fn get_all_keys()-> ZomeApiResult<Vec<KeyMeta>>{
     if !address.is_empty() {
         Ok(address.to_owned())
     } else {
-        Err(ZomeApiError::Internal(
-            "No Keys are registered".to_string(),
-        ))
+        Err(ZomeApiError::Internal("No Keys are registered".to_string()))
     }
 }
 

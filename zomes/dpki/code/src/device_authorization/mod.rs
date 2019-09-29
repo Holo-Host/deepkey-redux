@@ -2,19 +2,16 @@
 /// This commit would we that the device will reach out to the other device that is owned by the same Agent,
 /// generating this hash and commiting.
 /// Which means that this device is authorized not just by the FDA but all the other device owned by the agent.
-
 use hdk::{
     self,
     entry_definition::ValidatingEntryType,
-    holochain_persistence_api::{
-        hash::HashString,
-    },
-    holochain_json_api::{error::JsonError, json::JsonString},
     holochain_core_types::{
         dna::entry_types::Sharing,
         signature::{Provenance, Signature},
-        validation::{EntryValidationData},
-    }
+        validation::EntryValidationData,
+    },
+    holochain_json_api::{error::JsonError, json::JsonString},
+    holochain_persistence_api::hash::HashString,
 };
 
 pub mod handlers;
@@ -29,7 +26,7 @@ pub struct DeviceAuthorization {
     pub authorizor_id2_sig_of_xor: Signature,
 }
 
-pub fn definitions() -> ValidatingEntryType{
+pub fn definitions() -> ValidatingEntryType {
     entry!(
         name: "device_authorization",
         description: "Struct that proves a sucessfull handshake between two devices",

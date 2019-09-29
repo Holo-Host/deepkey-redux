@@ -10,11 +10,7 @@ extern crate holochain_json_derive;
 
 use hdk::{
     error::ZomeApiResult,
-    holochain_core_types::{
-        agent::AgentId,
-        validation::EntryValidationData,
-        signature::Signature
-    },
+    holochain_core_types::{agent::AgentId, signature::Signature, validation::EntryValidationData},
     holochain_json_api::{
         error::JsonError,
         json::{JsonString, RawString},
@@ -22,16 +18,17 @@ use hdk::{
     holochain_persistence_api::{cas::content::Address, hash::HashString},
 };
 
-pub mod authorizor;
-pub mod device_authorization;
-pub mod key_anchor;
-pub mod key_registration;
-pub mod keyset_root;
-pub mod rules;
-pub mod utils;
+mod authorizor;
+mod device_authorization;
+mod key_anchor;
+mod key_registration;
+mod keyset_root;
+mod rules;
+mod utils;
+mod dpki_trait;
+
 use rules::GetResponse;
 
-pub mod dpki_trait;
 
 define_zome! {
     entries: [
@@ -72,7 +69,7 @@ define_zome! {
     // DPKI Trait functions
         init_dpki: {
             inputs: | params: String |,
-            outputs: |result: ZomeApiResult<Address>|,
+            outputs: |result: ZomeApiResult<HashString>|,
             handler: dpki_trait::init
         }
         is_initialized: {
@@ -109,7 +106,7 @@ define_zome! {
         set_authorizor: {
             inputs: | authorization_key_path: u64, signed_auth_key:Signature |,
             outputs: |result: ZomeApiResult<HashString>|,
-            handler: authorizor::handlers::handle_create_authorizor
+            handler: authorizor::handlers::handle_set_authorizor
         }
         get_authorizor: {
             inputs: | |,

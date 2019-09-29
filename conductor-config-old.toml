@@ -1,0 +1,63 @@
+bridges = []
+persistence_dir = "./tmp/persistence-deepkey"
+
+[[agents]]
+id = "host-agent"
+name = "DeepKey Host"
+keystore_file = "agent.key"
+public_address = "HcSciNw8EPFNprfjnvpoZ97hTYZPb97zdkjqiTmb8epjozf5iC8XoQmxnvdrfea"
+
+
+[[dnas]]
+file = "./dist/DeepKey.dna.json"
+hash = "QmXDS47hjqCSVRzG2W6YdPAuWrtjhs2hvVtHhbbBqp6rrf"
+id = "deepkey"
+
+[[dnas]]
+file = "./dist/holofuel.dna.json"
+hash = "QmZG3y4YqawFpZp7tFrjYc43wtjqGyVrKHDvqR4dLncKiy"
+id = "holofuel"
+
+[[instances]]
+agent = "host-agent"
+dna = "deepkey"
+id = "dpki_happ"
+[instances.storage]
+path = "./tmp/storage-deepkey"
+type = "file"
+
+[[interfaces]]
+admin = false
+id = "ws interface"
+
+    [interfaces.driver]
+    port = 8800
+    type = "websocket"
+    [[interfaces.instances]]
+    id = "dpki_happ"
+
+[[interfaces]]
+admin = true
+id = "admin interface"
+
+    [interfaces.driver]
+    port = 9300
+    type = "http"
+
+[dpki]
+instance_id = "dpki_happ"
+init_params = "{\"revocation_key\": \"HcScIXuxtWI6ttc5gngvQTsDnHtynb5dzyDujh37mNo43nf7ZRB5UZKmR9953pa\",\"signed_auth_key\":\"ClIiplK30WCztCgfNWXUWcLK0OS5l1XmkctG4E/7aD+PMS0pvT3OadCTD85VlyvHD+ijUALC0Z3Yuyr9TQCIBQ==\"}"
+
+[logger]
+type = "debug"
+[[logger.rules.rules]]
+color = "red"
+exclude = false
+pattern = "^err/"
+[[logger.rules.rules]]
+color = "green"
+exclude = false
+pattern = "^debug/dna"
+[[logger.rules.rules]]
+exclude = true
+pattern = ".*"
