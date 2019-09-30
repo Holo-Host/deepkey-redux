@@ -77,7 +77,11 @@ fn create_new_authorizor(
         String::from(authorization_key.to_owned()),
     )? {
         return Err(ZomeApiError::Internal(
-            format!("Signature for Authorizor Key {:}, Not Able to be Verified", authorization_key.clone().to_string()).to_string()
+            format!(
+                "Signature for Authorizor Key {:}, Not Able to be Verified",
+                authorization_key.clone().to_string()
+            )
+            .to_string(),
         ));
     }
 

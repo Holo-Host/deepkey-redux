@@ -20,15 +20,14 @@ use hdk::{
 
 mod authorizor;
 mod device_authorization;
+mod dpki_trait;
 mod key_anchor;
 mod key_registration;
 mod keyset_root;
 mod rules;
 mod utils;
-mod dpki_trait;
 
 use rules::GetResponse;
-
 
 define_zome! {
     entries: [
