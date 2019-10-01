@@ -16,9 +16,9 @@ module.exports = (scenario) => {
     const { liza } = await s.players({ liza: simple_conductor_config('liza')})
     await liza.spawn(handleHack)
     // On conductor_init we have to make this call
-    let address = await conductor_init(liza)
+    let address = await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
     sleep(5)
-    let address_recheck = await conductor_init(liza)
+    let address_recheck = await await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
     t.ok(address.Ok)
     t.ok(address_recheck.Err)
     await liza.kill()
