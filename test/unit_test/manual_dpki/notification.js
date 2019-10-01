@@ -17,12 +17,15 @@ module.exports = (scenario) => {
 
     let a = await liza_conductor_init(liza)
     t.ok(a)
+    await s.consistency()
     a= await jack_conductor_init(jack)
     t.ok(a)
+    await s.consistency()
 
     const jack_receives = await jack.call("dpki_happ", "dpki", "send_handshake_notify", {to:liza.info('dpki_happ').agentAddress})
     console.log("jack_receives:: ",jack_receives);
     t.ok(jack_receives.Ok)
+    await s.consistency()
 
     const is_authorized = await liza.call("dpki_happ", "dpki", "authorize_device", {new_agent_hash: jack.info('dpki_happ').agentAddress, new_agent_signed_xor: jack_receives.Ok })
     console.log("is_authorized:: ",is_authorized);

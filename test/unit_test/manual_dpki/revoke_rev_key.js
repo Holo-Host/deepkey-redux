@@ -16,19 +16,23 @@ module.exports = (scenario) => {
     await liza.spawn(handleHack)
 
     await conductor_init(liza)
+    await s.consistency()
 
 // Check if your getting the right hash
     const my_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})
     console.log("My Rules: ",my_rules.Ok[0]);
     t.ok(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
+    await s.consistency()
 
 // The signature should not match and throw an error
     const err_on_commit = await liza.call('dpki_happ', "dpki", "update_rules", {revocation_key:NEW_REVOCATION_KEY, signed_old_revocation_key:BAD_SIGNED_REV_KEY})
     console.log(err_on_commit);
     t.ok(err_on_commit.Err )
+    await s.consistency()
 
     const sucessfull_commit = await liza.call('dpki_happ', "dpki", "update_rules", {revocation_key:NEW_REVOCATION_KEY, signed_old_revocation_key:REV_SIGNED_BY_REV_KEY})
     t.ok(sucessfull_commit.Ok )
+    await s.consistency()
 
 // Check if your getting the right hash
     const my_updated_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})

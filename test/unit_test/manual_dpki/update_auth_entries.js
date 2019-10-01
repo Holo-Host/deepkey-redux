@@ -15,6 +15,7 @@ module.exports = (scenario) => {
     await liza.spawn(handleHack)
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
+    await s.consistency()
     let address_recheck = await conductor_init(liza)
     t.ok(address.Ok)
     t.ok(address_recheck.Err)
@@ -28,6 +29,7 @@ module.exports = (scenario) => {
     let check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.notOk(check.Ok)
+    await s.consistency()
     let address = await conductor_init(liza)
     check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
@@ -54,27 +56,33 @@ module.exports = (scenario) => {
     await liza.spawn(handleHack)
 
     await conductor_init(liza)
+    await s.consistency()
 
     const check_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})
     console.log("Initial Rules: ",check_rules);
     t.deepEqual(check_rules.Ok.length,1 )
+    await s.consistency()
 
 // Check if your getting the right hash
     const my_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})
     console.log("My Rules: ",my_rules.Ok[0]);
     t.deepEqual(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
+    await s.consistency()
 
 // Lets create an authorizor key
     const authorizor_commit = await liza.call('dpki_happ', "dpki", "get_authorizor", {})
     t.ok(authorizor_commit.Ok)
+    await s.consistency()
 
 // Check if the key exist for the authorizor
     const not_registered_key = await liza.call('dpki_happ', "dpki", "key_status", {key:"Not-Registered-Key"})
     t.deepEqual(not_registered_key.Ok,"Doesn\'t Exists" )
+    await s.consistency()
 
 // Check if the key exist for the authorizor
     const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok.authorizationKey})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
+    await s.consistency()
 
 // // Lets create an authorizor key
 //     const updated_authorizor_commit = await liza.call('dpki_happ', "dpki", "set_authorizor", {
