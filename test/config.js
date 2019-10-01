@@ -1,6 +1,6 @@
 const path = require('path')
 const { Config } = require('@holochain/try-o-rama')
-
+const _ = require('lodash')
 const dnaPath = path.join(__dirname, "../dist/DeepKey.dna.json")
 const device1Path = path.join(__dirname, "../device-1.key")
 const device2Path = path.join(__dirname, "../device-2-n.key")
@@ -53,4 +53,24 @@ const handleHack = handle => {
   handle.stdin.end()
 }
 
-module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack }
+const callSyncMiddleware = (run, f) => run(s => {
+  const s_ = Object.assign({}, s, {
+    players: async (...a) => {
+      const players = await s.players(...a)
+      const players_ = _.mapValues(
+        players,
+        api => Object.assign(api, {
+          callSync: async (...b) => {
+            const result = await api.call(...b)
+            await s.consistency()
+            return result
+          }
+        })
+      )
+      return players_
+    }
+  })
+  return f(s_)
+})
+
+module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack, callSyncMiddleware }

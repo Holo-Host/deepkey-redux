@@ -1,14 +1,21 @@
 const path = require('path')
+const { callSyncMiddleware } = require('./config')
 
-const { Orchestrator, tapeExecutor } = require('@holochain/try-o-rama')
+const { Orchestrator, tapeExecutor, combine } = require('@holochain/try-o-rama')
 
 process.on('unhandledRejection', error => {
   // Will print "unhandledRejection err is not defined"
   console.error('got unhandledRejection:', error);
 });
 
+const middleware = combine(
+  // dumbWaiter(1000),
+  callSyncMiddleware,
+  tapeExecutor(require('tape')),
+);
+
 const orchestrator = new Orchestrator({
-  middleware: tapeExecutor(require('tape')),
+  middleware,
   globalConfig: {
     network: 'n3h',
     logger: true

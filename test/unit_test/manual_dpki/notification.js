@@ -2,11 +2,11 @@ const { simple_conductor_config, simple_2_conductor_config, handleHack } = requi
 const { sleep }  = require('sleep')
 
 async function liza_conductor_init (agent){
-  return await agent.call('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
+  return await agent.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
 }
 
 async function jack_conductor_init (agent){
-  return await agent.call("dpki_happ", "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir\",\"signed_auth_key\":\"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw==\"}"})
+  return await agent.callSync("dpki_happ", "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir\",\"signed_auth_key\":\"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw==\"}"})
 }
 
 module.exports = (scenario) => {
@@ -18,18 +18,18 @@ module.exports = (scenario) => {
 
     let a = await liza_conductor_init(liza)
     t.ok(a)
-    sleep(5)
+    
 
     a= await jack_conductor_init(jack)
     t.ok(a)
-    sleep(5)
+    
 
-    const jack_receives = await jack.call("dpki_happ", "dpki", "send_handshake_notify", {to:liza.info('dpki_happ').agentAddress})
+    const jack_receives = await jack.callSync("dpki_happ", "dpki", "send_handshake_notify", {to:liza.info('dpki_happ').agentAddress})
     console.log("jack_receives:: ",jack_receives);
     t.ok(jack_receives.Ok)
-    sleep(5)
+    
 
-    const is_authorized = await liza.call("dpki_happ", "dpki", "authorize_device", {new_agent_hash: jack.info('dpki_happ').agentAddress, new_agent_signed_xor: jack_receives.Ok })
+    const is_authorized = await liza.callSync("dpki_happ", "dpki", "authorize_device", {new_agent_hash: jack.info('dpki_happ').agentAddress, new_agent_signed_xor: jack_receives.Ok })
     console.log("is_authorized:: ",is_authorized);
     t.deepEqual(is_authorized.Ok,null)
 
