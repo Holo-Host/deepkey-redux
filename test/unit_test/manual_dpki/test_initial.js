@@ -32,6 +32,7 @@ module.exports = (scenario) => {
     check = await liza.callSync('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.ok(check.Ok)
+    await liza.kill()
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
@@ -43,8 +44,6 @@ module.exports = (scenario) => {
     const keyset_root_address = await liza.callSync('dpki_happ', "dpki", "get_initialization_data", {})
     console.log("My KeysetRoot Address: ",keyset_root_address);
     t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
-
-
     await liza.kill()
   })
 }
