@@ -1,4 +1,5 @@
 const { simple_conductor_config, simple_2_conductor_config, handleHack } = require('../../config')
+const { sleep }  = require('sleep')
 
 async function liza_conductor_init (agent){
   return await agent.call('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
@@ -17,12 +18,16 @@ module.exports = (scenario) => {
 
     let a = await liza_conductor_init(liza)
     t.ok(a)
+    sleep(5)
+
     a= await jack_conductor_init(jack)
     t.ok(a)
+    sleep(5)
 
     const jack_receives = await jack.call("dpki_happ", "dpki", "send_handshake_notify", {to:liza.info('dpki_happ').agentAddress})
     console.log("jack_receives:: ",jack_receives);
     t.ok(jack_receives.Ok)
+    sleep(5)
 
     const is_authorized = await liza.call("dpki_happ", "dpki", "authorize_device", {new_agent_hash: jack.info('dpki_happ').agentAddress, new_agent_signed_xor: jack_receives.Ok })
     console.log("is_authorized:: ",is_authorized);

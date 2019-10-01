@@ -1,4 +1,6 @@
 const { simple_conductor_config, handleHack } = require('../../config')
+const { sleep }  = require('sleep')
+
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -15,6 +17,7 @@ module.exports = (scenario) => {
     await liza.spawn(handleHack)
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
+    sleep(5)
     let address_recheck = await conductor_init(liza)
     t.ok(address.Ok)
     t.ok(address_recheck.Err)
@@ -28,7 +31,9 @@ module.exports = (scenario) => {
     let check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.notOk(check.Ok)
+    sleep(5)
     let address = await conductor_init(liza)
+    sleep(5)
     check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.ok(check.Ok)
@@ -43,6 +48,7 @@ module.exports = (scenario) => {
     const keyset_root_address = await liza.call('dpki_happ', "dpki", "get_initialization_data", {})
     console.log("My KeysetRoot Address: ",keyset_root_address);
     t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
+    sleep(5)
 
     await liza.kill()
   })
@@ -54,27 +60,33 @@ module.exports = (scenario) => {
     await liza.spawn(handleHack)
 
     await conductor_init(liza)
+    sleep(5)
 
     const check_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})
     console.log("Initial Rules: ",check_rules);
     t.deepEqual(check_rules.Ok.length,1 )
+    sleep(5)
 
 // Check if your getting the right hash
     const my_rules = await liza.call('dpki_happ', "dpki", "get_rules", {})
     console.log("My Rules: ",my_rules.Ok[0]);
     t.deepEqual(my_rules.Ok[0].entry.revocationKey,REVOCATION_KEY)
+    sleep(5)
 
 // Lets create an authorizor key
     const authorizor_commit = await liza.call('dpki_happ', "dpki", "get_authorizor", {})
     t.ok(authorizor_commit.Ok)
+    sleep(5)
 
 // Check if the key exist for the authorizor
     const not_registered_key = await liza.call('dpki_happ', "dpki", "key_status", {key:"Not-Registered-Key"})
     t.deepEqual(not_registered_key.Ok,"Doesn\'t Exists" )
+    sleep(5)
 
 // Check if the key exist for the authorizor
     const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok.authorizationKey})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
+    sleep(5)
 
 // // Lets create an authorizor key
 //     const updated_authorizor_commit = await liza.call('dpki_happ', "dpki", "set_authorizor", {
