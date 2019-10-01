@@ -1,39 +1,30 @@
-# This is an example of what downstream consumers of holonix should do
-# This is also used to dogfood as many commands as possible for holonix
-# For example the release process for holonix uses this file
+{ pkgs ? import ./pkgs.nix {} }:
+
+with pkgs;
+
 let
-
- # point this to your local config.nix file for this project
- # example.config.nix shows and documents a lot of the options
- config = import ./config.nix;
-
- # START HOLONIX IMPORT BOILERPLATE
- holonix = import (
-  if ! config.holonix.use-github
-  then config.holonix.local.path
-  else fetchTarball {
-   url = "https://github.com/${config.holonix.github.owner}/${config.holonix.github.repo}/tarball/${config.holonix.github.ref}";
-   sha256 = config.holonix.github.sha256;
-  }
- ) { config = config; };
- # END HOLONIX IMPORT BOILERPLATE
-
+  emacs-with-htmlize = emacsWithPackages (epkgs: with epkgs; [
+    htmlize
+  ]);
 in
-with holonix.pkgs;
+
 {
- dev-shell = stdenv.mkDerivation (holonix.shell // {
-  name = "dev-shell";
+  DeepKey = buildDNA {
+    name = "DeepKey";
+    src = gitignoreSource ./.;
+  };
 
-  buildInputs = [ ]
-   ++ holonix.shell.buildInputs
+  DeepKey-docs = stdenv.mkDerivation {
+    name = "DeepKey-docs";
+    src = gitignoreSource ./.;
 
-   ++ (holonix.pkgs.callPackage ./install {
-    pkgs = holonix.pkgs;
-   }).buildInputs
+    nativeBuildInputs = [ emacs-with-htmlize ];
+    makeFlags = [ "doc-all" ];
 
-   ++ (holonix.pkgs.callPackage ./test {
-    pkgs = holonix.pkgs;
-   }).buildInputs
-   ;
- });
+    installPhase = ''
+      mkdir -p $out/nix-support
+      echo "doc manual $out" > $out/nix-support/hydra-build-products
+      mv doc/*.html $out
+    '';
+  };
 }

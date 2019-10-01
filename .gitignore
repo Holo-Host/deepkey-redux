@@ -5,7 +5,6 @@ bundle.json
 package-lock.json
 node_modules
 .cargo
-Cargo.lock
 
 # OS generated files #
 ######################
@@ -30,3 +29,8 @@ target
 storage
 tmp
 doc
+holochain-rust
+# TODO: temporary until Hydra multiplexer is up
+# Cargo.lock
+*~
+*.tex

@@ -4,5 +4,11 @@
 dist
 test
 LICENSE
-README.md
 conductor-config.toml
+holochain-rust
+bundle.json
+README*
+*.output
+Makefile
+*~
+*.nix
