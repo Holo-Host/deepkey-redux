@@ -10,7 +10,7 @@ public_address = "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvr
 
 [[dnas]]
 file = "./dist/DeepKey.dna.json"
-hash = "QmUZZw6p4gFuN9ec3xxp5gfr4PgMLMvCM9YWaatmyscDhT"
+hash = "Qmc4Bu8DYedyhfhcpQJNbdRdTwCJS2mBC6mokX8Pihrxv9"
 id = "deepkey"
 
 
@@ -42,7 +42,7 @@ id = "admin interface"
 
 [dpki]
 instance_id = "dpki_happ"
-init_params = "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"
+init_params = '{"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}'
 
 [logger]
 type = "debug"
