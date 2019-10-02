@@ -16,7 +16,6 @@ use hdk::{
     },
     utils, AGENT_ADDRESS,
 };
-use std::{time::Duration};
 
 fn generate_auth(index: u64) -> ZomeApiResult<String> {
     let auth_seed = ["auth_seed:", &index.to_string()].concat();
@@ -39,8 +38,6 @@ pub fn handle_set_authorizor(
     authorization_key_path: u64,
     signed_auth_key: Signature,
 ) -> ZomeApiResult<HashString> {
-    // The sle
-    hdk::sleep(Duration::from_millis(100))?;
     let revocation_authority = rules::handlers::handle_get_my_rule_details()?;
     let authorization_key =
         HashString::from(generate_auth(authorization_key_path)?.trim_matches('"'));

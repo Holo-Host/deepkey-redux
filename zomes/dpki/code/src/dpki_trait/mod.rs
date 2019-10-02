@@ -1,4 +1,4 @@
-// use crate::authorizor::handlers::handle_set_authorizor;
+use crate::authorizor::handlers::handle_set_authorizor;
 use crate::key_registration::{handlers::handle_create_key_registration, AppKeyType};
 use crate::keyset_root::handlers::{handle_get_my_keyset_root, handle_set_keyset_root};
 use crate::rules::handlers::create_new_rules;
@@ -6,11 +6,11 @@ use hdk::{
     error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::signature::Signature,
     holochain_json_api::{error::JsonError, json::JsonString},
-    holochain_persistence_api::{cas::content::Address, hash::HashString},
+    holochain_persistence_api::{hash::HashString},
     holochain_wasm_utils::api_serialization::sign::SignOneTimeResult,
     AGENT_ADDRESS,
 };
-use std::convert::TryInto;
+use std::time::Duration;
 
 const INITIAL_AUTH_DERIVATION_INDEX: u64 = 1;
 
@@ -62,27 +62,16 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
             },
         }
 
-        //TODO:  Figure out why calling this crate Directly is not consistent while setting authorizor Key
-        // match handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key){
-        //     Ok(_) =>  return Ok(HashString::from("--TODO--")),
-        //     Err(e) => return Err(e),
-        // }
+        // The sleep is because we need to wait for the rules and KeysetRoot to be registed in the DHT
+        hdk::sleep(Duration::from_millis(100))?;
 
-        // This is a temp solution to the problem faces above
-        let call_input = SetAuthParams {
-            authorization_key_path: INITIAL_AUTH_DERIVATION_INDEX,
-            signed_auth_key: init_params.signed_auth_key,
-        };
-        let result = hdk::call(
-            hdk::THIS_INSTANCE,
-            "dpki",
-            Address::from(hdk::PUBLIC_TOKEN.to_string()),
-            "set_authorizor",
-            call_input.into(),
-        )?;
-        result.try_into()?
+        match handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key){
+            Ok(_) =>  return Ok(HashString::from("--TODO--")),
+            Err(e) => return Err(e),
+        }
 
     //TODO: Register this DeepKey Agent
+
     } else {
         Err(ZomeApiError::Internal(
             "INIT ERROR: Already Initialized".to_string(),
