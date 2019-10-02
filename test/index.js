@@ -1,6 +1,8 @@
 const path = require('path')
 
-const { Orchestrator, tapeExecutor } = require('@holochain/try-o-rama')
+const { Orchestrator, tapeExecutor, combine } = require('@holochain/try-o-rama')
+
+const { callSyncMiddleware } = require('./config')
 
 process.on('unhandledRejection', error => {
   // Will print "unhandledRejection err is not defined"
@@ -8,7 +10,10 @@ process.on('unhandledRejection', error => {
 });
 
 const orchestrator = new Orchestrator({
-  middleware: tapeExecutor(require('tape')),
+  middleware: combine(
+    callSyncMiddleware,
+    tapeExecutor(require('tape')),
+  ),
   globalConfig: {
     network: 'n3h',
     logger: true
@@ -21,7 +26,7 @@ require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScen
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario);
 require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario);
 require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
-// require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
+require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
 orchestrator.run()
 
 // These tests have deepkey set as a dpki_instance in the conductor via the dpki settings

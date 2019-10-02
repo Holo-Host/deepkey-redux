@@ -5,7 +5,7 @@ const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCa
 const SIGNED_AUTH_KEY_2 ="MG2L0DObZ+m/Zr4bWp/LRUD5FM5W/QZtYafxVEhehyujpPvGdgROCAApAIXl+UpQy1evDU+LnShZzY/emIbKDw==";
 
 async function conductor_init (liza){
-  return await liza.call('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
+  return await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
 }
 
 module.exports = (scenario) => {
@@ -76,18 +76,19 @@ module.exports = (scenario) => {
     const checking_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok.authorizationKey})
     t.deepEqual(checking_authorizor_key.Ok,"live" )
 
+// TODO: Waiting for the Auth key gen process in CLI and HDK create the same keys
 // // Lets create an authorizor key
-//     const updated_authorizor_commit = await liza.call('dpki_happ', "dpki", "set_authorizor", {
+//     const updated_authorizor_commit = await liza.callSync('dpki_happ', "dpki", "set_authorizor", {
 //       authorization_key_path: 2,
 //       signed_auth_key:SIGNED_AUTH_KEY_2
 //     })
 //     t.ok(updated_authorizor_commit.Ok)
 //
-//     const checking_new_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:updated_authorizor_commit.Ok})
+//     const checking_new_authorizor_key = await liza.callSync('dpki_happ', "dpki", "key_status", {key:updated_authorizor_commit.Ok})
 //     t.deepEqual(checking_new_authorizor_key.Ok,"live" )
 //
 // // Check if the key exist for the authorizor
-//     const checking_old_authorizor_key = await liza.call('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
+//     const checking_old_authorizor_key = await liza.callSync('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
 //     t.deepEqual(checking_old_authorizor_key.Ok,"modified" )
 
     await liza.kill()

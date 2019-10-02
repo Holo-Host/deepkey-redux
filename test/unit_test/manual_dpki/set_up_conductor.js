@@ -11,7 +11,7 @@ const SIGNED_AGENT_ENC_KEY_1_BY_REV_KEY = "L0ecyb+IE570ckU1Ln6ODLqv5O2ldXafGX26Q
 const AGENT_SIG_KEY_2 = "HcSCJ6Q45PCMvwdg5rWKjzTVPi9hoo8ixIzSUFh84tNz9hrs8GfP839IiYNT6wi";
 
 async function conductor_init (liza){
-  return await liza.call('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
+  return await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
 }
 
 module.exports = (scenario) => {
@@ -38,7 +38,7 @@ module.exports = (scenario) => {
     t.deepEqual(checking_key_1.Ok,"Doesn't Exists" )
 
 // Lets create an agent key
-    const key_commit = await liza.call('dpki_happ', "dpki", "create_agent_key", {
+    const key_commit = await liza.callSync('dpki_happ', "dpki", "create_agent_key", {
       agent_name:"MY_AGENT"
     })
     t.deepEqual(key_commit.Ok,null)
@@ -63,7 +63,7 @@ Check if the keys exist for the key
     t.deepEqual(checking_key_3.Ok,"live" )
 
 // Lets Update the keys just created
-    const updated_key = await liza.call('dpki_happ', "dpki", "update_key", {
+    const updated_key = await liza.callSync('dpki_happ', "dpki", "update_key", {
       old_key:AGENT_SIG_KEY_1,
       signed_old_key:SIGNED_AGENT_SIG_KEY_1_BY_REV_KEY,
       context:"NEWAGENT"
@@ -82,7 +82,7 @@ Check if the keys exist for the key
     t.deepEqual(checking_key_5.Ok,"live" )
 
 
-    const deleated_key = await liza.call('dpki_happ', "dpki", "delete_key", {
+    const deleated_key = await liza.callSync('dpki_happ', "dpki", "delete_key", {
       old_key:AGENT_ENC_KEY_1,
       signed_old_key:SIGNED_AGENT_ENC_KEY_1_BY_REV_KEY
     })
