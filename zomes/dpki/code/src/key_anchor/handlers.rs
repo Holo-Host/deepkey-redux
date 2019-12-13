@@ -1,11 +1,9 @@
+use hdk::prelude::*;
 use hdk::{
     error::ZomeApiResult,
     holochain_core_types::entry::Entry,
     holochain_json_api::json::RawString,
     holochain_persistence_api::hash::HashString,
-    holochain_wasm_utils::api_serialization::get_entry::{
-        GetEntryOptions, GetEntryResultType, StatusRequestKind,
-    },
 };
 
 use crate::key_anchor::KeyAnchor;

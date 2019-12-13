@@ -1,14 +1,85 @@
 const path = require('path')
-const _ = require('lodash')
-const { Config } = require('@holochain/try-o-rama')
+const { Config } = require('@holochain/tryorama')
 
-const dnaPath = path.join(__dirname, "../dist/DeepKey.dna.json")
-const device1Path = path.join(__dirname, "../device-1.key")
+const dnaName = "DeepKey"
+const dnaId = "dpki_happ"
+
+const dnaPath = path.join(__dirname, `../dist/${dnaName}.dna.json`)
+const device1Path = path.join(__dirname, "../device-1-n.key")
 const device2Path = path.join(__dirname, "../device-2-n.key")
-const dna = Config.dna(dnaPath, 'dpki_happ')
 
-const simple_conductor_config = (agent) => ({
-  instances: [{
+const dna = Config.dna(dnaPath, dnaId)
+
+const networkType = process.env.APP_SPEC_NETWORK_TYPE || "sim2h"
+let network = {}
+// override the transport_config if we are in the Final Exam context!
+if (process.env.HC_TRANSPORT_CONFIG) {
+    network=require(process.env.HC_TRANSPORT_CONFIG)
+} else {
+    network =
+        ( networkType === 'websocket'
+          ? Config.network('websocket')
+
+          : networkType === 'memory'
+          ? Config.network('memory')
+
+          : networkType === 'sim1h'
+          ? {
+              type: 'sim1h',
+              dynamo_url: 'http://localhost:8000'
+          }
+
+          : networkType === 'sim2h'
+          ? {
+              type: 'sim2h',
+              sim2h_url: 'wss://localhost:9000'
+          }
+
+          : (() => {throw new Error(`Unsupported network type: ${networkType}`)})()
+        )
+}
+
+const logger = {
+  type: 'debug',
+  rules: {
+    rules: [
+      {
+        exclude: true,
+        pattern: '.*parity.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*mio.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*tokio.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*hyper.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*rusoto_core.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*want.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*rpc.*'
+      }
+    ]
+  },
+  // state_dump: true
+}
+
+const commonConfig = { logger, network }
+
+
+const simple_conductor_config = (agent) => Config.gen([{
     id: 'dpki_happ',
     agent: {
       id: agent,
@@ -21,14 +92,14 @@ const simple_conductor_config = (agent) => ({
       file: dnaPath,
     }
   }],
-  // dpki: {
-  //   instance_id: 'dpki_happ',
-  //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
-  // }
-})
+    commonConfig
+    // dpki: {
+      //   instance_id: 'dpki_happ',
+      //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
+      // }
+  )
 
-const simple_2_conductor_config = (agent) => ({
-  instances: [{
+const simple_2_conductor_config = (agent) => Config.gen([{
     id: 'dpki_happ',
     agent: {
       id: agent,
@@ -41,11 +112,12 @@ const simple_2_conductor_config = (agent) => ({
       file: dnaPath,
     }
   }],
-  // dpki: {
-  //   instance_id: 'dpki_happ',
-  //   init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
-  // }
-})
+    commonConfig,
+    // dpki: {
+    //   instance_id: 'dpki_happ',
+    //   init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
+    // }
+  )
 
 // Send a newline to the process to enter a null passphrase when prompted
 const handleHack = handle => {
@@ -54,24 +126,4 @@ const handleHack = handle => {
   handle.stdin.end()
 }
 
-const callSyncMiddleware = (run, f) => run(s => {
-  const s_ = Object.assign({}, s, {
-    players: async (...a) => {
-      const players = await s.players(...a)
-      const players_ = _.mapValues(
-        players,
-        api => Object.assign(api, {
-          callSync: async (...b) => {
-            const result = await api.call(...b)
-            await s.consistency()
-            return result
-          }
-        })
-      )
-      return players_
-    }
-  })
-  return f(s_)
-})
-
-module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack, callSyncMiddleware }
+module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack }

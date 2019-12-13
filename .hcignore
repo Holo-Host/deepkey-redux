@@ -1,8 +1,13 @@
+*.nix
+*~
 .circleci
 .git
 .gitignore
 dist
 test
 LICENSE
-README.md
+README*
 conductor-config.toml
+holochain-rust
+Makefile
+bundle.json

@@ -1,22 +1,30 @@
 #
 # Test and build DeepKey Project
 #
+# This Makefile is primarily instructional; you can simply enter the Nix environment for
+# holochain-rust development (supplied by holo=nixpkgs; see pkgs.nix) via `nix-shell` and run `hc
+# test` directly, or build a target directly (see default.nix), eg. `nix-build -A DeepKey`.
+#
 SHELL		= bash
+DNAZOME		= dpki
 DNANAME		= DeepKey
 DNA		= dist/$(DNANAME).dna.json
-
 # External targets; Uses a nix-shell environment to obtain Holochain runtimes, run tests, etc.
 .PHONY: all
 all: nix-test
 
 # nix-test, nix-install, ...
+#
+# Provides a nix-shell environment, and runs the desired Makefile target.  It is recommended that
+# you add `substituters = ...` and `trusted-public-keys = ...` to your nix.conf (see README.md), to
+# take advantage of cached Nix and Holo build assets.
 nix-%:
 	nix-shell --pure --run "make $*"
 
 # Internal targets; require a Nix environment in order to be deterministic.
 # - Uses the version of `hc`, `holochain` on the system PATH.
-# - Normally called from within a Nix environment, eg. run `nix-shell` from within DeepKey
-.PHONY:		rebuild install build test test-unit test-e2e
+# - Normally called from within a Nix environment, eg. run `nix-shell`
+.PHONY:		rebuild install build
 rebuild:	clean build
 
 install:	build
@@ -28,32 +36,28 @@ build:		$(DNA)
 # DNA's name, then this name is used by default, and the output directory is
 # created automatically.
 $(DNA):
-	hc package --strip-meta
+	hc package
 
-test:		test-unit test-e2e
+.PHONY: test test-unit test-e2e test-stress test-sim2h test-node
+test:		test-unit test-e2e test-stress
 
-# test-unit -- Run Rust unit tests via Cargo
 test-unit:
 	RUST_BACKTRACE=1 cargo test \
-	  	--manifest-path zomes/dpki/code/Cargo.toml \
+	    --manifest-path zomes/$(DNAZOME)/code/Cargo.toml \
 	    -- --nocapture
 
-# test-e2e -- Uses dist/DeepKey.dna.json; install test JS dependencies, and run end-to-end tests
-#
-# Depends on dynamodb, if using sim1h DHT.
-test-e2e: export AWS_ACCESS_KEY_ID     ?= HoloCentral
-test-e2e: export AWS_SECRET_ACCESS_KEY ?= ...
-test-e2e:	$(DNA)
-	export |grep AWS
-	@echo "Setting up Scenario test Javascript..."; \
-	    ( cd test && npm install );
-	@echo "Starting dynamodb-memory..."; \
-	    dynamodb-memory &
-	@echo "Starting DeepKey Scenario tests..."; \
+test-e2e:	$(DNA) test-sim2h test-node
+	@echo "Starting Scenario tests in $$(pwd)..."; \
 	    RUST_BACKTRACE=1 hc test \
+	        | test/node_modules/faucet/bin/cmd.js
 
-#	    | test/node_modules/faucet/bin/cmd.js
+test-node:
+	@echo "Setting up Scenario/Stress test Javascript..."; \
+	    cd test && npm install
 
+test-sim2h:
+	@echo "Starting sim2h_server on localhost:9000 (may already be running)..."; \
+	    sim2h_server -p 9000 &
 
 .PHONY: doc-all
 doc-all: $(addsuffix .html, $(basename $(wildcard doc/*.org)))
@@ -69,4 +73,4 @@ clean:
 	    test/node_modules \
 	    .cargo \
 	    target \
-	    zomes/dpki/code/target
+	    zomes/$(DNAZOME)/code/target
