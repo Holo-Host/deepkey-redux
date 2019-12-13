@@ -11,19 +11,19 @@ async function conductor_init (liza){
 module.exports = (scenario) => {
 
   scenario("testing checks if entries have been pushed", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
-    await liza.spawn(handleHack)
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
+    // await liza.spawn(handleHack)
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
     let address_recheck = await conductor_init(liza)
     t.ok(address.Ok)
     t.ok(address_recheck.Err)
-    await liza.kill()
+    // await liza.kill()
   })
 
   scenario("testing to check if the DNA is initialized", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
-    await liza.spawn(handleHack)
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
+    // await liza.spawn(handleHack)
 
     let check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
@@ -35,23 +35,23 @@ module.exports = (scenario) => {
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    // await liza.spawn(handleHack)
 
   // This is to just test out if we get the right keyset_root address
     const keyset_root_address = await liza.call('dpki_happ', "dpki", "get_initialization_data", {})
     console.log("My KeysetRoot Address: ",keyset_root_address);
     t.deepEqual(keyset_root_address.Err.Internal,  'fn handle_get_my_keyset_root(): No KeysetRoot Exists' )
 
-    await liza.kill()
+    // await liza.kill()
   })
 
 
   scenario("testing the initial set up process and trying to update it", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    // await liza.spawn(handleHack)
 
     await conductor_init(liza)
 
@@ -91,6 +91,6 @@ module.exports = (scenario) => {
 //     const checking_old_authorizor_key = await liza.callSync('dpki_happ', "dpki", "key_status", {key:authorizor_commit.Ok})
 //     t.deepEqual(checking_old_authorizor_key.Ok,"modified" )
 
-    await liza.kill()
+    // await liza.kill()
   })
 }

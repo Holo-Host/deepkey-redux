@@ -76,10 +76,14 @@ const logger = {
   // state_dump: true
 }
 
-const commonConfig = { logger, network }
+const commonConfig = {
+  logger,
+  network,
+  passphrase_service:{type:'mock', passphrase:""} }
 
 
 const simple_conductor_config = (agent) => Config.gen([{
+    admin: true,
     id: 'dpki_happ',
     agent: {
       id: agent,

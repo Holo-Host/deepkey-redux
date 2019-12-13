@@ -66,10 +66,10 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
 
         // The sleep is because we need to wait for the rules and KeysetRoot to be registed in the DHT
         // hdk::sleep(Duration::from_millis(100))?;
-        // match handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key){
-        //     Ok(_) =>  return Ok(HashString::from("--TODO--")),
-        //     Err(e) => return Err(e),
-        // }
+        match handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key){
+            Ok(_) =>  return Ok(HashString::from("--TODO--")),
+            Err(e) => return Err(e),
+        }
         Ok(HashString::from("-FIX AUTH-".to_string()))
     //TODO: Register this DeepKey Agent
 

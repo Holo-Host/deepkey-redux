@@ -29,8 +29,8 @@ const orchestrator = new Orchestrator({
 // (i.e. they do not use the dpki setting in the holochain conductor)
 // require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScenario);
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario);
-// require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario);
-// require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
+require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario);
+require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
 // require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
 
 // These tests have deepkey set as a dpki_instance in the conductor via the dpki settings

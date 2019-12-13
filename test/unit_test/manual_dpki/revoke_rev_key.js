@@ -11,9 +11,9 @@ async function conductor_init (liza){
 
 module.exports = (scenario) => {
   scenario("testing the initial set up process and trying to update it", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    // await liza.spawn(handleHack)
 
     await conductor_init(liza)
 
@@ -35,6 +35,6 @@ module.exports = (scenario) => {
     console.log("My Updated Rules: ",my_updated_rules.Ok[0]);
     t.deepEqual(my_updated_rules.Ok[0].entry.revocationKey,NEW_REVOCATION_KEY )
 
-    await liza.kill()
+    // await liza.kill()
   })
 }
