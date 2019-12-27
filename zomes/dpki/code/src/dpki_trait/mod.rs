@@ -28,8 +28,6 @@ struct SetAuthParams {
 }
 
 pub fn init(params: String) -> ZomeApiResult<HashString> {
-
-    hdk::debug("afn")?;
     // Checking is initialized
     if !is_initialized()? {
         // DANGER :: Used unrap
@@ -64,15 +62,14 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
             },
         }
 
+        // TODO: Find a beter solution insted of depending on a sleep
         // The sleep is because we need to wait for the rules and KeysetRoot to be registed in the DHT
-        // hdk::sleep(Duration::from_millis(100))?;
+        hdk::sleep(Duration::from_millis(100))?;
         match handle_set_authorizor(INITIAL_AUTH_DERIVATION_INDEX, init_params.signed_auth_key){
             Ok(_) =>  return Ok(HashString::from("--TODO--")),
             Err(e) => return Err(e),
         }
-        Ok(HashString::from("-FIX AUTH-".to_string()))
-    //TODO: Register this DeepKey Agent
-
+        //TODO: Register this DeepKey Agent
     } else {
         Err(ZomeApiError::Internal(
             "INIT ERROR: Already Initialized".to_string(),

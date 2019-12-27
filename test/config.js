@@ -70,6 +70,18 @@ const logger = {
       {
         exclude: true,
         pattern: '.*rpc.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*ws.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*holochain_net.*'
+      },
+      {
+        exclude: true,
+        pattern: '.*holochain_metrics.*'
       }
     ]
   },
@@ -79,21 +91,23 @@ const logger = {
 const commonConfig = {
   logger,
   network,
-  passphrase_service:{type:'mock', passphrase:""} }
+  passphrase_service: {type:'mock',passphrase:""}
+}
 
 
-const simple_conductor_config = (agent) => Config.gen([{
+const simple_conductor_config = (agent) => Config.gen(({uuid}) => [{
     admin: true,
     id: 'dpki_happ',
     agent: {
-      id: agent,
-      name: `${agent}-${Math.floor(Math.random() * 100000)}`,
+      id: `${agent}`,
+      name: `${agent}-${Math.floor(Math.random())}`,
       keystore_file: device1Path,
       public_address: "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr",
     },
     dna: {
       id: 'deepkey',
       file: dnaPath,
+      uuid: `${Math.floor(Math.random())}`,
     }
   }],
     commonConfig
@@ -103,17 +117,18 @@ const simple_conductor_config = (agent) => Config.gen([{
       // }
   )
 
-const simple_2_conductor_config = (agent) => Config.gen([{
+const simple_2_conductor_config = (agent) => Config.gen(({uuid}) => [{
     id: 'dpki_happ',
     agent: {
-      id: agent,
-      name: `${agent}-${Math.floor(Math.random() * 100000)}`,
+      id: `${agent}`,
+      name: `${agent}-${uuid}`,
       keystore_file: device2Path,
       public_address: "HcSCJ9rxPzSwzdqhaprQGkXIzJmmc9r9gq4AgGIcvIvjdftfF8HfHw6k8P6Akjr",
     },
     dna: {
       id: 'deepkey',
       file: dnaPath,
+      uuid,
     }
   }],
     commonConfig,
@@ -123,11 +138,4 @@ const simple_2_conductor_config = (agent) => Config.gen([{
     // }
   )
 
-// Send a newline to the process to enter a null passphrase when prompted
-const handleHack = handle => {
-  handle.stdin.setEncoding('utf-8')
-  handle.stdin.write('\n')
-  handle.stdin.end()
-}
-
-module.exports = { simple_conductor_config, simple_2_conductor_config, handleHack }
+module.exports = { simple_conductor_config, simple_2_conductor_config }

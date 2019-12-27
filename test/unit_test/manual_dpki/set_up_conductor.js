@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../../config')
+const { simple_conductor_config } = require('../../config')
 // const sleep  = require('sleep')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
@@ -19,7 +19,7 @@ module.exports = (scenario) => {
 
     const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    // await liza.spawn(handleHack)
+    await s.consistency()
 
 // On conductor_init we have to make this call
     let address = await conductor_init(liza)
@@ -92,6 +92,6 @@ module.exports = (scenario) => {
     const checking_key_6 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_ENC_KEY_1})
     t.deepEqual(checking_key_6.Ok,"deleted" )
 
-    // await liza.kill()
+    await liza.kill()
   })
 }

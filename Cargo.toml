@@ -1,0 +1,9 @@
+[workspace]
+
+exclude = [
+"holochain-rust",
+]
+
+members = [
+  "zomes/dpki/code",
+]

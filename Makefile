@@ -6,7 +6,6 @@
 # test` directly, or build a target directly (see default.nix), eg. `nix-build -A DeepKey`.
 #
 SHELL		= bash
-DNAZOME		= dpki
 DNANAME		= DeepKey
 DNA		= dist/$(DNANAME).dna.json
 # External targets; Uses a nix-shell environment to obtain Holochain runtimes, run tests, etc.
@@ -38,26 +37,23 @@ build:		$(DNA)
 $(DNA):
 	hc package
 
-.PHONY: test test-unit test-e2e test-stress test-sim2h test-node
-test:		test-unit test-e2e test-stress
+.PHONY: test test-all test-unit test-e2e test-sim2h test-node
+test-all:	test test-stress
+
+test:		test-unit test-e2e
 
 test-unit:
 	RUST_BACKTRACE=1 cargo test \
-	    --manifest-path zomes/$(DNAZOME)/code/Cargo.toml \
 	    -- --nocapture
 
 test-e2e:	$(DNA) test-sim2h test-node
 	@echo "Starting Scenario tests in $$(pwd)..."; \
 	    RUST_BACKTRACE=1 hc test \
-	        | test/node_modules/faucet/bin/cmd.js
+	#        | test/node_modules/faucet/bin/cmd.js
 
 test-node:
 	@echo "Setting up Scenario/Stress test Javascript..."; \
 	    cd test && npm install
-
-test-sim2h:
-	@echo "Starting sim2h_server on localhost:9000 (may already be running)..."; \
-	    sim2h_server -p 9000 &
 
 .PHONY: doc-all
 doc-all: $(addsuffix .html, $(basename $(wildcard doc/*.org)))
@@ -72,5 +68,4 @@ clean:
 	    dist \
 	    test/node_modules \
 	    .cargo \
-	    target \
-	    zomes/$(DNAZOME)/code/target
+	    target

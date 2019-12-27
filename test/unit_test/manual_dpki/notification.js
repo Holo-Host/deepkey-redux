@@ -1,4 +1,4 @@
-const { simple_conductor_config, simple_2_conductor_config, handleHack } = require('../../config')
+const { simple_conductor_config, simple_2_conductor_config } = require('../../config')
 
 async function liza_conductor_init (agent){
   return await agent.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
@@ -11,9 +11,6 @@ async function jack_conductor_init (agent){
 module.exports = (scenario) => {
   scenario("testing the notification to device handshaking", async (s, t) => {
     const { liza, jack } = await s.players({ liza: simple_conductor_config("liza"), jack: simple_2_conductor_config("jack")}, false)
-
-    await liza.spawn(handleHack)
-    await jack.spawn(handleHack)
 
     let a = await liza_conductor_init(liza)
     t.ok(a)

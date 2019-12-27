@@ -1,37 +1,36 @@
-const { Orchestrator, tapeExecutor, Config, singleConductor, combine, callSync, localOnly } = require('@holochain/tryorama')
+const { Orchestrator, tapeExecutor, combine, callSync, localOnly } = require('@holochain/tryorama')
 
 const MIN_EXPECTED_SCENARIOS = 1
 
 process.on('unhandledRejection', error => {
   // Will print "unhandledRejection err is not defined"
-  console.error('got unhandledRejection:', error);
-});
+  console.error('got unhandledRejection:', error)
+})
 
-let middleware = combine(
+const middleware = combine(
   // by default, combine conductors into a single conductor for in-memory networking
   // NB: this middleware makes a really huge difference! and it's not very well tested,
   // as of Oct 1 2019. So, keep an eye out.
   tapeExecutor(require('tape')),
   localOnly,
   callSync
-);
-
+)
 
 const orchestrator = new Orchestrator({
   middleware,
   waiter: {
     softTimeout: 5000,
-    hardTimeout: 10000,
+    hardTimeout: 10000
   }
 })
 
 // These tests are using manual setup
 // (i.e. they do not use the dpki setting in the holochain conductor)
-// require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScenario);
-require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario);
-require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario);
-require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
-// require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario);
+// require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScenario)
+require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario)
+// require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario)
+// require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario)
+// require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario)
 
 // These tests have deepkey set as a dpki_instance in the conductor via the dpki settings
 // Eg:
@@ -47,7 +46,7 @@ require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario);
 //   }
 // })
 //
-// require('./unit_test/auto_dpki/test_init')(set_orchestrator.registerScenario);
+// require('./unit_test/auto_dpki/test_init')(set_orchestrator.registerScenario)
 // Check to see that we haven't accidentally disabled a bunch of scenarios
 
 const num = orchestrator.numRegistered()
