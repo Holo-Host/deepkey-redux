@@ -1,76 +1,71 @@
-.PHONY: all test fmt clean tools tool_rust tool_fmt
-# .PHONY: all test test-unit test-e2e install clean
+#
+# Test and build DeepKey Project
+#
+# This Makefile is primarily instructional; you can simply enter the Nix environment for
+# holochain-rust development (supplied by holo=nixpkgs; see pkgs.nix) via `nix-shell` and run `hc
+# test` directly, or build a target directly (see default.nix), eg. `nix-build -A DeepKey`.
+#
+SHELL		= bash
+DNANAME		= DeepKey
+DNA		= dist/$(DNANAME).dna.json
+# External targets; Uses a nix-shell environment to obtain Holochain runtimes, run tests, etc.
+.PHONY: all
+all: nix-test
 
-#RUSTFLAGS += -D warnings -Z external-macro-backtrace -Z thinlto -C codegen-units=10 -C opt-level=z
-RUSTFLAGS += -D warnings -Z external-macro-backtrace -Z thinlto -C codegen-units=10
+# nix-test, nix-install, ...
+#
+# Provides a nix-shell environment, and runs the desired Makefile target.  It is recommended that
+# you add `substituters = ...` and `trusted-public-keys = ...` to your nix.conf (see README.md), to
+# take advantage of cached Nix and Holo build assets.
+nix-%:
+	nix-shell --pure --run "make $*"
 
-SHELL = /usr/bin/env sh
-RUST_VER_WANT = "rustc 1.38.0-nightly (69656fa4c 2019-07-13)"
-RUST_TAG_WANT = "nightly-2019-07-14"
-FMT_VER_WANT = "rustfmt 1.3.0-nightly (d334502 2019-06-09)"
-CLP_VER_WANT = "clippy 0.0.212 (b029042 2019-07-12)"
+# Internal targets; require a Nix environment in order to be deterministic.
+# - Uses the version of `hc`, `holochain` on the system PATH.
+# - Normally called from within a Nix environment, eg. run `nix-shell`
+.PHONY:		rebuild install build
+rebuild:	clean build
 
-ENV = RUSTFLAGS='$(RUSTFLAGS)' OPENSSL_STATIC='1' CARGO_BUILD_JOBS='$(shell nproc)' NUM_JOBS='$(shell nproc)' CARGO_INCREMENTAL='1'
+install:	build
 
-all: test
+build:		$(DNA)
 
-test: tools
-	$(ENV) cargo fmt -- --check
-	$(ENV) cargo clippy -- \
-		-A clippy::nursery -A clippy::style -A clippy::cargo \
-		-A clippy::pedantic -A clippy::restriction \
-		-D clippy::complexity -D clippy::perf -D clippy::correctness
-		nix-shell --run dk-test
+# Build the DNA; Specifying a custom --output requires the path to exist
+# However, if the name of the directory within which `hc` is run matches the
+# DNA's name, then this name is used by default, and the output directory is
+# created automatically.
+$(DNA):
+	hc package
 
-fmt: tools
-	cargo fmt
+.PHONY: test test-all test-unit test-e2e test-sim2h test-node
+test-all:	test test-stress
 
+test:		test-unit test-e2e
+
+test-unit:
+	RUST_BACKTRACE=1 cargo test \
+	    -- --nocapture
+
+test-e2e:	$(DNA) test-sim2h test-node
+	@echo "Starting Scenario tests in $$(pwd)..."; \
+	    RUST_BACKTRACE=1 hc test \
+	#        | test/node_modules/faucet/bin/cmd.js
+
+test-node:
+	@echo "Setting up Scenario/Stress test Javascript..."; \
+	    cd test && npm install
+
+.PHONY: doc-all
+doc-all: $(addsuffix .html, $(basename $(wildcard doc/*.org)))
+
+doc/%.html: doc/%.org
+	emacs $< --batch -f org-html-export-to-html --kill
+
+# Generic targets; does not require a Nix environment
+.PHONY: clean
 clean:
-	rm -rf zomes/dpki/code/target dist test/node_modules test/package-lock.json
-	rm -rf zomes/dpki/code/Cargo.lock Cargo.lock .cargo target
-
-tools: tool_rust tool_fmt tool_clippy
-
-tool_rust:
-	@if [ "$$(rustc --version 2>/dev/null || true)" != ${RUST_VER_WANT} ]; \
-	then \
-		echo "# Makefile # incorrect rust toolchain version"; \
-		echo "# Makefile #   want:" ${RUST_VER_WANT}; \
-		if rustup --version >/dev/null 2>&1; then \
-			echo "# Makefile # found rustup, setting override"; \
-			rustup override set ${RUST_TAG_WANT}; \
-		else \
-			echo "# Makefile # rustup not found, cannot install toolchain"; \
-			exit 1; \
-		fi \
-	else \
-		echo "# Makefile # rust toolchain ok:" ${RUST_VER_WANT}; \
-	fi;
-
-tool_fmt: tool_rust
-	@if [ "$$(cargo fmt --version 2>/dev/null || true)" != ${FMT_VER_WANT} ]; \
-	then \
-		if rustup --version >/dev/null 2>&1; then \
-			echo "# Makefile # installing rustfmt with rustup"; \
-			rustup component add rustfmt-preview; \
-		else \
-			echo "# Makefile # rustup not found, cannot install rustfmt"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "# Makefile # rustfmt ok:" ${FMT_VER_WANT}; \
-	fi;
-
-tool_clippy: tool_rust
-	@if [ "$$(cargo clippy --version 2>/dev/null || true)" != ${CLP_VER_WANT} ]; \
-	then \
-		if rustup --version >/dev/null 2>&1; then \
-			echo "# Makefile # installing clippy with rustup"; \
-			rustup component add clippy-preview; \
-		else \
-			echo "# Makefile # rustup not found, cannot install rustfmt"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "# Makefile # clippy ok:" ${CLP_VER_WANT}; \
-	fi;
+	rm -rf \
+	    dist \
+	    test/node_modules \
+	    .cargo \
+	    target

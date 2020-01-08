@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../../config')
+const { simple_conductor_config } = require('../../config')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -11,8 +11,9 @@ async function conductor_init (liza){
 module.exports = (scenario) => {
 
   scenario("testing checks if entries have been pushed", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
-    await liza.spawn(handleHack)
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
+
+    await s.consistency()
     // On conductor_init we have to make this call
     let address = await conductor_init(liza)
     let address_recheck = await conductor_init(liza)
@@ -22,8 +23,9 @@ module.exports = (scenario) => {
   })
 
   scenario("testing to check if the DNA is initialized", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
-    await liza.spawn(handleHack)
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
+
+    await s.consistency()
 
     let check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
@@ -32,12 +34,13 @@ module.exports = (scenario) => {
     check = await liza.call('dpki_happ', "dpki", "is_initialized", {})
     console.log("IS INITIALIZED: ",check);
     t.ok(check.Ok)
+    await liza.kill()
   })
 
   scenario("testing if create rules before the keyset_root should throw an error", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    await s.consistency()
 
   // This is to just test out if we get the right keyset_root address
     const keyset_root_address = await liza.call('dpki_happ', "dpki", "get_initialization_data", {})
@@ -49,9 +52,9 @@ module.exports = (scenario) => {
 
 
   scenario("testing the initial set up process and trying to update it", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    await s.consistency()
 
     await conductor_init(liza)
 

@@ -1,5 +1,5 @@
-const { simple_conductor_config, handleHack } = require('../../config')
-const sleep  = require('sleep')
+const { simple_conductor_config } = require('../../config')
+// const sleep  = require('sleep')
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const SIGNED_AUTH_KEY_1 ="zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==";
 const WRONG_SINGED_AUTH_KEY = "D16Dl3Cywos/AS/ANPqsvkRZCCKWPd1KTkdANOxqG1MXRtdCaTYYAOO13mcYYtfzWbaagwLk5oFlns2uQneUDg==";
@@ -17,13 +17,13 @@ async function conductor_init (liza){
 module.exports = (scenario) => {
   scenario("testing out how conductor should be set up", async(s, t) => {
 
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    await s.consistency()
 
 // On conductor_init we have to make this call
     let address = await conductor_init(liza)
-    t.ok(address)
+    t.ok(address.Ok)
 
 
 // This is to just test out if we get the right keyset_root address
@@ -49,11 +49,11 @@ module.exports = (scenario) => {
     t.deepEqual(all_keys.Ok.length,2 )
 
 
-/*
-Check if the keys exist for the key
- Now it should exist
-*/
-
+// /*
+// Check if the keys exist for the key
+//  Now it should exist
+// */
+//
   // Checking Agents initial Signing key
     const checking_key_2 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_SIG_KEY_1})
     t.deepEqual(checking_key_2.Ok,"live" )
@@ -71,7 +71,6 @@ Check if the keys exist for the key
     console.log("Updated Key: ",updated_key);
     t.deepEqual(updated_key.Ok,null)
 
-    sleep.sleep(5)
 
 // Check if the key exist for the key
 // Now the old key should be shown as updated and the new should be live
@@ -89,8 +88,6 @@ Check if the keys exist for the key
     console.log("deleated_key: ", deleated_key);
     t.equal(deleated_key.Ok,null)
     console.log(" Deleated Key Succesfully ");
-
-    sleep.sleep(5)
 
     const checking_key_6 = await liza.call('dpki_happ', "dpki", "key_status", {key:AGENT_ENC_KEY_1})
     t.deepEqual(checking_key_6.Ok,"deleted" )

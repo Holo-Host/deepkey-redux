@@ -16,7 +16,7 @@ This is a core hApp. The DeepKey is used for Key Management for hApps in Holocha
 - #### [DeepKey hApp specs](https://hackmd.io/UbfvwQdJRKaAHI9Xa7F3VA)
 
 ## Built With
-* [Holochain v0.0.28-alpha1](https://github.com/holochain/holochain-rust)
+* [Holochain v0.0.32-alpha2](https://github.com/holochain/holochain-rust)
 
 ## Authors
 * **Joel Ulahanna** - [zo-el](https://github.com/zo-el)

@@ -1,4 +1,4 @@
-const { simple_conductor_config, handleHack } = require('../../config')
+const { simple_conductor_config } = require('../../config')
 
 const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
 const NEW_REVOCATION_KEY = "HcSciCmrxP4w5yefdxiSc3W5nY7ic9yzxS4vpeX3iPtnvu7db59FY4z7vj55mDz";
@@ -11,9 +11,9 @@ async function conductor_init (liza){
 
 module.exports = (scenario) => {
   scenario("testing the initial set up process and trying to update it", async(s, t) => {
-    const { liza } = await s.players({ liza: simple_conductor_config('liza')})
+    const { liza } = await s.players({ liza: simple_conductor_config('liza')}, true)
 
-    await liza.spawn(handleHack)
+    await s.consistency()
 
     await conductor_init(liza)
 
