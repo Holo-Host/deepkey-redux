@@ -28,6 +28,9 @@ struct SetAuthParams {
 }
 
 pub fn init(params: String) -> ZomeApiResult<HashString> {
+    hdk::debug(
+        format!("AGENT KEY >>>>>>>  {:}", AGENT_ADDRESS.clone()).to_string(),
+    )?;
     // Checking is initialized
     if !is_initialized()? {
         // DANGER :: Used unrap

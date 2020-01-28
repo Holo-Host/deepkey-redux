@@ -26,7 +26,8 @@ fn generate_auth(index: u64) -> ZomeApiResult<String> {
         return hdk::keystore_get_public_key(auth_key);
     }
     hdk::keystore_derive_seed(
-        "device_seed".to_string(),
+        // NOTE: This should be change device_seed
+        "root_seed".to_string(),
         auth_seed.to_owned(),
         "HCAUTHRZ".to_string(),
         index,

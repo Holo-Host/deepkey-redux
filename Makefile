@@ -1,13 +1,18 @@
 #
-# Test and build DeepKey Project
+# Test and build a hApp
+#
+# Building requires a nix-shell, so either prefix your desired target with `make nix-...`, or enter
+# a `nix-shell` and then run `make ...`
 #
 # This Makefile is primarily instructional; you can simply enter the Nix environment for
 # holochain-rust development (supplied by holo=nixpkgs; see pkgs.nix) via `nix-shell` and run `hc
-# test` directly, or build a target directly (see default.nix), eg. `nix-build -A DeepKey`.
+# test` directly, or build a target directly (see default.nix), eg. `nix-build -A deepkey`.
 #
 SHELL		= bash
-DNANAME		= DeepKey
+DNANAME		= deepkey
+DNAZOME		= dpki
 DNA		= dist/$(DNANAME).dna.json
+
 # External targets; Uses a nix-shell environment to obtain Holochain runtimes, run tests, etc.
 .PHONY: all
 all: nix-test
@@ -21,7 +26,7 @@ nix-%:
 	nix-shell --pure --run "make $*"
 
 # Internal targets; require a Nix environment in order to be deterministic.
-# - Uses the version of `hc`, `holochain` on the system PATH.
+# - Uses the version of `hc`, `holochain`, `sim2h`, ... on the system PATH.
 # - Normally called from within a Nix environment, eg. run `nix-shell`
 .PHONY:		rebuild install build
 rebuild:	clean build
@@ -37,29 +42,28 @@ build:		$(DNA)
 $(DNA):
 	hc package
 
-.PHONY: test test-all test-unit test-e2e test-sim2h test-node
-test-all:	test test-stress
-
+.PHONY: test test-unit test-e2e test-dna test-stress test-sim2h test-node
 test:		test-unit test-e2e
 
+# test-unit -- Run Rust unit tests via Cargo
 test-unit:
-	RUST_BACKTRACE=1 cargo test \
+	 RUST_BACKTRACE=1 cargo test \
 	    -- --nocapture
 
-test-e2e:	$(DNA) test-sim2h test-node
-	@echo "Starting Scenario tests in $$(pwd)..."; \
-	    RUST_BACKTRACE=1 hc test \
-	#        | test/node_modules/faucet/bin/cmd.js
+test-dna:	$(DNA)
 
+# End-to-end test of DNA.  Runs a sim2h_server on localhost:9000; the default expected by `hc test`
+test-e2e:	test-dna test-sim2h test-node
+	@echo "Starting Scenario tests..."; \
+	    RUST_BACKTRACE=1 hc test
+			
 test-node:
 	@echo "Setting up Scenario/Stress test Javascript..."; \
-	    cd test && npm install
+	    cd test && [ -d test/node_modules ] || npm install
 
-.PHONY: doc-all
-doc-all: $(addsuffix .html, $(basename $(wildcard doc/*.org)))
-
-doc/%.html: doc/%.org
-	emacs $< --batch -f org-html-export-to-html --kill
+test-sim2h:
+	@echo "Starting sim2h_server on localhost:9000 (may already be running)..."; \
+	    sim2h_server -p 9000 >sim2h_server.log 2>&1 &
 
 # Generic targets; does not require a Nix environment
 .PHONY: clean

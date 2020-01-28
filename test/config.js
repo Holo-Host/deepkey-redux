@@ -5,7 +5,7 @@ const dnaName = "DeepKey"
 const dnaId = "dpki_happ"
 
 const dnaPath = path.join(__dirname, `../dist/${dnaName}.dna.json`)
-const device1Path = path.join(__dirname, "../device-1-n.key")
+const device1Path = path.join(__dirname, "../agent-1.key")
 const device2Path = path.join(__dirname, "../device-2-n.key")
 
 const dna = Config.dna(dnaPath, dnaId)
@@ -32,7 +32,7 @@ if (process.env.HC_TRANSPORT_CONFIG) {
           : networkType === 'sim2h'
           ? {
               type: 'sim2h',
-              sim2h_url: 'wss://localhost:9000'
+              sim2h_url: 'ws://localhost:9000'
           }
 
           : (() => {throw new Error(`Unsupported network type: ${networkType}`)})()
@@ -96,13 +96,14 @@ const commonConfig = {
 
 
 const simple_conductor_config = (agent) => Config.gen(({uuid}) => [{
-    admin: true,
+    // admin: true,
     id: 'dpki_happ',
     agent: {
       id: `${agent}`,
       name: `${agent}-${Math.floor(Math.random())}`,
       keystore_file: device1Path,
-      public_address: "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr",
+      // // public_address: "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr",
+      public_address: "HcScIkJGqVKcw83yv7gfTXJ6c5pUzj9jj6g675gEvKqsUxsxt6cDVX8mGR8d49r",
     },
     dna: {
       id: 'deepkey',
