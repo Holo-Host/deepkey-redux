@@ -5,7 +5,6 @@ bundle.json
 package-lock.json
 node_modules
 .cargo
-Cargo.lock
 
 # OS generated files #
 ######################
@@ -31,3 +30,4 @@ storage
 tmp
 doc
 holochain-rust
+sim2h_server.log

@@ -5,8 +5,8 @@ const dnaName = "DeepKey"
 const dnaId = "dpki_happ"
 
 const dnaPath = path.join(__dirname, `../dist/${dnaName}.dna.json`)
-const device1Path = path.join(__dirname, "../device-1-n.key")
-const device2Path = path.join(__dirname, "../device-2-n.key")
+const device1Path = path.join(__dirname, "../test/test-keys/test-agent-1.key")
+const device2Path = path.join(__dirname, "../test/test-keys/test-agent-2.key")
 
 const dna = Config.dna(dnaPath, dnaId)
 
@@ -32,7 +32,7 @@ if (process.env.HC_TRANSPORT_CONFIG) {
           : networkType === 'sim2h'
           ? {
               type: 'sim2h',
-              sim2h_url: 'wss://localhost:9000'
+              sim2h_url: 'ws://localhost:9000'
           }
 
           : (() => {throw new Error(`Unsupported network type: ${networkType}`)})()
@@ -96,25 +96,24 @@ const commonConfig = {
 
 
 const simple_conductor_config = (agent) => Config.gen(({uuid}) => [{
-    admin: true,
     id: 'dpki_happ',
     agent: {
       id: `${agent}`,
-      name: `${agent}-${Math.floor(Math.random())}`,
+      name: `${agent}-${uuid}`,
       keystore_file: device1Path,
-      public_address: "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr",
+      public_address: "HcScIkJGqVKcw83yv7gfTXJ6c5pUzj9jj6g675gEvKqsUxsxt6cDVX8mGR8d49r",
     },
     dna: {
       id: 'deepkey',
       file: dnaPath,
-      uuid: `${Math.floor(Math.random())}`,
+      uuid,
     }
   }],
     commonConfig
     // dpki: {
-      //   instance_id: 'dpki_happ',
-      //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
-      // }
+    //   instance_id: 'dpki_happ',
+    //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
+    // }
   )
 
 const simple_2_conductor_config = (agent) => Config.gen(({uuid}) => [{
@@ -123,7 +122,7 @@ const simple_2_conductor_config = (agent) => Config.gen(({uuid}) => [{
       id: `${agent}`,
       name: `${agent}-${uuid}`,
       keystore_file: device2Path,
-      public_address: "HcSCJ9rxPzSwzdqhaprQGkXIzJmmc9r9gq4AgGIcvIvjdftfF8HfHw6k8P6Akjr",
+      public_address: "HcScjD6FeXo7a83p7ubW5uu4iAcF6ij9ymMy8qS6ifsmeo6n7wDna4eeFZv4wgi",
     },
     dna: {
       id: 'deepkey',

@@ -1,4 +1,4 @@
-{ pkgs ? import ./pkgs.nix, shell ? false }:
+{ pkgs ? import ./pkgs.nix {}, shell ? false }:
 
 with pkgs;
 
@@ -13,7 +13,12 @@ in
     name = "deepkey";
     src = gitignoreSource ./.;
 
-    nativeBuildInputs = []
+    nativeBuildInputs = [
+      cmake # required by wabt
+      binaryen
+      wasm-gc
+      wabt
+    ]
     ++ lib.optionals stdenv.isDarwin [ CoreServices ];
   };
 }

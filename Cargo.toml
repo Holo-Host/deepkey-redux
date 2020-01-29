@@ -1,7 +1,7 @@
 [workspace]
 
 exclude = [
-"holochain-rust",
+  "holochain-rust",
 ]
 
 members = [

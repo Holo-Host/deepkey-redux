@@ -1,12 +1,12 @@
 const { simple_conductor_config } = require('../../config')
 
-const REVOCATION_KEY = "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi";
-const NEW_REVOCATION_KEY = "HcSciCmrxP4w5yefdxiSc3W5nY7ic9yzxS4vpeX3iPtnvu7db59FY4z7vj55mDz";
-const REV_SIGNED_BY_REV_KEY = "Aul6kMS4K4rW7wpRiPC154zdDtXRc8ZQEj3wV3eOufOdbBK839045X8SzHoNI0VJVYLVB9YbL6gJ2goja/jxDw==";
+const REVOCATION_KEY = "HcSCIgvyd46Q4d9xa4gesx8j5tE7crna8m9U4Z63yzmf5aob6t3mKTNIp8mp8fi";
+const NEW_REVOCATION_KEY = "HcSCIgvyd46Q4d9xa4gesx8j5tE7crna8m9U4Z63yzmf5aob6t3mKTNIp8mp8fi";
+const REV_SIGNED_BY_REV_KEY = "xLD9u9XLBqr295xacnsaS9MTRmDAAzIpzvIOrR+2wvDOWezD6aFyEGsUoml/MKKga1i718uVmwL//Rze300CAA==";
 const BAD_SIGNED_REV_KEY = "Jkz3AWHO5bEZ11OpsNeotTIr3CGH3wZcyqUAae+xEVy+MwXhrAS1lfzUbWSRQgsSMWUNSjYTtE9NNUHXPkQkBg=="
 
 async function conductor_init (liza){
-  return await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi\",\"signed_auth_key\":\"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA==\"}"})
+  return await liza.callSync('dpki_happ', "dpki", "init_dpki",  {params: "{\"revocation_key\": \"HcSCIgvyd46Q4d9xa4gesx8j5tE7crna8m9U4Z63yzmf5aob6t3mKTNIp8mp8fi\",\"signed_auth_key\":\"CPhaw45L6MjxPOsVBFsTYkl35hS4h9yRNqsl1fqfNx5P6z6l6WE6aLSrBjD3Dfe3HSg3vNSHtC1QeN0FWBo+DQ==\"}"})
 }
 
 module.exports = (scenario) => {

@@ -4,8 +4,8 @@ persistence_dir = "./tmp/persistence-deepkey"
 [[agents]]
 id = "host-agent"
 name = "DeepKey Host"
-keystore_file = "device-1.key"
-public_address = "HcSCjJjIe3sRps4zkoCXuu7sUmEdcc6ncH8uID9fMyy7do8ttaciHiZCibgcvrr"
+keystore_file = "agent-1.key"
+public_address = "HcScIkJGqVKcw83yv7gfTXJ6c5pUzj9jj6g675gEvKqsUxsxt6cDVX8mGR8d49r"
 
 
 [[dnas]]
@@ -42,7 +42,7 @@ id = "admin interface"
 
 [dpki]
 instance_id = "dpki_happ"
-init_params = '{"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}'
+init_params = '{"revocation_key": "HcSCIgvyd46Q4d9xa4gesx8j5tE7crna8m9U4Z63yzmf5aob6t3mKTNIp8mp8fi","signed_auth_key":"CPhaw45L6MjxPOsVBFsTYkl35hS4h9yRNqsl1fqfNx5P6z6l6WE6aLSrBjD3Dfe3HSg3vNSHtC1QeN0FWBo+DQ=="}'
 
 [logger]
 type = "debug"
