@@ -30,24 +30,7 @@ require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScen
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario)
-// require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario)
-
-// These tests have deepkey set as a dpki_instance in the conductor via the dpki settings
-// Eg:
-// [dpki]
-// instance_id = "dpki_happ"
-// init_params = "{}"
-//
-// const set_orchestrator = new Orchestrator({
-//   middleware: tapeExecutor(require('tape')),
-//   globalConfig: {
-//     network: 'n3h',
-//     logger: false
-//   }
-// })
-//
-// require('./unit_test/auto_dpki/test_init')(set_orchestrator.registerScenario)
-// Check to see that we haven't accidentally disabled a bunch of scenarios
+require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario)
 
 const num = orchestrator.numRegistered()
 if (num < MIN_EXPECTED_SCENARIOS) {
