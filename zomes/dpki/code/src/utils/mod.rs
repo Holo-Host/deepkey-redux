@@ -57,7 +57,7 @@ pub fn handle_receive(from: Address, msg_json: JsonString) -> String {
 pub fn handle_send_handshake_notify(to: Address) -> ZomeApiResult<Signature> {
     if &AGENT_ADDRESS.to_string() == &to.to_string() {
         Err(ZomeApiError::from(format!(
-            "No need to send a message to myself: {:?}",
+            "There is no need to send a message to yourself: {:?}",
             &to.to_string()
         )))
     } else {
