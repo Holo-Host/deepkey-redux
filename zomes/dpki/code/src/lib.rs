@@ -31,14 +31,16 @@ use rules::GetResponse;
 
 define_zome! {
     entries: [
+        // Public Entires
         authorizor::definitions(),
-        authorizor::auth_path_definitions(),
         device_authorization::definitions(),
         key_anchor::definitions(),
         key_registration::definitions(),
-        key_registration::meta_definitions(),
         keyset_root::definitions(),
         rules::definitions()
+        // Private Entries
+        key_registration::meta_definitions(),
+        authorizor::auth_path_definitions(),
         // rules::rev_path_definitions()
     ]
 
