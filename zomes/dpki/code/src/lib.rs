@@ -147,11 +147,16 @@ define_zome! {
             outputs: |result: ZomeApiResult<Signature>|,
             handler: utils::handle_send_handshake_notify
         }
+
+        // Commit Private AppKey Entry
         register_key: {
             inputs: | app_dna_hash: String, app_name: String, public_key: HashString |,
             outputs: |result: ZomeApiResult<Address>|,
             handler: app_key::handlers::handle_register_key
         }
+
+        // Get all the AppKey Entry
+        // UIs should call this function when they want to know all the hApps that are registered in the DNA
         get_registered_key: {
             inputs: | |,
             outputs: |result: ZomeApiResult<Vec<app_key::AppKey>>|,

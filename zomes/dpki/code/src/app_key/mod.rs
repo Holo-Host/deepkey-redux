@@ -6,6 +6,9 @@ use hdk::{
 pub mod handlers;
 use std::convert::TryFrom;
 
+// This Entry is a Private Entry
+// We will use this Entry only for displaying data to User (UI)
+// It contains all the hApps data that are running on the same conductor this DNA is running on.Address
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AppKey {
