@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate hdk;
+use hdk::prelude::*;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -9,15 +10,16 @@ extern crate serde_json;
 extern crate holochain_json_derive;
 
 use hdk::{
-    error::ZomeApiResult,
-    holochain_core_types::{agent::AgentId, signature::Signature, validation::EntryValidationData},
-    holochain_json_api::{
-        error::JsonError,
-        json::{JsonString, RawString},
+    holochain_core_types::{
+        signature::Signature,
     },
-    holochain_persistence_api::{cas::content::Address, hash::HashString},
+    holochain_json_api::{
+        json::RawString,
+    },
+    holochain_persistence_api::hash::HashString,
 };
 
+mod app_key;
 mod authorizor;
 mod device_authorization;
 mod dpki_trait;
@@ -37,10 +39,11 @@ define_zome! {
         key_anchor::definitions(),
         key_registration::definitions(),
         keyset_root::definitions(),
-        rules::definitions()
+        rules::definitions(),
         // Private Entries
         key_registration::meta_definitions(),
         authorizor::auth_path_definitions(),
+        app_key::definition()
         // rules::rev_path_definitions()
     ]
 
@@ -144,6 +147,22 @@ define_zome! {
             outputs: |result: ZomeApiResult<Signature>|,
             handler: utils::handle_send_handshake_notify
         }
+
+        // Commit Private AppKey Entry
+        register_key: {
+            inputs: | app_dna_hash: String, app_name: String, public_key: HashString |,
+            outputs: |result: ZomeApiResult<Address>|,
+            handler: app_key::handlers::handle_register_key
+        }
+
+        // Get all the AppKey Entry
+        // UIs should call this function when they want to know all the hApps that are registered in the DNA
+        get_registered_key: {
+            inputs: | |,
+            outputs: |result: ZomeApiResult<Vec<app_key::AppKey>>|,
+            handler: app_key::handlers::handle_get_registered_key
+        }
+
     ]
 
     traits: {
@@ -161,7 +180,9 @@ define_zome! {
         delete_key,
         key_status,
         authorize_device,
-        send_handshake_notify
+        send_handshake_notify,
+        register_key,
+        get_registered_key
         ]
     }
 }
