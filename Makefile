@@ -54,9 +54,14 @@ test-dna:	$(DNA)
 
 # End-to-end test of DNA.  Runs a sim2h_server on localhost:9000; the default expected by `hc test`
 test-e2e:	test-dna test-sim2h test-node
+	@echo "Starting Scenario tests in $$(pwd)..."; \
+	    RUST_BACKTRACE=1 hc test \
+	        | node test/node_modules/faucet/bin/cmd.js
+
+test-log-e2e:	test-dna test-sim2h test-node
 	@echo "Starting Scenario tests..."; \
 	    RUST_BACKTRACE=1 hc test
-			
+
 test-node:
 	@echo "Setting up Scenario/Stress test Javascript..."; \
 	    cd test && [ -d test/node_modules ] || npm install
