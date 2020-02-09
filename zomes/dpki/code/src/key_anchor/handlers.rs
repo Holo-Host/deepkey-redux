@@ -1,8 +1,6 @@
 use hdk::prelude::*;
 use hdk::{
-    error::ZomeApiResult,
-    holochain_core_types::entry::Entry,
-    holochain_json_api::json::RawString,
+    error::ZomeApiResult, holochain_core_types::entry::Entry, holochain_json_api::json::RawString,
     holochain_persistence_api::hash::HashString,
 };
 
