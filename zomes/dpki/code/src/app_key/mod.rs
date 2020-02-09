@@ -40,16 +40,16 @@ impl AppKey {
 }
 
 impl From<AppKey> for JsonString {
-  fn from(my_type: AppKey) -> Self {
-    default_to_json(my_type)
-  }
+    fn from(my_type: AppKey) -> Self {
+        default_to_json(my_type)
+    }
 }
 
 impl TryFrom<JsonString> for AppKey {
-  type Error = JsonError;
-  fn try_from(json_string: JsonString) -> Result<Self, Self::Error> {
-    default_try_from_json(json_string)
-  }
+    type Error = JsonError;
+    fn try_from(json_string: JsonString) -> Result<Self, Self::Error> {
+        default_try_from_json(json_string)
+    }
 }
 
 pub fn definition() -> ValidatingEntryType {
@@ -84,17 +84,16 @@ pub fn definition() -> ValidatingEntryType {
 #[cfg(test)]
 mod tests {
 
-    use hdk::prelude::*;
     use crate::app_key::{definition, AppKey};
+    use hdk::prelude::*;
     use hdk::{
-        holochain_persistence_api::hash::HashString,
         holochain_core_types::{
             chain_header::test_chain_header,
             entry::entry_type::{AppEntryType, EntryType},
             validation::{EntryLifecycle, EntryValidationData, ValidationData, ValidationPackage},
         },
+        holochain_persistence_api::hash::HashString,
     };
-
 
     #[test]
     fn app_key_smoke_test() {
@@ -106,7 +105,6 @@ mod tests {
         assert_eq!(app_dna_hash.to_string(), app_key.app_dna_hash(),);
         assert_eq!(app_name.to_string(), app_key.app_name(),);
     }
-
 
     #[test]
     fn app_key_definition_test() {

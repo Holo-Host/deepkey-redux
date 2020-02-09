@@ -10,12 +10,7 @@ extern crate serde_json;
 extern crate holochain_json_derive;
 
 use hdk::{
-    holochain_core_types::{
-        signature::Signature,
-    },
-    holochain_json_api::{
-        json::RawString,
-    },
+    holochain_core_types::signature::Signature, holochain_json_api::json::RawString,
     holochain_persistence_api::hash::HashString,
 };
 
