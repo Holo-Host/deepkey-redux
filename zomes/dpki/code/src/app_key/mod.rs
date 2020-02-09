@@ -81,10 +81,17 @@ pub fn definition() -> ValidatingEntryType {
 #[cfg(test)]
 mod tests {
 
-    use crate::app_key::AppKey;
+    use hdk::prelude::*;
+    use crate::app_key::{definition, AppKey};
     use hdk::{
         holochain_persistence_api::hash::HashString,
+        holochain_core_types::{
+            chain_header::test_chain_header,
+            entry::entry_type::{AppEntryType, EntryType},
+            validation::{EntryLifecycle, EntryValidationData, ValidationData, ValidationPackage},
+        },
     };
+
 
     #[test]
     fn app_key_smoke_test() {
@@ -96,4 +103,34 @@ mod tests {
         assert_eq!(app_dna_hash.to_string(), app_key.app_dna_hash(),);
         assert_eq!(app_name.to_string(), app_key.app_name(),);
     }
+
+
+    #[test]
+    fn app_key_definition_test() {
+        let mut app_key_definition = definition();
+
+        let expected_name = EntryType::from("app_key");
+        assert_eq!(expected_name, app_key_definition.name.clone());
+
+        let expected_validation_package_definition = hdk::ValidationPackageDefinition::Entry;
+        assert_eq!(
+            expected_validation_package_definition,
+            (app_key_definition.package_creator)(),
+        );
+
+        let app_key_ok = AppKey::new("foo", "now", &HashString::from("Hsc..."));
+        let entry = Entry::App(AppEntryType::from("app_key"), app_key_ok.into());
+        let validation_data = ValidationData {
+            package: ValidationPackage::only_header(test_chain_header()),
+            lifecycle: EntryLifecycle::Chain,
+        };
+        assert_eq!(
+            (app_key_definition.validator)(EntryValidationData::Create {
+                entry,
+                validation_data
+            }),
+            Ok(()),
+        );
+    }
+
 }
