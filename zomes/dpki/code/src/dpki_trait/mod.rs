@@ -28,7 +28,6 @@ struct SetAuthParams {
 }
 
 pub fn init(params: String) -> ZomeApiResult<HashString> {
-    hdk::debug(format!("AGENT KEY >>>>>>>  {:}", AGENT_ADDRESS.clone()).to_string())?;
     // Checking is initialized
     if !is_initialized()? {
         // DANGER :: Used unrap
@@ -58,6 +57,8 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
             None => match init_params.first_deepkey_agent {
                 Some(_) => {
                     hdk::debug(format!("*******ToDo for FDA*************"))?;
+                    // We need to Handshake
+
                 }
                 None => return Err(ZomeApiError::from("Error".to_string())),
             },
@@ -70,7 +71,7 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
             Ok(a) => Ok(a),
             Err(e) => Err(e),
         }
-    //TODO: Register this DeepKey Agent
+    //TODO: Register this DeepKey Agent Keys in this DeepKey instance
     } else {
         Err(ZomeApiError::Internal(
             "INIT ERROR: Already Initialized".to_string(),
