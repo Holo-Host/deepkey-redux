@@ -30,7 +30,7 @@ require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScen
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario)
-require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario)
+require('./unit_test/manual_dpki/manual_device_handshake')(orchestrator.registerScenario)
 
 const num = orchestrator.numRegistered()
 if (num < MIN_EXPECTED_SCENARIOS) {
