@@ -71,7 +71,10 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
             Ok(a) => Ok(a),
             Err(e) => Err(e),
         }
+
     //TODO: Register this DeepKey Agent Keys in this DeepKey instance
+    // hdk::update_agent() - This will update and register the key into `deepkey`
+
     } else {
         Err(ZomeApiError::Internal(
             "INIT ERROR: Already Initialized".to_string(),

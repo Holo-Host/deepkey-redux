@@ -26,7 +26,23 @@ fn choose_key_type(key_type: &AppKeyType) -> KeyType {
     }
 }
 
-pub fn register_key(
+pub fn handle_create_key_registration(
+    derivation_index: u64,
+    key_type: AppKeyType,
+    context: String,
+) -> ZomeApiResult<Address> {
+    // Validate the key and sign the key wit the auth key
+    let derived_key = derive_key(derivation_index, &context, choose_key_type(&key_type))?
+        .trim_matches('"')
+        .to_owned();
+
+    hdk::debug(format!("A Key was created: {}", derived_key.clone()))?;
+
+    register_key(derived_key, derivation_index, key_type, context)
+}
+
+
+fn register_key(
     key: String,
     derivation_index: u64,
     key_type: AppKeyType,
@@ -72,21 +88,6 @@ pub fn register_key(
         }
         Err(e) => Err(e),
     }
-}
-
-pub fn handle_create_key_registration(
-    derivation_index: u64,
-    key_type: AppKeyType,
-    context: String,
-) -> ZomeApiResult<Address> {
-    // Validate the key and sign the key wit the auth key
-    let derived_key = derive_key(derivation_index, &context, choose_key_type(&key_type))?
-        .trim_matches('"')
-        .to_owned();
-
-    hdk::debug(format!("A Key was created: {}", derived_key.clone()))?;
-
-    register_key(derived_key, derivation_index, key_type, context)
 }
 
 pub fn update_key(
