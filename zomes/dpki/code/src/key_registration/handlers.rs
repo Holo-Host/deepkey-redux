@@ -35,12 +35,23 @@ pub fn handle_create_key_registration(
     let derived_key = derive_key(derivation_index, &context, choose_key_type(&key_type))?
         .trim_matches('"')
         .to_owned();
-    let derived_key_hashstring = HashString::from(derived_key.to_owned());
 
     hdk::debug(format!("A Key was created: {}", derived_key.clone()))?;
 
+    register_key(derived_key, derivation_index, key_type, context)
+}
+
+
+fn register_key(
+    key: String,
+    derivation_index: u64,
+    key_type: AppKeyType,
+    context: String
+) -> Result<Address, ZomeApiError>{
+    let derived_key_hashstring = HashString::from(key.to_owned());
+
     //Get the Auth Kye ID
-    let auth_key_signing_keys = sign_key_by_authorization_key(derived_key)?;
+    let auth_key_signing_keys = sign_key_by_authorization_key(key)?;
 
     // Registering the Key
     let key_registration = KeyRegistration {
