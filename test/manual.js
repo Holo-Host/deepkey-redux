@@ -1,5 +1,8 @@
 const test = require('tape');
-const { Conductor, DnaInstance } = require("@holochain/holochain-nodejs")
+const {
+  Conductor,
+  DnaInstance
+} = require("@holochain/holochain-nodejs")
 
 
 const toml = `
@@ -42,18 +45,18 @@ init_params = "{}"
 
 
 test('Initial test (run)', t => {
-    Conductor.run(toml, (stop, conductor) => {
+  Conductor.run(toml, (stop, conductor) => {
 
-      const instance = new DnaInstance('deepkey_instance', conductor)
-      const keyset_root_address = instance.call("dpki", "init_dpki", {})
-      // console.log("keyset_root->",keyset_root_address);
-      t.ok(keyset_root_address.Ok)
+    const instance = new DnaInstance('deepkey_instance', conductor)
+    const keyset_root_address = instance.call("dpki", "init_dpki", {})
+    // console.log("keyset_root->",keyset_root_address);
+    t.ok(keyset_root_address.Ok)
 
-      const get_root_address = instance.call("dpki", "get_initialization_data", {})
-      // console.log("->",get_root_address);
-      t.ok(get_root_address.Ok)
+    const get_root_address = instance.call("dpki", "get_initialization_data", {})
+    // console.log("->",get_root_address);
+    t.ok(get_root_address.Ok)
 
-      stop()
-      t.end()
-    })
+    stop()
+    t.end()
+  })
 })
