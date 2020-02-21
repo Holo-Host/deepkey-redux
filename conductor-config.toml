@@ -1,16 +1,16 @@
 bridges = []
-persistence_dir = "./tmp/persistence-deepkey"
+persistence_dir = "./.tmp/persistence-deepkey"
 
 [[agents]]
 id = "host-agent"
 name = "DeepKey Host"
-keystore_file = "agent-1.key"
-public_address = "HcScIkJGqVKcw83yv7gfTXJ6c5pUzj9jj6g675gEvKqsUxsxt6cDVX8mGR8d49r"
+keystore_file = "/home/zo-el/.config/holochain/keys/HcSci9zA73GMmX8z7o4sIKNysTi3tq47gOOfI9w99Iuo68fzaeCd5WKC6goty5a"
+public_address = "HcSci9zA73GMmX8z7o4sIKNysTi3tq47gOOfI9w99Iuo68fzaeCd5WKC6goty5a"
 
 
 [[dnas]]
 file = "./dist/DeepKey.dna.json"
-hash = "Qmc4Bu8DYedyhfhcpQJNbdRdTwCJS2mBC6mokX8Pihrxv9"
+hash = "QmTnnNYM2cnjmiZmNBh1rCFPWEaTRZqCNKG8kp1Xk5VZRx"
 id = "deepkey"
 
 
@@ -19,7 +19,7 @@ agent = "host-agent"
 dna = "deepkey"
 id = "dpki_happ"
 [instances.storage]
-path = "./tmp/storage-deepkey"
+path = "./.tmp/storage-deepkey"
 type = "file"
 
 [[interfaces]]
@@ -28,7 +28,7 @@ id = "ws interface"
 
     [interfaces.driver]
     port = 8800
-    type = "http"
+    type = "websocket"
     [[interfaces.instances]]
     id = "dpki_happ"
 
@@ -39,10 +39,12 @@ id = "admin interface"
     [interfaces.driver]
     port = 9300
     type = "http"
+    [[interfaces.instances]]
+    id = "dpki_happ"
 
 [dpki]
 instance_id = "dpki_happ"
-init_params = '{"revocation_key": "HcSCIgvyd46Q4d9xa4gesx8j5tE7crna8m9U4Z63yzmf5aob6t3mKTNIp8mp8fi","signed_auth_key":"CPhaw45L6MjxPOsVBFsTYkl35hS4h9yRNqsl1fqfNx5P6z6l6WE6aLSrBjD3Dfe3HSg3vNSHtC1QeN0FWBo+DQ=="}'
+init_params = '{"revocation_key": "HcScir75WPx7Vn3swtrYJCSOT5Xocvrbu8wda4aotejdf8b9959Sz65dcKDVaji","signed_auth_key":"CzFHUTnO0vYLo8FgOSjessHTRgGePLiIjBYqHSI85M1R/wIMFNdg5k8uKNmpBJi5JqvUvofc5LbTu3XZ/UpwCg=="}'
 
 [logger]
 type = "debug"
