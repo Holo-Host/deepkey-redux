@@ -4,8 +4,37 @@
       "command": "cargo",
       "arguments": [
         "build",
-	"--release",
-	"--target=wasm32-unknown-unknown"
+        "--release",
+        "--target=wasm32-unknown-unknown",
+        "--target-dir=../../../target"
+      ]
+    },
+    {
+      "command": "wasm-gc",
+      "arguments": ["../../../target/wasm32-unknown-unknown/release/dpki.wasm"]
+    },
+    {
+      "command": "wasm-opt",
+      "arguments": [
+        "-Oz",
+        "--vacuum",
+        "../../../target/wasm32-unknown-unknown/release/dpki.wasm"
+      ]
+    },
+    {
+      "command": "wasm2wat",
+      "arguments": [
+        "../../../target/wasm32-unknown-unknown/release/dpki.wasm",
+        "-o",
+        "../../../target/wasm32-unknown-unknown/release/dpki.wat"
+      ]
+    },
+    {
+      "command": "wat2wasm",
+      "arguments": [
+        "../../../target/wasm32-unknown-unknown/release/dpki.wat",
+        "-o",
+        "../../../target/wasm32-unknown-unknown/release/dpki.wasm"
       ]
     }
   ],
