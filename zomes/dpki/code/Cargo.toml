@@ -5,12 +5,12 @@ authors = ["zo-el <joel.ulahanna@holo.host>"]
 edition = "2018"
 
 [dependencies]
-serde = "=1.0.89"
-serde_json = { version = "=1.0.39", features = ["preserve_order"] }
-serde_derive = "=1.0.89"
-# hdk = { git = "https://github.com/holochain/holochain-rust" , branch = "release-0.0.42-alpha5" }
-hdk = { version = "0.0.42-alpha5" }
-holochain_json_derive = "=0.0.17"
+serde = "=1.0.104"
+serde_json = { version = "=1.0.47" }
+serde_derive = "=1.0.104"
+hdk = { git = "https://github.com/holochain/holochain-rust" , branch = "develop" }
+# hdk = { version = "0.0.43-alpha3" }
+holochain_json_derive = "=0.0.23"
 
 [lib]
 path = "src/lib.rs"
