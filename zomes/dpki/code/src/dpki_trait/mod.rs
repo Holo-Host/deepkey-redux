@@ -2,10 +2,10 @@ use crate::authorizor::handlers::handle_set_authorizor;
 use crate::key_registration::{handlers::handle_create_key_registration, AppKeyType};
 use crate::keyset_root::handlers::{handle_get_my_keyset_root, handle_set_keyset_root};
 use crate::rules::handlers::create_new_rules;
+use crate::utils::handle_send_handshake_notify;
+use hdk::prelude::*;
 use hdk::{
-    error::{ZomeApiError, ZomeApiResult},
     holochain_core_types::signature::Signature,
-    holochain_json_api::{error::JsonError, json::JsonString},
     holochain_persistence_api::hash::HashString,
     holochain_wasm_utils::api_serialization::sign::SignOneTimeResult,
     AGENT_ADDRESS,
@@ -55,12 +55,12 @@ pub fn init(params: String) -> ZomeApiResult<HashString> {
                 hdk::debug(format!("Initial Rules set:  {:}", rules.clone()).to_string())?;
             }
             None => match init_params.first_deepkey_agent {
-                Some(_) => {
-                    hdk::debug(format!("*******ToDo for FDA*************"))?;
+                Some(fda) => {
+                    hdk::debug(format!("*******IMplemnting FDA*************"))?;
                     // We need to Handshake
-
+                    handle_send_handshake_notify(Address::from(fda))?;
                 }
-                None => return Err(ZomeApiError::from("Error".to_string())),
+                None => return Err(ZomeApiError::from("DeepKey Error: init() was successfull but you have to still handshake with your FirstDeepKeyAgent".to_string())),
             },
         }
 

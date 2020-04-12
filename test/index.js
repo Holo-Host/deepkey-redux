@@ -1,4 +1,10 @@
-const { Orchestrator, tapeExecutor, combine, callSync, localOnly } = require('@holochain/tryorama')
+const {
+  Orchestrator,
+  tapeExecutor,
+  combine,
+  callSync,
+  localOnly
+} = require('@holochain/tryorama')
 
 const MIN_EXPECTED_SCENARIOS = 1
 
@@ -30,14 +36,13 @@ require('./unit_test/manual_dpki/update_auth_entries')(orchestrator.registerScen
 require('./unit_test/manual_dpki/set_up_conductor')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/revoke_rev_key')(orchestrator.registerScenario)
 require('./unit_test/manual_dpki/test_init')(orchestrator.registerScenario)
-require('./unit_test/manual_dpki/notification')(orchestrator.registerScenario)
+require('./unit_test/manual_dpki/manual_device_handshake')(orchestrator.registerScenario)
 
 const num = orchestrator.numRegistered()
 if (num < MIN_EXPECTED_SCENARIOS) {
   console.error(`Expected at least ${MIN_EXPECTED_SCENARIOS} scenarios, but only ${num} were registered!`)
   process.exit(1)
-}
-else {
+} else {
   console.log(`Registered ${num} scenarios (at least ${MIN_EXPECTED_SCENARIOS} were expected)`)
 }
 

@@ -1,5 +1,7 @@
 const path = require('path')
-const { Config } = require('@holochain/tryorama')
+const {
+  Config
+} = require('@holochain/tryorama')
 
 const dnaName = "DeepKey"
 const dnaId = "dpki_happ"
@@ -14,36 +16,39 @@ const networkType = process.env.APP_SPEC_NETWORK_TYPE || "sim2h"
 let network = {}
 // override the transport_config if we are in the Final Exam context!
 if (process.env.HC_TRANSPORT_CONFIG) {
-    network=require(process.env.HC_TRANSPORT_CONFIG)
+  network = require(process.env.HC_TRANSPORT_CONFIG)
 } else {
-    network =
-        ( networkType === 'websocket'
-          ? Config.network('websocket')
+  network =
+    (networkType === 'websocket' ?
+      Config.network('websocket')
 
-          : networkType === 'memory'
-          ? Config.network('memory')
+      :
+      networkType === 'memory' ?
+      Config.network('memory')
 
-          : networkType === 'sim1h'
-          ? {
-              type: 'sim1h',
-              dynamo_url: 'http://localhost:8000'
-          }
+      :
+      networkType === 'sim1h' ? {
+        type: 'sim1h',
+        dynamo_url: 'http://localhost:8000'
+      }
 
-          : networkType === 'sim2h'
-          ? {
-              type: 'sim2h',
-              sim2h_url: 'ws://localhost:9000'
-          }
+      :
+      networkType === 'sim2h' ? {
+        type: 'sim2h',
+        sim2h_url: 'ws://localhost:9000'
+      }
 
-          : (() => {throw new Error(`Unsupported network type: ${networkType}`)})()
-        )
+      :
+      (() => {
+        throw new Error(`Unsupported network type: ${networkType}`)
+      })()
+    )
 }
 
 const logger = {
   type: 'debug',
   rules: {
-    rules: [
-      {
+    rules: [{
         exclude: true,
         pattern: '.*parity.*'
       },
@@ -91,11 +96,16 @@ const logger = {
 const commonConfig = {
   logger,
   network,
-  passphrase_service: {type:'mock',passphrase:""}
+  passphrase_service: {
+    type: 'mock',
+    passphrase: ""
+  }
 }
 
 
-const simple_conductor_config = (agent) => Config.gen(({uuid}) => [{
+const simple_conductor_config = (agent) => Config.gen(({
+    uuid
+  }) => [{
     id: 'dpki_happ',
     agent: {
       id: `${agent}`,
@@ -109,14 +119,16 @@ const simple_conductor_config = (agent) => Config.gen(({uuid}) => [{
       uuid,
     }
   }],
-    commonConfig
-    // dpki: {
-    //   instance_id: 'dpki_happ',
-    //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
-    // }
-  )
+  commonConfig
+  // dpki: {
+  //   instance_id: 'dpki_happ',
+  //   init_params: {"revocation_key": "HcSCiPdMkst9geux7y7kPoVx3W54Ebwkk6fFWjH9V6oIbqi77H4i9qGXRsDcdbi","signed_auth_key":"zJkRXrrbvbzbH96SpapO5lDWoElpzB1rDE+4zbo/VthM/mp9qNKaVsGiVKnHkqT4f5J4MGN+q18xP/hwQUKyDA=="}
+  // }
+)
 
-const simple_2_conductor_config = (agent) => Config.gen(({uuid}) => [{
+const simple_2_conductor_config = (agent) => Config.gen(({
+    uuid
+  }) => [{
     id: 'dpki_happ',
     agent: {
       id: `${agent}`,
@@ -130,11 +142,14 @@ const simple_2_conductor_config = (agent) => Config.gen(({uuid}) => [{
       uuid,
     }
   }],
-    commonConfig,
-    // dpki: {
-    //   instance_id: 'dpki_happ',
-    //   init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
-    // }
-  )
+  commonConfig,
+  // dpki: {
+  //   instance_id: 'dpki_happ',
+  //   init_params: {"revocation_key": "HcSCI7fRqt5wb7r6i46f5AeGW6zcNuq3i94fQVtFOPromhzoukr9DabcZqzxzir","signed_auth_key":"bQNCtt9Xa7Ii4mCgOGSt8InVLA6HbrFjhYBoc4lDKMtxbY65kQoMNR/mHCuBq5rBYtyaZXG9Jpa9o8WD2eSrCw=="}
+  // }
+)
 
-module.exports = { simple_conductor_config, simple_2_conductor_config }
+module.exports = {
+  simple_conductor_config,
+  simple_2_conductor_config
+}
