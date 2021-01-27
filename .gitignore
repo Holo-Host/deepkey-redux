@@ -27,7 +27,7 @@ tmp-storage
 tmp-storage-1
 target
 storage
-tmp
+.tmp
 doc
 holochain-rust
 sim2h_server.log
